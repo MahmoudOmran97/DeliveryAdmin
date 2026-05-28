@@ -1,78 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>@ViewData["Title"] — DeliveryApp Admin</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="~/css/admin.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] — DeliveryApp Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
 
-<aside class="sidebar">
-  <div class="logo">
-    <div class="logo-mark">
-      <div class="logo-icon">🚀</div>
-      <div>
-        <div class="logo-text">DeliveryApp</div>
-        <div class="logo-sub">Admin Panel v2.0</div>
-      </div>
-    </div>
-  </div>
-  <nav class="nav">
-    <div class="nav-section">Main</div>
-    @{
-      var ctrl = ViewContext.RouteData.Values["controller"]?.ToString();
-    }
-    <a class="nav-item @(ctrl=="Dashboard"?"active":"")" href="/Dashboard"><span class="nav-icon">📊</span> Dashboard</a>
-    <a class="nav-item @(ctrl=="Orders"?"active":"")" href="/Orders"><span class="nav-icon">📦</span> Orders</a>
-    <a class="nav-item @(ctrl=="Drivers"?"active":"")" href="/Drivers"><span class="nav-icon">🛵</span> Drivers</a>
-    <a class="nav-item @(ctrl=="Restaurants"?"active":"")" href="/Restaurants"><span class="nav-icon">🍽️</span> Restaurants</a>
-    <a class="nav-item @(ctrl=="Customers"?"active":"")" href="/Customers"><span class="nav-icon">👥</span> Customers</a>
-    <div class="nav-section">Finance</div>
-    <a class="nav-item @(ctrl=="Payments"?"active":"")" href="/Payments"><span class="nav-icon">💳</span> Payments</a>
-    <a class="nav-item @(ctrl=="Ratings"?"active":"")" href="/Ratings"><span class="nav-icon">⭐</span> Ratings</a>
-    <div class="nav-section">Catalog</div>
-    <a class="nav-item @(ctrl=="Products"?"active":"")" href="/Products"><span class="nav-icon">🍕</span> Products</a>
-    <a class="nav-item @(ctrl=="Categories"?"active":"")" href="/Restaurants"><span class="nav-icon">📂</span> Categories</a>
-  </nav>
-  <div class="sidebar-footer">
-    <div class="user-info">
-      <div class="user-av">@(Context.Session.GetString("UserName")?[0].ToString().ToUpper() ?? "A")</div>
-      <div>
-        <div class="user-name">@(Context.Session.GetString("UserName") ?? "Admin")</div>
-        <div class="user-role">@(Context.Session.GetString("UserRole") ?? "Admin")</div>
-      </div>
-    </div>
-    <a class="logout-btn" href="/Auth/Logout">🚪 Logout</a>
-  </div>
-</aside>
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-mark">
+                <div class="logo-icon">🚀</div>
+                <div>
+                    <div class="logo-text">DeliveryApp</div>
+                    <div class="logo-sub">Admin Panel v2.0</div>
+                </div>
+            </div>
+        </div>
+        <nav class="nav">
+            <div class="nav-section">Main</div>
+            @{
+                var ctrl = ViewContext.RouteData.Values["controller"]?.ToString();
+            }
+            <a class="nav-item @(ctrl == "Dashboard" ? "active" : "")" href="/Dashboard"><span class="nav-icon">📊</span> Dashboard</a>
+            <a class="nav-item @(ctrl == "Orders" ? "active" : "")" href="/Orders"><span class="nav-icon">📦</span> Orders</a>
+            <a class="nav-item @(ctrl == "Drivers" ? "active" : "")" href="/Drivers"><span class="nav-icon">🛵</span> Drivers</a>
+            <a class="nav-item @(ctrl == "Restaurants" ? "active" : "")" href="/Restaurants"><span class="nav-icon">🍽️</span> Restaurants</a>
+            <a class="nav-item @(ctrl == "Customers" ? "active" : "")" href="/Customers"><span class="nav-icon">👥</span> Customers</a>
+            <div class="nav-section">Finance</div>
+            <a class="nav-item @(ctrl == "Payments" ? "active" : "")" href="/Payments"><span class="nav-icon">💳</span> Payments</a>
+            <a class="nav-item @(ctrl == "Ratings" ? "active" : "")" href="/Ratings"><span class="nav-icon">⭐</span> Ratings</a>
+            <div class="nav-section">Catalog</div>
+            <a class="nav-item @(ctrl == "Products" ? "active" : "")" href="/Products"><span class="nav-icon">🍕</span> Products</a>
+            <a class="nav-item @(ctrl == "Categories" ? "active" : "")" href="/Restaurants"><span class="nav-icon">📂</span> Categories</a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-av">@((Context.Session.GetString("UserName") is { Length: > 0 } n ? n[0].ToString().ToUpper() : "A"))</div>
+                <div>
+                    <div class="user-name">@(Context.Session.GetString("UserName") ?? "Admin")</div>
+                    <div class="user-role">@(Context.Session.GetString("UserRole") ?? "Admin")</div>
+                </div>
+            </div>
+            <a class="logout-btn" href="/Auth/Logout">🚪 Logout</a>
+        </div>
+    </aside>
 
-<main class="main">
-  <header class="header">
-    <div class="header-left">
-      <div class="page-title">@ViewData["Title"]</div>
-      <div class="page-bc">dashboard / @ViewData["Title"]?.ToString()?.ToLower()</div>
-    </div>
-    <div class="header-right">
-      <div class="live"><div class="live-dot"></div> Live</div>
-    </div>
-  </header>
-  <div class="content">
-    @if (TempData["Success"] != null)
-    {
-        <div class="alert alert-success">✅ @TempData["Success"]</div>
-    }
-    @if (TempData["Error"] != null)
-    {
-        <div class="alert alert-danger">❌ @TempData["Error"]</div>
-    }
-    @RenderBody()
-  </div>
-</main>
+    <main class="main">
+        <header class="header">
+            <div class="header-left">
+                <div class="page-title">@ViewData["Title"]</div>
+                <div class="page-bc">dashboard / @ViewData["Title"]?.ToString()?.ToLower()</div>
+            </div>
+            <div class="header-right">
+                <div class="live"><div class="live-dot"></div> Live</div>
+            </div>
+        </header>
+        <div class="content">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">✅ @TempData["Success"]</div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger">❌ @TempData["Error"]</div>
+            }
+            @RenderBody()
+        </div>
+    </main>
 
-@RenderSection("Scripts", required: false)
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

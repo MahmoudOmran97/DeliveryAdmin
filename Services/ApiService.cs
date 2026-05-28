@@ -28,23 +28,42 @@ namespace DeliveryAdmin.Services
 
         private async Task<T?> Get<T>(string path)
         {
-            var res = await Client().GetAsync(path);
-            if (!res.IsSuccessStatusCode) return default;
-            var json = await res.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<T>(json, _opts);
+            try
+            {
+                var res = await Client().GetAsync(path);
+                if (res.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    _ctx.HttpContext?.Session.Clear();
+                    return default;
+                }
+                if (!res.IsSuccessStatusCode) return default;
+                var json = await res.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<T>(json, _opts);
+            }
+            catch (Exception)
+            {
+                return default;
+            }
         }
 
         private async Task<(bool ok, string? error, T? data)> Post<T>(string path, object body)
         {
-            var content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
-            var res = await Client().PostAsync(path, content);
-            var json = await res.Content.ReadAsStringAsync();
-            if (!res.IsSuccessStatusCode)
+            try
             {
-                try { var err = JsonSerializer.Deserialize<JsonElement>(json, _opts); return (false, err.TryGetProperty("message", out var m) ? m.GetString() : res.ReasonPhrase, default); }
-                catch { return (false, res.ReasonPhrase, default); }
+                var content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
+                var res = await Client().PostAsync(path, content);
+                var json = await res.Content.ReadAsStringAsync();
+                if (!res.IsSuccessStatusCode)
+                {
+                    try { var err = JsonSerializer.Deserialize<JsonElement>(json, _opts); return (false, err.TryGetProperty("message", out var m) ? m.GetString() : res.ReasonPhrase, default); }
+                    catch { return (false, res.ReasonPhrase, default); }
+                }
+                return (true, null, JsonSerializer.Deserialize<T>(json, _opts));
             }
-            return (true, null, JsonSerializer.Deserialize<T>(json, _opts));
+            catch (Exception ex)
+            {
+                return (false, ex.Message, default);
+            }
         }
 
         private async Task<(bool ok, string? error)> Put(string path, object? body = null)

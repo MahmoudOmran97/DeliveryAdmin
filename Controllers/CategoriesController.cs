@@ -13,8 +13,15 @@ namespace DeliveryAdmin.Controllers
 
         public async Task<IActionResult> Index(int restaurantId)
         {
+            if (restaurantId == 0)
+                return RedirectToAction("Index", "Restaurants");
+
             var cats = await _api.GetCategories(restaurantId) ?? new();
             var rest = await _api.GetRestaurant(restaurantId);
+
+            if (rest == null)
+                return NotFound();
+
             ViewBag.Restaurant = rest;
             ViewBag.RestaurantId = restaurantId;
             return View(cats);
@@ -41,7 +48,7 @@ namespace DeliveryAdmin.Controllers
             var c = await _api.GetCategory(id);
             if (c == null) return NotFound();
             ViewBag.CategoryId = id; ViewBag.RestaurantId = c.RestaurantId;
-            return View(new UpdateCategoryDto { Name=c.Name, ImageUrl=c.ImageUrl, SortOrder=c.SortOrder });
+            return View(new UpdateCategoryDto { Name = c.Name, ImageUrl = c.ImageUrl, SortOrder = c.SortOrder });
         }
 
         [HttpPost]

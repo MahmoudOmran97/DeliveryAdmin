@@ -12,7 +12,8 @@ namespace DeliveryAdmin.Controllers
 
         public async Task<IActionResult> Index(string? filter, int page = 1)
         {
-            var result = await _api.GetDrivers(page, 20);
+            // Fix: fetch a larger page to get accurate counts, not just first 20
+            var result = await _api.GetDrivers(page, 100);
             var all = result?.Data ?? new();
             var filtered = filter switch
             {
@@ -23,6 +24,9 @@ namespace DeliveryAdmin.Controllers
                 _ => all
             };
             ViewBag.Filter = filter;
+            ViewBag.Page = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((result?.Total ?? 0) / 100.0);
+            ViewBag.Total = result?.Total ?? 0;
             ViewBag.TotalAll = all.Count;
             ViewBag.TotalOnline = all.Count(d => d.IsOnline);
             ViewBag.TotalVerified = all.Count(d => d.IsVerified);

@@ -47,7 +47,15 @@ namespace DeliveryAdmin.Controllers
             var rests = await _api.GetRestaurants(1, 100);
             ViewBag.Restaurants = rests?.Data ?? new();
             ViewBag.ProductId = id; ViewBag.ProductName = p.Name;
-            var dto = new CreateProductDto { Name=p.Name, Description=p.Description, Price=p.Price, DiscountedPrice=p.DiscountedPrice, ImageUrl=p.ImageUrl, PreparationTime=p.PreparationTime, Calories=p.Calories };
+
+            // Fix: load categories for the product's restaurant so the dropdown is populated
+            if (p.RestaurantId.HasValue)
+            {
+                ViewBag.Categories = await _api.GetCategories(p.RestaurantId.Value) ?? new();
+                ViewBag.RestaurantId = p.RestaurantId.Value;
+            }
+
+            var dto = new CreateProductDto { CategoryId = p.Category is System.Text.Json.JsonElement cat && cat.TryGetProperty("id", out var cid) ? cid.GetInt32() : 0, Name = p.Name, Description = p.Description, Price = p.Price, DiscountedPrice = p.DiscountedPrice, ImageUrl = p.ImageUrl, PreparationTime = p.PreparationTime, Calories = p.Calories };
             return View(dto);
         }
 
