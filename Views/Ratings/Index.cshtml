@@ -1,0 +1,27 @@
+@model List<DeliveryAdmin.Models.RatingDto>
+@{ViewData["Title"] = "Ratings"; var page=(int)ViewBag.Page; var totalPages=(int)ViewBag.TotalPages;}
+<div class="card">
+  <div class="card-header"><div class="card-title">Customer Ratings</div></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#ID</th><th>Customer</th><th>Restaurant</th><th>Rest. Rating</th><th>Food Rating</th><th>Driver Rating</th><th>Comment</th><th>Date</th></tr></thead>
+      <tbody>
+        @if(!Model.Any()){<tr><td colspan="8"><div class="empty"><div class="empty-icon">⭐</div><div>No ratings yet</div></div></td></tr>}
+        @foreach(var r in Model)
+        {
+          <tr>
+            <td class="mono">#@r.Id</td>
+            <td style="font-weight:500">@(r.CustomerName??"-")</td>
+            <td>@(r.RestaurantName??"-")</td>
+            <td><span class="stars">@("⭐".PadRight(r.RestaurantRating,'⭐')[..r.RestaurantRating])</span> @r.RestaurantRating/5</td>
+            <td>@(r.FoodRating.HasValue?r.FoodRating+"/5":"-")</td>
+            <td>@(r.DriverRating.HasValue?r.DriverRating.Value.ToString("F1")+"/5":"-")</td>
+            <td class="text-muted text-sm" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">@(r.Comment??"-")</td>
+            <td class="text-muted text-sm">@r.CreatedAt.ToString("dd MMM yyyy")</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  @if(totalPages>1){<div style="padding:12px 18px;border-top:1px solid var(--border)"><div class="pagination">@for(int i=1;i<=totalPages;i++){<a class="page-btn @(i==page?"active":"")" href="?page=@i">@i</a>}</div></div>}
+</div>

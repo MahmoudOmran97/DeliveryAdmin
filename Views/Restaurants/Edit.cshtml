@@ -1,0 +1,31 @@
+@model DeliveryAdmin.Models.UpdateRestaurantDto
+@{ViewData["Title"] = "Edit: " + ViewBag.RestaurantName;}
+<div style="max-width:700px">
+<div class="card">
+  <div class="card-header"><div class="card-title">✏️ Edit Restaurant</div><a class="btn btn-secondary btn-sm" href="/Restaurants/Details/@ViewBag.RestaurantId">← Back</a></div>
+  <div class="card-body">
+    <form method="post">
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">Name *</label><input class="form-control" asp-for="Name" required></div>
+        <div class="form-group"><label class="form-label">Phone</label><input class="form-control" asp-for="Phone"></div>
+        <div class="form-group form-full"><label class="form-label">Address *</label><input class="form-control" asp-for="Address" required></div>
+        <div class="form-group form-full"><label class="form-label">Description</label><textarea class="form-control" asp-for="Description"></textarea></div>
+        <div class="form-group"><label class="form-label">Delivery Fee (EGP)</label><input class="form-control" asp-for="DeliveryFee" type="number" step="0.01"></div>
+        <div class="form-group"><label class="form-label">Min Order (EGP)</label><input class="form-control" asp-for="MinOrderAmount" type="number" step="0.01"></div>
+        <div class="form-group"><label class="form-label">Est. Time (min)</label><input class="form-control" asp-for="EstimatedTime" type="number"></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" asp-for="IsOpen"><option value="true">Open</option><option value="false">Closed</option></select>
+        </div>
+        <div class="form-group"><label class="form-label">Latitude</label><input class="form-control" asp-for="Latitude" type="number" step="any"></div>
+        <div class="form-group"><label class="form-label">Longitude</label><input class="form-control" asp-for="Longitude" type="number" step="any"></div>
+        <div class="form-group form-full"><label class="form-label">Image URL</label><input class="form-control" asp-for="ImageUrl"></div>
+        <div class="form-group form-full"><label class="form-label">Cover Image URL</label><input class="form-control" asp-for="CoverImageUrl"></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn btn-primary" type="submit">💾 Save Changes</button>
+        <a class="btn btn-secondary" href="/Restaurants/Details/@ViewBag.RestaurantId">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+</div>

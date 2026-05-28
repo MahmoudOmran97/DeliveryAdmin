@@ -1,0 +1,113 @@
+@model DeliveryAdmin.Models.OrderDto
+@{
+  ViewData["Title"] = "Order #" + Model.Id;
+  string sc = "b-inactive";
+  if(Model.Status=="Pending") sc="b-pending";
+  else if(Model.Status=="Accepted") sc="b-accepted";
+  else if(Model.Status=="Preparing") sc="b-preparing";
+  else if(Model.Status=="ReadyForPickup") sc="b-ready";
+  else if(Model.Status=="OnTheWay") sc="b-onway";
+  else if(Model.Status=="Delivered") sc="b-delivered";
+  else if(Model.Status=="Cancelled") sc="b-cancelled";
+  else if(Model.Status=="Rejected") sc="b-rejected";
+
+  var transitions = new string[0];
+  if(Model.Status=="Pending") transitions = new[]{"Accepted","Rejected"};
+  else if(Model.Status=="Accepted") transitions = new[]{"Preparing"};
+  else if(Model.Status=="Preparing") transitions = new[]{"ReadyForPickup"};
+  else if(Model.Status=="ReadyForPickup") transitions = new[]{"OnTheWay"};
+  else if(Model.Status=="OnTheWay") transitions = new[]{"Delivered"};
+}
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:10px">
+  <div style="display:flex;align-items:center;gap:14px">
+    <span style="font-size:28px">📦</span>
+    <div>
+      <h2 style="font-size:20px;font-weight:800">Order #@Model.Id</h2>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+        <span class="badge @sc">@(Model.Status=="ReadyForPickup"?"Ready":Model.Status)</span>
+        <span class="text-muted text-sm">@Model.CreatedAt.ToString("dd MMM yyyy HH:mm")</span>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap">
+    @foreach(var t in transitions)
+    {
+      string btnClass = (t=="Rejected"||t=="Cancelled") ? "btn-danger" : (t=="Delivered" ? "btn-success" : "btn-primary");
+      <form method="post" action="/Orders/UpdateStatus/@Model.Id">
+        <input type="hidden" name="status" value="@t">
+        <button class="btn btn-sm @btnClass" type="submit">→ @t</button>
+      </form>
+    }
+    <a class="btn btn-secondary btn-sm" href="/Orders">← Back</a>
+  </div>
+</div>
+
+<div class="detail-grid">
+  <div>
+    <div class="detail-section" style="margin-bottom:16px">
+      <div class="detail-section-title">Order Summary</div>
+      <div class="detail-row"><span class="detail-key">Customer</span><span class="detail-val">@(Model.CustomerName??"–")</span></div>
+      <div class="detail-row"><span class="detail-key">Restaurant</span><span class="detail-val">@(Model.Restaurant?.Name??Model.RestaurantName??"–")</span></div>
+      <div class="detail-row"><span class="detail-key">Sub Total</span><span class="detail-val mono">@Model.SubTotal.ToString("N2") EGP</span></div>
+      <div class="detail-row"><span class="detail-key">Delivery Fee</span><span class="detail-val mono">@Model.DeliveryFee.ToString("N2") EGP</span></div>
+      @if(Model.Discount>0)
+      {
+        <div class="detail-row"><span class="detail-key">Discount</span><span class="detail-val mono" style="color:var(--green)">-@Model.Discount.ToString("N2") EGP</span></div>
+      }
+      <div class="detail-row">
+        <span class="detail-key">Total</span>
+        <span class="detail-val mono" style="font-size:16px;color:var(--accent);font-weight:800">@Model.TotalAmount.ToString("N2") EGP</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-key">Payment</span>
+        <span>
+          <span class="badge @(Model.PaymentMethod=="Cash"?"b-cash":"b-card")">@Model.PaymentMethod</span>
+          &nbsp;
+          <span class="badge @(Model.PaymentStatus=="Paid"?"b-paid":"b-pending-pay")">@Model.PaymentStatus</span>
+        </span>
+      </div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Delivery Info</div>
+      <div class="detail-row"><span class="detail-key">Address</span><span class="detail-val text-sm">@Model.DeliveryAddress</span></div>
+      @if(!string.IsNullOrEmpty(Model.DeliveryNotes))
+      {
+        <div class="detail-row"><span class="detail-key">Notes</span><span class="detail-val text-sm">@Model.DeliveryNotes</span></div>
+      }
+      @if(Model.Driver!=null)
+      {
+        <div class="detail-row"><span class="detail-key">Driver</span><span class="detail-val">@Model.Driver.Name</span></div>
+        <div class="detail-row"><span class="detail-key">Driver Phone</span><span class="detail-val mono">@(Model.Driver.Phone??"-")</span></div>
+        <div class="detail-row"><span class="detail-key">Driver Rating</span><span class="detail-val">⭐ @Model.Driver.Rating.ToString("F1")</span></div>
+      }
+    </div>
+  </div>
+  <div class="detail-section">
+    <div class="detail-section-title">Order Items (@(Model.Items?.Count??0))</div>
+    @if(Model.Items!=null && Model.Items.Any())
+    {
+      @foreach(var item in Model.Items)
+      {
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)">
+          <div>
+            <div style="font-weight:600;font-size:13px">@item.ProductName</div>
+            <div class="text-muted text-sm">x@(item.Quantity) &#64; @item.UnitPrice.ToString("N2") EGP</div>
+            @if(!string.IsNullOrEmpty(item.Notes))
+            {
+              <div class="text-muted text-sm">Note: @item.Notes</div>
+            }
+          </div>
+          <div class="mono" style="font-weight:700">@item.TotalPrice.ToString("N2") EGP</div>
+        </div>
+      }
+      <div style="display:flex;justify-content:flex-end;padding-top:12px;font-weight:800;font-size:15px">
+        Total: @Model.TotalAmount.ToString("N2") EGP
+      </div>
+    }
+    else
+    {
+      <div class="empty"><div class="empty-icon">🛒</div><div>No items data available</div></div>
+    }
+  </div>
+</div>

@@ -1,0 +1,28 @@
+@model DeliveryAdmin.Models.CreateRestaurantDto
+@{ViewData["Title"] = "Add Restaurant";}
+<div style="max-width:700px">
+<div class="card">
+  <div class="card-header"><div class="card-title">➕ New Restaurant</div><a class="btn btn-secondary btn-sm" href="/Restaurants">← Back</a></div>
+  <div class="card-body">
+    <form method="post">
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">Name *</label><input class="form-control" asp-for="Name" placeholder="Restaurant name" required></div>
+        <div class="form-group"><label class="form-label">Phone</label><input class="form-control" asp-for="Phone" placeholder="+20..."></div>
+        <div class="form-group form-full"><label class="form-label">Address *</label><input class="form-control" asp-for="Address" placeholder="Full address" required></div>
+        <div class="form-group form-full"><label class="form-label">Description</label><textarea class="form-control" asp-for="Description" placeholder="Restaurant description…"></textarea></div>
+        <div class="form-group"><label class="form-label">Delivery Fee (EGP)</label><input class="form-control" asp-for="DeliveryFee" type="number" step="0.01" placeholder="25"></div>
+        <div class="form-group"><label class="form-label">Min Order (EGP)</label><input class="form-control" asp-for="MinOrderAmount" type="number" step="0.01" placeholder="50"></div>
+        <div class="form-group"><label class="form-label">Est. Time (min)</label><input class="form-control" asp-for="EstimatedTime" type="number" placeholder="30"></div>
+        <div class="form-group"><label class="form-label">Latitude</label><input class="form-control" asp-for="Latitude" type="number" step="any" placeholder="30.033"></div>
+        <div class="form-group"><label class="form-label">Longitude</label><input class="form-control" asp-for="Longitude" type="number" step="any" placeholder="31.233"></div>
+        <div class="form-group form-full"><label class="form-label">Image URL</label><input class="form-control" asp-for="ImageUrl" placeholder="https://..."></div>
+        <div class="form-group form-full"><label class="form-label">Cover Image URL</label><input class="form-control" asp-for="CoverImageUrl" placeholder="https://..."></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn btn-primary" type="submit">💾 Create Restaurant</button>
+        <a class="btn btn-secondary" href="/Restaurants">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+</div>

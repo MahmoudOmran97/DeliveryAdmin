@@ -1,0 +1,86 @@
+@model List<DeliveryAdmin.Models.OrderDto>
+@{
+  ViewData["Title"] = "Orders";
+  var page=(int)ViewBag.Page;
+  var totalPages=(int)ViewBag.TotalPages;
+  string currentStatus = ViewBag.Status as string ?? "";
+  var statuses = new[]{"Pending","Accepted","Preparing","ReadyForPickup","OnTheWay","Delivered","Cancelled","Rejected"};
+}
+
+<div class="pipeline">
+  @{
+    var pipeItems = new[]{
+      ("Pending","var(--amber)"),("Accepted","var(--blue)"),("Preparing","var(--purple)"),
+      ("Ready","var(--accent)"),("OnTheWay","#60a5fa"),("Delivered","var(--green)")
+    };
+  }
+  @foreach(var s in pipeItems)
+  {
+    var cnt = Model.Count(o => o.Status==s.Item1 || (o.Status=="ReadyForPickup" && s.Item1=="Ready"));
+    <div class="pipe @(s.Item1=="Pending"?"active-pipe":"")">
+      <div class="pipe-label">@s.Item1</div>
+      <div class="pipe-count" style="color:@s.Item2">@cnt</div>
+    </div>
+  }
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">All Orders <span class="text-muted text-sm">(@ViewBag.Total total)</span></div>
+    <div class="filters">
+      <form method="get" style="display:flex;gap:8px">
+        <select class="filter-input" name="status" onchange="this.form.submit()">
+          <option value="">All Status</option>
+          @foreach(var s in statuses)
+          {
+            string label = s=="ReadyForPickup"?"Ready":s;
+            if(currentStatus==s){<option value="@s" selected>@label</option>}
+            else{<option value="@s">@label</option>}
+          }
+        </select>
+      </form>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#ID</th><th>Customer</th><th>Restaurant</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+      <tbody>
+        @if(!Model.Any())
+        {
+          <tr><td colspan="9"><div class="empty"><div class="empty-icon">📦</div><div>No orders found</div></div></td></tr>
+        }
+        @foreach(var o in Model)
+        {
+          string sc = "b-inactive";
+          if(o.Status=="Pending") sc="b-pending";
+          else if(o.Status=="Accepted") sc="b-accepted";
+          else if(o.Status=="Preparing") sc="b-preparing";
+          else if(o.Status=="ReadyForPickup") sc="b-ready";
+          else if(o.Status=="OnTheWay") sc="b-onway";
+          else if(o.Status=="Delivered") sc="b-delivered";
+          else if(o.Status=="Cancelled") sc="b-cancelled";
+          else if(o.Status=="Rejected") sc="b-rejected";
+          <tr>
+            <td class="mono" style="color:var(--accent)">#@o.Id</td>
+            <td style="font-weight:500">@(o.CustomerName??"–")</td>
+            <td>@(o.RestaurantName??"–")</td>
+            <td class="mono">@(o.ItemCount??0)</td>
+            <td class="mono" style="font-weight:600">@o.TotalAmount.ToString("N0") EGP</td>
+            <td><span class="badge @(o.PaymentMethod=="Cash"?"b-cash":"b-card")">@o.PaymentMethod</span></td>
+            <td><span class="badge @sc">@(o.Status=="ReadyForPickup"?"Ready":o.Status)</span></td>
+            <td class="text-muted text-sm">@o.CreatedAt.ToString("dd MMM HH:mm")</td>
+            <td><a class="btn btn-secondary btn-sm" href="/Orders/Details/@o.Id">Details</a></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  @if(totalPages>1)
+  {
+    <div style="padding:12px 18px;border-top:1px solid var(--border)">
+      <div class="pagination">
+        @for(int i=1;i<=totalPages;i++){<a class="page-btn @(i==page?"active":"")" href="?page=@i&status=@currentStatus">@i</a>}
+      </div>
+    </div>
+  }
+</div>

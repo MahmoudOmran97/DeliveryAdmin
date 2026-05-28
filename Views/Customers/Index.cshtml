@@ -1,0 +1,35 @@
+@model List<DeliveryAdmin.Models.UserDto>
+@{ViewData["Title"] = "Customers"; var page=(int)ViewBag.Page; var totalPages=(int)ViewBag.TotalPages;}
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Users <span class="text-muted text-sm">(@ViewBag.Total total)</span></div>
+    <div class="filters">
+      <a class="btn btn-sm @(ViewBag.Role==null?"btn-primary":"btn-secondary")" href="/Customers">All</a>
+      <a class="btn btn-sm @(ViewBag.Role=="Customer"?"btn-primary":"btn-secondary")" href="/Customers?role=Customer">Customers</a>
+      <a class="btn btn-sm @(ViewBag.Role=="Driver"?"btn-primary":"btn-secondary")" href="/Customers?role=Driver">Drivers</a>
+      <a class="btn btn-sm @(ViewBag.Role=="Admin"?"btn-primary":"btn-secondary")" href="/Customers?role=Admin">Admins</a>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Address</th><th>Joined</th><th>Status</th></tr></thead>
+      <tbody>
+        @if(!Model.Any()){<tr><td colspan="7"><div class="empty"><div class="empty-icon">👥</div><div>No users found</div></div></td></tr>}
+        @foreach(var u in Model)
+        {
+          var rc = u.Role switch{"Admin"=>"b-admin","Driver"=>"b-driver",_=>"b-customer"};
+          <tr>
+            <td><div style="display:flex;align-items:center;gap:9px"><div style="width:32px;height:32px;border-radius:50%;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--text2)">@u.FullName.FirstOrDefault().ToString().ToUpper()</div><span style="font-weight:600">@u.FullName</span></div></td>
+            <td class="text-sm">@u.Email</td>
+            <td class="mono">@u.Phone</td>
+            <td><span class="badge @rc">@u.Role</span></td>
+            <td class="text-muted text-sm" style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">@(u.Address??"-")</td>
+            <td class="text-muted text-sm">@u.CreatedAt.ToString("dd MMM yyyy")</td>
+            <td><span class="badge @(u.IsActive?"b-active":"b-inactive")">@(u.IsActive?"Active":"Inactive")</span></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  @if(totalPages>1){<div style="padding:12px 18px;border-top:1px solid var(--border)"><div class="pagination">@for(int i=1;i<=totalPages;i++){<a class="page-btn @(i==page?"active":"")" href="?page=@i&role=@ViewBag.Role">@i</a>}</div></div>}
+</div>

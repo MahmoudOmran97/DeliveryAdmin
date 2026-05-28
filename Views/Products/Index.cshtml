@@ -1,0 +1,81 @@
+@model List<DeliveryAdmin.Models.ProductDto>
+@{
+  ViewData["Title"] = "Products";
+  var page=(int)ViewBag.Page;
+  var totalPages=(int)ViewBag.TotalPages;
+  var rests = (List<DeliveryAdmin.Models.RestaurantDto>)ViewBag.Restaurants;
+  string currentRestId = ViewBag.RestaurantId?.ToString() ?? "";
+}
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Products <span class="text-muted text-sm">(@ViewBag.Total total)</span></div>
+    <div class="filters">
+      <form method="get" style="display:flex;gap:8px;flex-wrap:wrap">
+        <select class="filter-input" name="restaurantId" onchange="this.form.submit()">
+          <option value="">All Restaurants</option>
+          @foreach(var r in rests)
+          {
+            if(currentRestId==r.Id.ToString()){<option value="@r.Id" selected>@r.Name</option>}
+            else{<option value="@r.Id">@r.Name</option>}
+          }
+        </select>
+        <input class="filter-input" name="q" value="@ViewBag.Q" placeholder="Search product...">
+        <button class="btn btn-secondary btn-sm" type="submit">Search</button>
+      </form>
+      <a class="btn btn-primary btn-sm" href="/Products/Create@(!string.IsNullOrEmpty(currentRestId)?"?restaurantId="+currentRestId:"")">+ Add Product</a>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Product</th><th>Category</th><th>Restaurant</th><th>Price</th><th>Discounted</th><th>Prep Time</th><th>Calories</th><th>Available</th><th>Actions</th></tr></thead>
+      <tbody>
+        @if(!Model.Any())
+        {
+          <tr><td colspan="9"><div class="empty"><div class="empty-icon">🍕</div><div>No products found</div></div></td></tr>
+        }
+        @foreach(var p in Model)
+        {
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:10px">
+                @if(!string.IsNullOrEmpty(p.ImageUrl)){<img src="@p.ImageUrl" class="img-preview" alt="">}
+                else{<div class="img-preview" style="display:flex;align-items:center;justify-content:center;font-size:18px">🍕</div>}
+                <div>
+                  <div style="font-weight:600">@p.Name</div>
+                  <div class="text-muted text-sm" style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">@p.Description</div>
+                </div>
+              </div>
+            </td>
+            <td class="text-muted text-sm">@(p.CategoryName??"-")</td>
+            <td class="text-sm">@(p.RestaurantName??"-")</td>
+            <td class="mono" style="font-weight:600">@p.Price.ToString("N2") EGP</td>
+            <td class="mono" style="color:var(--green)">@(p.DiscountedPrice.HasValue?p.DiscountedPrice.Value.ToString("N2")+" EGP":"-")</td>
+            <td class="mono text-muted">@p.PreparationTime min</td>
+            <td class="mono text-muted">@(p.Calories.HasValue?p.Calories.Value.ToString()+" kcal":"-")</td>
+            <td><span class="badge @(p.IsAvailable?"b-active":"b-inactive")">@(p.IsAvailable?"Available":"Unavailable")</span></td>
+            <td>
+              <div style="display:flex;gap:4px;flex-wrap:wrap">
+                <a class="btn btn-secondary btn-sm" href="/Products/Edit/@p.Id">Edit</a>
+                <form method="post" action="/Products/Toggle/@p.Id" style="display:inline">
+                  @if(p.IsAvailable){<button class="btn btn-warning btn-sm" type="submit">Disable</button>}
+                  else{<button class="btn btn-success btn-sm" type="submit">Enable</button>}
+                </form>
+                <form method="post" action="/Products/Delete/@p.Id" style="display:inline" onsubmit="return confirm('Delete this product?')">
+                  <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  @if(totalPages>1)
+  {
+    <div style="padding:12px 18px;border-top:1px solid var(--border)">
+      <div class="pagination">
+        @for(int i=1;i<=totalPages;i++){<a class="page-btn @(i==page?"active":"")" href="?page=@i&restaurantId=@currentRestId&q=@ViewBag.Q">@i</a>}
+      </div>
+    </div>
+  }
+</div>

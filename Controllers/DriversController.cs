@@ -1,0 +1,41 @@
+using DeliveryAdmin.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace DeliveryAdmin.Controllers
+{
+    [Authorize]
+    public class DriversController : Controller
+    {
+        private readonly ApiService _api;
+        public DriversController(ApiService api) => _api = api;
+
+        public async Task<IActionResult> Index(string? filter, int page = 1)
+        {
+            var result = await _api.GetDrivers(page, 20);
+            var all = result?.Data ?? new();
+            var filtered = filter switch
+            {
+                "online" => all.Where(d => d.IsOnline).ToList(),
+                "offline" => all.Where(d => !d.IsOnline).ToList(),
+                "verified" => all.Where(d => d.IsVerified).ToList(),
+                "pending" => all.Where(d => !d.IsVerified).ToList(),
+                _ => all
+            };
+            ViewBag.Filter = filter;
+            ViewBag.TotalAll = all.Count;
+            ViewBag.TotalOnline = all.Count(d => d.IsOnline);
+            ViewBag.TotalVerified = all.Count(d => d.IsVerified);
+            ViewBag.TotalPending = all.Count(d => !d.IsVerified);
+            return View(filtered);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Verify(int id)
+        {
+            var (ok, error) = await _api.VerifyDriver(id);
+            TempData[ok ? "Success" : "Error"] = ok ? "Driver verified!" : error;
+            return RedirectToAction("Index");
+        }
+    }
+}

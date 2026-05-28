@@ -1,0 +1,73 @@
+@{ViewData["Title"] = "Dashboard";}
+@{
+    var statusLabels = new[]{"Pending","Accepted","Preparing","Ready","OnTheWay","Delivered","Cancelled"};
+    var statusCounts = (int[])ViewBag.StatusCounts;
+    var recentOrders = (List<DeliveryAdmin.Models.OrderDto>)ViewBag.RecentOrders;
+}
+
+<div class="kpi-grid">
+  <a class="kpi-card" href="/Orders"><div class="kpi-icon">📦</div><div class="kpi-label">Total Orders</div><div class="kpi-value">@ViewBag.TotalOrders.ToString("N0")</div><div class="kpi-meta">@ViewBag.PendingOrders pending</div></a>
+  <a class="kpi-card kpi-green" href="/Payments"><div class="kpi-icon">💰</div><div class="kpi-label">Revenue (EGP)</div><div class="kpi-value">@(((decimal)ViewBag.Revenue).ToString("N0"))</div><div class="kpi-meta">From delivered orders</div></a>
+  <a class="kpi-card kpi-blue" href="/Drivers"><div class="kpi-icon">🛵</div><div class="kpi-label">Total Drivers</div><div class="kpi-value">@ViewBag.TotalDrivers</div><div class="kpi-meta"><span style="color:var(--green)">@ViewBag.OnlineDrivers online</span></div></a>
+  <a class="kpi-card kpi-purple" href="/Restaurants"><div class="kpi-icon">🍽️</div><div class="kpi-label">Restaurants</div><div class="kpi-value">@ViewBag.TotalRestaurants</div><div class="kpi-meta"><span style="color:var(--green)">@ViewBag.OpenRestaurants open now</span></div></a>
+</div>
+
+<div class="stat-row">
+  <div class="stat-box"><div class="stat-label">Pending</div><div class="stat-val" style="color:var(--amber)">@ViewBag.PendingOrders</div></div>
+  <div class="stat-box"><div class="stat-label">On The Way</div><div class="stat-val" style="color:#60a5fa">@ViewBag.OnWayOrders</div></div>
+  <div class="stat-box"><div class="stat-label">Delivered</div><div class="stat-val" style="color:var(--green)">@ViewBag.DeliveredOrders</div></div>
+  <div class="stat-box"><div class="stat-label">Revenue EGP</div><div class="stat-val" style="color:var(--accent)">@(((decimal)ViewBag.Revenue).ToString("N0"))</div></div>
+</div>
+
+<div style="display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-bottom:24px">
+  <div class="card">
+    <div class="card-header"><div class="card-title">Order Status Distribution</div></div>
+    <div style="padding:18px"><canvas id="statusChart" height="80"></canvas></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-title">Status Breakdown</div></div>
+    <div style="padding:18px"><canvas id="donutChart" height="180"></canvas></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">Recent Orders</div>
+    <a class="btn btn-secondary btn-sm" href="/Orders">View All →</a>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#ID</th><th>Customer</th><th>Restaurant</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th><th></th></tr></thead>
+      <tbody>
+        @foreach(var o in recentOrders)
+        {
+          <tr>
+            <td class="mono" style="color:var(--accent)">#@o.Id</td>
+            <td>@(o.CustomerName ?? "–")</td>
+            <td>@(o.RestaurantName ?? "–")</td>
+            <td class="mono">@o.TotalAmount.ToString("N0") EGP</td>
+            <td><span class="badge @(o.PaymentMethod=="Cash"?"b-cash":"b-card")">@o.PaymentMethod</span></td>
+            <td>
+              @{var sc = o.Status switch { "Pending"=>"b-pending","Accepted"=>"b-accepted","Preparing"=>"b-preparing","ReadyForPickup"=>"b-ready","OnTheWay"=>"b-onway","Delivered"=>"b-delivered","Cancelled"=>"b-cancelled",_=>"b-inactive" };}
+              <span class="badge @sc">@(o.Status=="ReadyForPickup"?"Ready":o.Status)</span>
+            </td>
+            <td class="text-muted text-sm">@o.CreatedAt.ToString("dd MMM")</td>
+            <td><a class="btn btn-secondary btn-sm" href="/Orders/Details/@o.Id">Details</a></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+@section Scripts {
+<script>
+const colors = ['#f59e0b','#3b82f6','#a855f7','#f97316','#60a5fa','#22c55e','#ef4444'];
+const labels = ['Pending','Accepted','Preparing','Ready','OnTheWay','Delivered','Cancelled'];
+const data = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(statusCounts));
+
+new Chart(document.getElementById('statusChart'),{type:'bar',data:{labels,datasets:[{data,backgroundColor:colors.map(c=>c+'bb'),borderRadius:6,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#55555f',font:{size:11}}},y:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#55555f'}}}}});
+
+new Chart(document.getElementById('donutChart'),{type:'doughnut',data:{labels,datasets:[{data,backgroundColor:colors,borderWidth:0}]},options:{responsive:true,cutout:'68%',plugins:{legend:{position:'right',labels:{color:'#8a8a96',font:{size:11},padding:10}}}}});
+</script>
+}

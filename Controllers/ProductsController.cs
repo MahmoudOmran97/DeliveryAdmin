@@ -1,0 +1,86 @@
+using DeliveryAdmin.Models;
+using DeliveryAdmin.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace DeliveryAdmin.Controllers
+{
+    [Authorize]
+    public class ProductsController : Controller
+    {
+        private readonly ApiService _api;
+        public ProductsController(ApiService api) => _api = api;
+
+        public async Task<IActionResult> Index(string? q, int? restaurantId, int page = 1)
+        {
+            var result = await _api.SearchProducts(q ?? "", restaurantId, page, 20);
+            var rests = await _api.GetRestaurants(1, 100);
+            ViewBag.Restaurants = rests?.Data ?? new();
+            ViewBag.Q = q; ViewBag.RestaurantId = restaurantId;
+            ViewBag.Page = page; ViewBag.TotalPages = (int)Math.Ceiling((result?.Total ?? 0) / 20.0);
+            ViewBag.Total = result?.Total ?? 0;
+            return View(result?.Data ?? new());
+        }
+
+        public async Task<IActionResult> Create(int? restaurantId)
+        {
+            var rests = await _api.GetRestaurants(1, 100);
+            ViewBag.Restaurants = rests?.Data ?? new();
+            ViewBag.RestaurantId = restaurantId;
+            if (restaurantId.HasValue) ViewBag.Categories = await _api.GetCategories(restaurantId.Value) ?? new();
+            return View(new CreateProductDto());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(CreateProductDto dto)
+        {
+            var (ok, error) = await _api.CreateProduct(dto);
+            if (!ok) { TempData["Error"] = error; return RedirectToAction("Create"); }
+            TempData["Success"] = "Product created!";
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var p = await _api.GetProduct(id);
+            if (p == null) return NotFound();
+            var rests = await _api.GetRestaurants(1, 100);
+            ViewBag.Restaurants = rests?.Data ?? new();
+            ViewBag.ProductId = id; ViewBag.ProductName = p.Name;
+            var dto = new CreateProductDto { Name=p.Name, Description=p.Description, Price=p.Price, DiscountedPrice=p.DiscountedPrice, ImageUrl=p.ImageUrl, PreparationTime=p.PreparationTime, Calories=p.Calories };
+            return View(dto);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, CreateProductDto dto)
+        {
+            var (ok, error) = await _api.UpdateProduct(id, dto);
+            if (!ok) { TempData["Error"] = error; return RedirectToAction("Edit", new { id }); }
+            TempData["Success"] = "Product updated!";
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Toggle(int id)
+        {
+            await _api.ToggleProduct(id);
+            TempData["Success"] = "Product availability toggled!";
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _api.DeleteProduct(id);
+            TempData["Success"] = "Product deleted!";
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCategoriesJson(int restaurantId)
+        {
+            var cats = await _api.GetCategories(restaurantId);
+            return Json(cats ?? new());
+        }
+    }
+}

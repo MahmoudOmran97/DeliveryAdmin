@@ -1,0 +1,51 @@
+@model List<DeliveryAdmin.Models.CategoryDto>
+@{ViewData["Title"] = "Categories — " + (ViewBag.Restaurant as DeliveryAdmin.Models.RestaurantDto)?.Name; var rest = ViewBag.Restaurant as DeliveryAdmin.Models.RestaurantDto;}
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:10px">
+  <div>
+    <h2 style="font-size:18px;font-weight:800">📂 @rest?.Name — Menu Categories</h2>
+    <div class="text-muted text-sm">Manage categories and products for this restaurant</div>
+  </div>
+  <div style="display:flex;gap:8px">
+    <a class="btn btn-secondary" href="/Restaurants/Details/@ViewBag.RestaurantId">← Restaurant</a>
+    <a class="btn btn-primary" href="/Categories/Create?restaurantId=@ViewBag.RestaurantId">+ Add Category</a>
+    <a class="btn btn-secondary" href="/Products?restaurantId=@ViewBag.RestaurantId">🍕 All Products</a>
+  </div>
+</div>
+
+@if(!Model.Any())
+{
+  <div class="card"><div class="empty"><div class="empty-icon">📂</div><div>No categories yet. Add the first one!</div><div style="margin-top:14px"><a class="btn btn-primary" href="/Categories/Create?restaurantId=@ViewBag.RestaurantId">+ Add Category</a></div></div></div>
+}
+else
+{
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+    @foreach(var c in Model)
+    {
+      <div class="card">
+        <div style="padding:16px">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+            @if(!string.IsNullOrEmpty(c.ImageUrl)){<img src="@c.ImageUrl" style="width:44px;height:44px;border-radius:10px;object-fit:cover">}
+            else{<div style="width:44px;height:44px;border-radius:10px;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:20px">📂</div>}
+            <div>
+              <div style="font-weight:700;font-size:14px">@c.Name</div>
+              <div class="text-muted text-sm">Sort: @c.SortOrder</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid var(--border)">
+            <div>
+              <div style="font-size:20px;font-weight:800">@c.ProductCount</div>
+              <div class="text-muted" style="font-size:10px;text-transform:uppercase;font-weight:700">Products</div>
+            </div>
+            <div style="display:flex;gap:5px">
+              <a class="btn btn-secondary btn-sm" href="/Categories/Edit/@c.Id">Edit</a>
+              <a class="btn btn-secondary btn-sm" href="/Products?restaurantId=@ViewBag.RestaurantId">Products</a>
+              <form method="post" action="/Categories/Delete/@c.Id?restaurantId=@ViewBag.RestaurantId" onsubmit="return confirm('Delete @c.Name?')">
+                <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+}

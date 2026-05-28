@@ -1,0 +1,19 @@
+@model DeliveryAdmin.Models.UpdateCategoryDto
+@{ViewData["Title"] = "Edit Category";}
+<div style="max-width:500px">
+<div class="card">
+  <div class="card-header"><div class="card-title">✏️ Edit Category</div><a class="btn btn-secondary btn-sm" href="/Categories/Index?restaurantId=@ViewBag.RestaurantId">← Back</a></div>
+  <div class="card-body">
+    <form method="post">
+      <input type="hidden" name="restaurantId" value="@ViewBag.RestaurantId">
+      <div class="form-group"><label class="form-label">Category Name *</label><input class="form-control" asp-for="Name" required></div>
+      <div class="form-group"><label class="form-label">Image URL</label><input class="form-control" asp-for="ImageUrl"></div>
+      <div class="form-group"><label class="form-label">Sort Order</label><input class="form-control" asp-for="SortOrder" type="number"></div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn btn-primary" type="submit">💾 Save Changes</button>
+        <a class="btn btn-secondary" href="/Categories/Index?restaurantId=@ViewBag.RestaurantId">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+</div>

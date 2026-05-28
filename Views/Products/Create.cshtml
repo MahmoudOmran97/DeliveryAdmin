@@ -1,0 +1,69 @@
+@model DeliveryAdmin.Models.CreateProductDto
+@{
+  ViewData["Title"] = "Add Product";
+  var rests = (List<DeliveryAdmin.Models.RestaurantDto>)ViewBag.Restaurants;
+  string preselectedRest = ViewBag.RestaurantId?.ToString() ?? "";
+}
+<div style="max-width:700px">
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">New Product</div>
+    <a class="btn btn-secondary btn-sm" href="/Products">← Back</a>
+  </div>
+  <div class="card-body">
+    <form method="post">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Restaurant *</label>
+          <select class="form-control" id="restSelect" onchange="loadCategories(this.value)">
+            <option value="">Select Restaurant...</option>
+            @foreach(var r in rests)
+            {
+              if(preselectedRest==r.Id.ToString()){<option value="@r.Id" selected>@r.Name</option>}
+              else{<option value="@r.Id">@r.Name</option>}
+            }
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Category *</label>
+          <select class="form-control" name="CategoryId" id="catSelect" required>
+            <option value="">Select category...</option>
+            @if(ViewBag.Categories!=null)
+            {
+              @foreach(var c in (List<DeliveryAdmin.Models.CategoryDto>)ViewBag.Categories)
+              {<option value="@c.Id">@c.Name</option>}
+            }
+          </select>
+        </div>
+        <div class="form-group form-full"><label class="form-label">Name *</label><input class="form-control" asp-for="Name" placeholder="Product name" required></div>
+        <div class="form-group form-full"><label class="form-label">Description</label><textarea class="form-control" asp-for="Description" placeholder="Product description..."></textarea></div>
+        <div class="form-group"><label class="form-label">Price (EGP) *</label><input class="form-control" asp-for="Price" type="number" step="0.01" placeholder="45.00" required></div>
+        <div class="form-group"><label class="form-label">Discounted Price</label><input class="form-control" asp-for="DiscountedPrice" type="number" step="0.01" placeholder="Optional"></div>
+        <div class="form-group"><label class="form-label">Prep Time (min)</label><input class="form-control" asp-for="PreparationTime" type="number" placeholder="15" value="15"></div>
+        <div class="form-group"><label class="form-label">Calories</label><input class="form-control" asp-for="Calories" type="number" placeholder="Optional"></div>
+        <div class="form-group form-full"><label class="form-label">Image URL</label><input class="form-control" asp-for="ImageUrl" placeholder="https://..."></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn btn-primary" type="submit">Save Product</button>
+        <a class="btn btn-secondary" href="/Products">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+</div>
+@section Scripts {
+<script>
+async function loadCategories(restaurantId) {
+  const sel = document.getElementById('catSelect');
+  sel.innerHTML = '<option value="">Loading...</option>';
+  if (!restaurantId) { sel.innerHTML = '<option value="">Select category...</option>'; return; }
+  try {
+    const res = await fetch('/Products/GetCategoriesJson?restaurantId=' + restaurantId);
+    const cats = await res.json();
+    sel.innerHTML = '<option value="">Select category...</option>' + cats.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+  } catch(e) { sel.innerHTML = '<option value="">Error loading</option>'; }
+}
+const rs = document.getElementById('restSelect');
+if (rs.value) loadCategories(rs.value);
+</script>
+}

@@ -1,0 +1,73 @@
+@model List<DeliveryAdmin.Models.DriverDto>
+@{ViewData["Title"] = "Drivers";}
+
+<div class="stat-row">
+  <div class="stat-box"><div class="stat-label">Total Drivers</div><div class="stat-val">@ViewBag.TotalAll</div></div>
+  <div class="stat-box"><div class="stat-label">Online Now</div><div class="stat-val" style="color:var(--green)">@ViewBag.TotalOnline</div></div>
+  <div class="stat-box"><div class="stat-label">Verified</div><div class="stat-val" style="color:var(--blue)">@ViewBag.TotalVerified</div></div>
+  <div class="stat-box"><div class="stat-label">Pending Verify</div><div class="stat-val" style="color:var(--amber)">@ViewBag.TotalPending</div></div>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px">
+  @{var colors=new[]{"#f97316","#3b82f6","#22c55e","#a855f7","#f59e0b","#ef4444"};}
+  @foreach(var (d,i) in Model.Take(6).Select((d,i)=>(d,i)))
+  {
+    <div class="card" style="padding:16px">
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:12px">
+        <div style="width:42px;height:42px;border-radius:50%;background:@colors[i%6]22;color:@colors[i%6];display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700">@(d.UserName?.FirstOrDefault().ToString().ToUpper()??"D")</div>
+        <div>
+          <div style="font-weight:700;font-size:13px">@(d.UserName??d.FullName??"Driver #"+d.Id)</div>
+          <div class="text-muted text-sm">@d.VehicleType · @d.LicensePlate</div>
+        </div>
+        <span class="badge @(d.IsOnline?"b-online":"b-offline")" style="margin-left:auto">@(d.IsOnline?"Online":"Offline")</span>
+      </div>
+      <div style="display:flex;gap:16px;padding-top:10px;border-top:1px solid var(--border)">
+        <div><div style="font-size:16px;font-weight:800">@d.TotalDeliveries</div><div class="text-muted" style="font-size:10px;text-transform:uppercase;font-weight:600">Deliveries</div></div>
+        <div><div style="font-size:16px;font-weight:800">@d.Rating.ToString("F1")</div><div class="text-muted" style="font-size:10px;text-transform:uppercase;font-weight:600">Rating</div></div>
+        <div><div style="font-size:16px;font-weight:800">@(d.IsVerified?"✓":"⏳")</div><div class="text-muted" style="font-size:10px;text-transform:uppercase;font-weight:600">Verified</div></div>
+      </div>
+    </div>
+  }
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">All Drivers</div>
+    <div class="filters">
+      <a class="btn btn-sm @(ViewBag.Filter==null?"btn-primary":"btn-secondary")" href="/Drivers">All</a>
+      <a class="btn btn-sm @(ViewBag.Filter=="online"?"btn-success":"btn-secondary")" href="/Drivers?filter=online">Online</a>
+      <a class="btn btn-sm @(ViewBag.Filter=="offline"?"btn-secondary":"btn-secondary")" href="/Drivers?filter=offline">Offline</a>
+      <a class="btn btn-sm @(ViewBag.Filter=="verified"?"btn-primary":"btn-secondary")" href="/Drivers?filter=verified">Verified</a>
+      <a class="btn btn-sm @(ViewBag.Filter=="pending"?"btn-warning":"btn-secondary")" href="/Drivers?filter=pending">Pending</a>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Driver</th><th>Vehicle</th><th>License</th><th>National ID</th><th>Rating</th><th>Deliveries</th><th>Online</th><th>Verified</th><th>Joined</th><th>Actions</th></tr></thead>
+      <tbody>
+        @if(!Model.Any()){<tr><td colspan="10"><div class="empty"><div class="empty-icon">🛵</div><div>No drivers found</div></div></td></tr>}
+        @foreach(var d in Model)
+        {
+          <tr>
+            <td><div style="display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;border-radius:50%;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--text2)">@(d.UserName?.FirstOrDefault().ToString().ToUpper()??"D")</div><div><div style="font-weight:600">@(d.UserName??d.FullName??"Driver #"+d.Id)</div><div class="text-muted text-sm">@d.Email</div></div></div></td>
+            <td>@d.VehicleType</td>
+            <td class="mono">@d.LicensePlate</td>
+            <td class="mono text-muted">@(d.NationalId??"-")</td>
+            <td><span class="stars">⭐</span> @d.Rating.ToString("F1")</td>
+            <td class="mono">@d.TotalDeliveries</td>
+            <td><span class="badge @(d.IsOnline?"b-online":"b-offline")">@(d.IsOnline?"Online":"Offline")</span></td>
+            <td>@if(d.IsVerified){<span class="badge b-verified">Verified</span>}else{<span class="badge b-pending">Pending</span>}</td>
+            <td class="text-muted text-sm">@d.JoinedAt.ToString("dd MMM yyyy")</td>
+            <td>
+              @if(!d.IsVerified){
+                <form method="post" action="/Drivers/Verify/@d.Id">
+                  <button class="btn btn-success btn-sm" type="submit">✓ Verify</button>
+                </form>
+              }else{<span class="text-muted text-sm">–</span>}
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

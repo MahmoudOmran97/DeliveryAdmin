@@ -1,0 +1,86 @@
+@model List<DeliveryAdmin.Models.RestaurantDto>
+@{
+  ViewData["Title"] = "Restaurants";
+  var totalPages = (int)ViewBag.TotalPages;
+  var page = (int)ViewBag.Page;
+  bool? isOpenFilter = ViewBag.IsOpen as bool?;
+}
+
+<div class="stat-row">
+  <div class="stat-box"><div class="stat-label">Total</div><div class="stat-val">@ViewBag.Total</div></div>
+  <div class="stat-box"><div class="stat-label">Open Now</div><div class="stat-val" style="color:var(--green)">@Model.Count(r=>r.IsOpen)</div></div>
+  <div class="stat-box"><div class="stat-label">Closed</div><div class="stat-val" style="color:var(--red)">@Model.Count(r=>!r.IsOpen)</div></div>
+  <div class="stat-box"><div class="stat-label">Avg Rating</div><div class="stat-val" style="color:var(--amber)">@(Model.Any()?Model.Average(r=>r.Rating).ToString("F1"):"–") ⭐</div></div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">All Restaurants</div>
+    <div class="filters">
+      <form method="get" style="display:flex;gap:8px;flex-wrap:wrap">
+        <input class="filter-input" name="search" value="@ViewBag.Search" placeholder="Search...">
+        <select class="filter-input" name="isOpen" onchange="this.form.submit()">
+          <option value="">All Status</option>
+          @if(isOpenFilter==true){<option value="true" selected>Open</option>}else{<option value="true">Open</option>}
+          @if(isOpenFilter==false){<option value="false" selected>Closed</option>}else{<option value="false">Closed</option>}
+        </select>
+        <button class="btn btn-secondary btn-sm" type="submit">Filter</button>
+      </form>
+      <a class="btn btn-primary btn-sm" href="/Restaurants/Create">+ Add Restaurant</a>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Name</th><th>Address</th><th>Rating</th><th>Delivery Fee</th><th>Min Order</th><th>Time</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+        @if(!Model.Any())
+        {
+          <tr><td colspan="8"><div class="empty"><div class="empty-icon">🍽️</div><div>No restaurants found</div></div></td></tr>
+        }
+        @foreach(var r in Model)
+        {
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:10px">
+                @if(!string.IsNullOrEmpty(r.ImageUrl))
+                {<img src="@r.ImageUrl" class="img-preview" alt="">}
+                else
+                {<div class="img-preview" style="display:flex;align-items:center;justify-content:center;font-size:18px">🍽️</div>}
+                <div>
+                  <div style="font-weight:600">@r.Name</div>
+                  <div class="text-muted text-sm">@r.Phone</div>
+                </div>
+              </div>
+            </td>
+            <td class="text-muted text-sm" style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">@r.Address</td>
+            <td>⭐ @r.Rating.ToString("F1") <span class="text-muted text-sm">(@r.TotalRatings)</span></td>
+            <td class="mono">@r.DeliveryFee EGP</td>
+            <td class="mono">@r.MinOrderAmount EGP</td>
+            <td class="mono">@r.EstimatedTime min</td>
+            <td><span class="badge @(r.IsOpen?"b-open":"b-closed")">@(r.IsOpen?"Open":"Closed")</span></td>
+            <td>
+              <div style="display:flex;gap:4px;flex-wrap:wrap">
+                <a class="btn btn-secondary btn-sm" href="/Restaurants/Details/@r.Id">View</a>
+                <a class="btn btn-secondary btn-sm" href="/Restaurants/Edit/@r.Id">Edit</a>
+                <form method="post" action="/Restaurants/Toggle/@r.Id" style="display:inline">
+                  @if(r.IsOpen){<button class="btn btn-warning btn-sm" type="submit">Close</button>}
+                  else{<button class="btn btn-success btn-sm" type="submit">Open</button>}
+                </form>
+                <a class="btn btn-secondary btn-sm" href="/Categories/Index?restaurantId=@r.Id">Menu</a>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  @if(totalPages > 1)
+  {
+    <div style="padding:14px 18px;border-top:1px solid var(--border)">
+      <div class="pagination">
+        @for(int i=1;i<=totalPages;i++)
+        {<a class="page-btn @(i==page?"active":"")" href="?page=@i&search=@ViewBag.Search">@i</a>}
+      </div>
+    </div>
+  }
+</div>
