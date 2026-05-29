@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using System.Globalization;
@@ -6,7 +6,12 @@ using DeliveryAdmin.Resources;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+// ✅ Fix: ResourcesPath يجب يكون "" مش "Resources"
+// لأن الـ namespace هو DeliveryAdmin.Resources.SharedResource
+// .NET بيشيل الـ RootNamespace (DeliveryAdmin) → يبقى "Resources.SharedResource"
+// لو ResourcesPath = "Resources" → يبقى المسار "Resources/Resources/SharedResource" ❌ (مضاعف!)
+// لو ResourcesPath = "" → يبقى المسار "Resources/SharedResource" ✅
+builder.Services.AddLocalization(options => options.ResourcesPath = "");
 
 builder.Services.AddControllersWithViews()
     .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
@@ -64,12 +69,14 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseStaticFiles();
-app.UseRouting();
+
+// ✅ الترتيب الصحيح: Session → RequestLocalization → Routing → Auth
+app.UseSession();
 
 var locOptions = app.Services.GetRequiredService<Microsoft.Extensions.Options.IOptions<RequestLocalizationOptions>>().Value;
 app.UseRequestLocalization(locOptions);
 
-app.UseSession();
+app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 

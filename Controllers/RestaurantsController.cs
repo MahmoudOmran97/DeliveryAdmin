@@ -1,4 +1,4 @@
-using DeliveryAdmin.Models;
+﻿using DeliveryAdmin.Models;
 using DeliveryAdmin.Resources;
 using DeliveryAdmin.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -56,10 +56,18 @@ namespace DeliveryAdmin.Controllers
             ViewBag.Owners = (await _api.GetUsers(1, 200))?.Data?.Where(u => u.IsActive).ToList() ?? new();
             var dto = new UpdateRestaurantDto
             {
-                Name=r.Name, Description=r.Description, Address=r.Address, Phone=r.Phone,
-                Latitude=r.Latitude, Longitude=r.Longitude, DeliveryFee=r.DeliveryFee,
-                MinOrderAmount=r.MinOrderAmount, EstimatedTime=r.EstimatedTime,
-                ImageUrl=r.ImageUrl, CoverImageUrl=r.CoverImageUrl, IsOpen=r.IsOpen,
+                Name = r.Name,
+                Description = r.Description,
+                Address = r.Address,
+                Phone = r.Phone,
+                Latitude = r.Latitude,
+                Longitude = r.Longitude,
+                DeliveryFee = r.DeliveryFee,
+                MinOrderAmount = r.MinOrderAmount,
+                EstimatedTime = r.EstimatedTime,
+                ImageUrl = r.ImageUrl,
+                CoverImageUrl = r.CoverImageUrl,
+                IsOpen = r.IsOpen,
                 OwnerUserId = r.OwnerUserId
             };
             ViewBag.RestaurantId = id; ViewBag.RestaurantName = r.Name;
@@ -70,7 +78,15 @@ namespace DeliveryAdmin.Controllers
         public async Task<IActionResult> Edit(int id, UpdateRestaurantDto dto)
         {
             var (ok, error) = await _api.UpdateRestaurant(id, dto);
-            if (!ok) { TempData["Error"] = error; ViewBag.RestaurantId = id; return View(dto); }
+            if (!ok)
+            {
+                TempData["Error"] = error;
+                ViewBag.RestaurantId = id;
+                ViewBag.RestaurantName = dto.Name;
+                // ✅ Fix: يجب تحميل Owners عشان الـ dropdown في الـ View مش يطلع NullReferenceException
+                ViewBag.Owners = (await _api.GetUsers(1, 200))?.Data?.Where(u => u.IsActive).ToList() ?? new();
+                return View(dto);
+            }
             TempData["Success"] = "Restaurant updated!";
             return RedirectToAction("Details", new { id });
         }
