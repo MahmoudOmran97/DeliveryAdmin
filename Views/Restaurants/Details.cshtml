@@ -20,6 +20,7 @@
   <div class="detail-section">
     <div class="detail-section-title">Restaurant Info</div>
     <div class="detail-row"><span class="detail-key">Phone</span><span class="detail-val">@(Model.Phone??"-")</span></div>
+    <div class="detail-row"><span class="detail-key">Owner</span><span class="detail-val">@(Model.OwnerName ?? "—") @(Model.OwnerEmail != null ? $"({Model.OwnerEmail})" : "")</span></div>
     <div class="detail-row"><span class="detail-key">Status</span><span class="badge @(Model.IsOpen?"b-open":"b-closed")">@(Model.IsOpen?"Open":"Closed")</span></div>
     <div class="detail-row"><span class="detail-key">Rating</span><span class="detail-val">⭐ @Model.Rating.ToString("F1") (@Model.TotalRatings reviews)</span></div>
     <div class="detail-row"><span class="detail-key">Delivery Fee</span><span class="detail-val mono">@Model.DeliveryFee EGP</span></div>

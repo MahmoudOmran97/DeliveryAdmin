@@ -1,17 +1,20 @@
+using DeliveryAdmin.Resources;
 using DeliveryAdmin.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 
 namespace DeliveryAdmin.Controllers
 {
     [Authorize]
-    public class DriversController : Controller
+    public class DriversController : LocalizedController
     {
         private readonly ApiService _api;
-        public DriversController(ApiService api) => _api = api;
+        public DriversController(ApiService api, IStringLocalizer<SharedResource> localizer) : base(localizer) => _api = api;
 
         public async Task<IActionResult> Index(string? filter, int page = 1)
         {
+            SetTitle("Drivers_Title");
             // Fix: fetch a larger page to get accurate counts, not just first 20
             var result = await _api.GetDrivers(page, 100);
             var all = result?.Data ?? new();

@@ -1,18 +1,21 @@
 using DeliveryAdmin.Models;
+using DeliveryAdmin.Resources;
 using DeliveryAdmin.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 
 namespace DeliveryAdmin.Controllers
 {
     [Authorize]
-    public class ProductsController : Controller
+    public class ProductsController : LocalizedController
     {
         private readonly ApiService _api;
-        public ProductsController(ApiService api) => _api = api;
+        public ProductsController(ApiService api, IStringLocalizer<SharedResource> localizer) : base(localizer) => _api = api;
 
         public async Task<IActionResult> Index(string? q, int? restaurantId, int page = 1)
         {
+            SetTitle("Products_Title");
             var result = await _api.SearchProducts(q ?? "", restaurantId, page, 20);
             var rests = await _api.GetRestaurants(1, 100);
             ViewBag.Restaurants = rests?.Data ?? new();

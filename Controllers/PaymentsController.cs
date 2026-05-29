@@ -1,17 +1,20 @@
+using DeliveryAdmin.Resources;
 using DeliveryAdmin.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 
 namespace DeliveryAdmin.Controllers
 {
     [Authorize]
-    public class PaymentsController : Controller
+    public class PaymentsController : LocalizedController
     {
         private readonly ApiService _api;
-        public PaymentsController(ApiService api) => _api = api;
+        public PaymentsController(ApiService api, IStringLocalizer<SharedResource> localizer) : base(localizer) => _api = api;
 
         public async Task<IActionResult> Index(int page = 1)
         {
+            SetTitle("Payments_Title");
             var result = await _api.GetPayments(page, 20);
             var data = result?.Data ?? new();
             ViewBag.Page = page; ViewBag.TotalPages = (int)Math.Ceiling((result?.Total ?? 0) / 20.0);

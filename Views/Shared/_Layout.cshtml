@@ -1,15 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+@using System.Globalization
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    var lang = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+    var isRtl = lang == "ar";
+}
+<html lang="@lang" dir="@(isRtl ? "rtl" : "ltr")" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewData["Title"] — DeliveryApp Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    @if (isRtl) { <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"> }
     <link rel="stylesheet" href="~/css/admin.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="~/js/admin.js" defer></script>
 </head>
-<body>
+<body class="@(isRtl ? "rtl-font" : "")">
 
     <aside class="sidebar">
         <div class="logo">
@@ -17,26 +27,29 @@
                 <div class="logo-icon">🚀</div>
                 <div>
                     <div class="logo-text">DeliveryApp</div>
-                    <div class="logo-sub">Admin Panel v2.0</div>
+                    <div class="logo-sub">@Localizer["AdminPanel"]</div>
                 </div>
             </div>
         </div>
         <nav class="nav">
-            <div class="nav-section">Main</div>
+            <div class="nav-section">@Localizer["Nav_Main"]</div>
             @{
                 var ctrl = ViewContext.RouteData.Values["controller"]?.ToString();
             }
-            <a class="nav-item @(ctrl == "Dashboard" ? "active" : "")" href="/Dashboard"><span class="nav-icon">📊</span> Dashboard</a>
-            <a class="nav-item @(ctrl == "Orders" ? "active" : "")" href="/Orders"><span class="nav-icon">📦</span> Orders</a>
-            <a class="nav-item @(ctrl == "Drivers" ? "active" : "")" href="/Drivers"><span class="nav-icon">🛵</span> Drivers</a>
-            <a class="nav-item @(ctrl == "Restaurants" ? "active" : "")" href="/Restaurants"><span class="nav-icon">🍽️</span> Restaurants</a>
-            <a class="nav-item @(ctrl == "Customers" ? "active" : "")" href="/Customers"><span class="nav-icon">👥</span> Customers</a>
-            <div class="nav-section">Finance</div>
-            <a class="nav-item @(ctrl == "Payments" ? "active" : "")" href="/Payments"><span class="nav-icon">💳</span> Payments</a>
-            <a class="nav-item @(ctrl == "Ratings" ? "active" : "")" href="/Ratings"><span class="nav-icon">⭐</span> Ratings</a>
-            <div class="nav-section">Catalog</div>
-            <a class="nav-item @(ctrl == "Products" ? "active" : "")" href="/Products"><span class="nav-icon">🍕</span> Products</a>
-            <a class="nav-item @(ctrl == "Categories" ? "active" : "")" href="/Restaurants"><span class="nav-icon">📂</span> Categories</a>
+            <a class="nav-item @(ctrl == "Dashboard" ? "active" : "")" asp-controller="Dashboard" asp-action="Index"><span class="nav-icon">📊</span> @Localizer["Nav_Dashboard"]</a>
+            <a class="nav-item @(ctrl == "Orders" ? "active" : "")" asp-controller="Orders" asp-action="Index"><span class="nav-icon">📦</span> @Localizer["Nav_Orders"]</a>
+            <a class="nav-item @(ctrl == "Drivers" ? "active" : "")" asp-controller="Drivers" asp-action="Index"><span class="nav-icon">🛵</span> @Localizer["Nav_Drivers"]</a>
+            <a class="nav-item @(ctrl == "Restaurants" ? "active" : "")" asp-controller="Restaurants" asp-action="Index"><span class="nav-icon">🍽️</span> @Localizer["Nav_Restaurants"]</a>
+            <a class="nav-item @(ctrl == "Users" ? "active" : "")" asp-controller="Users" asp-action="Index"><span class="nav-icon">👥</span> @Localizer["Nav_Users"]</a>
+            <div class="nav-section">@Localizer["Nav_Finance"]</div>
+            <a class="nav-item @(ctrl == "Settlements" ? "active" : "")" asp-controller="Settlements" asp-action="Index"><span class="nav-icon">📋</span> @Localizer["Nav_Settlements"]</a>
+            <a class="nav-item @(ctrl == "Payments" ? "active" : "")" asp-controller="Payments" asp-action="Index"><span class="nav-icon">💳</span> @Localizer["Nav_Payments"]</a>
+            <a class="nav-item @(ctrl == "Ratings" ? "active" : "")" asp-controller="Ratings" asp-action="Index"><span class="nav-icon">⭐</span> @Localizer["Nav_Ratings"]</a>
+            <div class="nav-section">@Localizer["Nav_Catalog"]</div>
+            <a class="nav-item @(ctrl == "Products" ? "active" : "")" asp-controller="Products" asp-action="Index"><span class="nav-icon">🍕</span> @Localizer["Nav_Products"]</a>
+            <a class="nav-item @(ctrl == "Restaurants" ? "active" : "")" asp-controller="Restaurants" asp-action="Index"><span class="nav-icon">📂</span> @Localizer["Nav_Categories"]</a>
+            <div class="nav-section">@Localizer["Nav_Notifications"]</div>
+            <a class="nav-item @(ctrl == "Notifications" ? "active" : "")" asp-controller="Notifications" asp-action="Send"><span class="nav-icon">🔔</span> @Localizer["Notif_Title"]</a>
         </nav>
         <div class="sidebar-footer">
             <div class="user-info">
@@ -46,7 +59,7 @@
                     <div class="user-role">@(Context.Session.GetString("UserRole") ?? "Admin")</div>
                 </div>
             </div>
-            <a class="logout-btn" href="/Auth/Logout">🚪 Logout</a>
+            <a class="logout-btn" asp-controller="Auth" asp-action="Logout">🚪 @Localizer["Logout"]</a>
         </div>
     </aside>
 
@@ -57,7 +70,17 @@
                 <div class="page-bc">dashboard / @ViewData["Title"]?.ToString()?.ToLower()</div>
             </div>
             <div class="header-right">
-                <div class="live"><div class="live-dot"></div> Live</div>
+                <div class="toolbar">
+                    <button type="button" class="toolbar-btn" id="themeToggle" title="@Localizer["Theme_Light"]">🌙</button>
+                    <form asp-controller="Settings" asp-action="SetLanguage" method="post" class="lang-form">
+                        <input type="hidden" name="returnUrl" value="@(Context.Request.Path + Context.Request.QueryString)" />
+                        <select name="culture" class="lang-select" onchange="this.form.submit()">
+                            @if (lang == "en") { <option value="en" selected>@Localizer["Lang_English"]</option> } else { <option value="en">@Localizer["Lang_English"]</option> }
+                            @if (lang == "ar") { <option value="ar" selected>@Localizer["Lang_Arabic"]</option> } else { <option value="ar">@Localizer["Lang_Arabic"]</option> }
+                        </select>
+                    </form>
+                </div>
+                <div class="live"><div class="live-dot"></div> @Localizer["Live"]</div>
             </div>
         </header>
         <div class="content">

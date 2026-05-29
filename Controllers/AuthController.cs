@@ -13,7 +13,12 @@ namespace DeliveryAdmin.Controllers
         public AuthController(ApiService api) => _api = api;
 
         [HttpGet]
-        public IActionResult Login() { if (User.Identity?.IsAuthenticated == true) return RedirectToAction("Index", "Dashboard"); return View(); }
+        public IActionResult Login()
+        {
+            if (User.Identity?.IsAuthenticated == true) return RedirectToAction("Index", "Dashboard");
+            ViewData["Title"] = "Login";
+            return View();
+        }
 
         [HttpPost]
         public async Task<IActionResult> Login(LoginDto dto)

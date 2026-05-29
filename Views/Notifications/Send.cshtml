@@ -1,0 +1,45 @@
+@using System.Globalization
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    var lang = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+    var isRtl = lang == "ar";
+}
+
+@model DeliveryAdmin.Models.SendNotificationDto
+@{ var users = (List<DeliveryAdmin.Models.UserDto>)ViewBag.Users; }
+<div class="card" style="max-width:720px">
+  <div class="card-header"><div class="card-title">@Localizer["Notif_Title"]</div></div>
+  <div class="card-body">
+    <form method="post">
+      <div class="form-group">
+        <label class="form-label">@Localizer["Role"]</label>
+        <div class="filters" style="margin-bottom:14px">
+          <label class="btn btn-sm btn-secondary"><input type="radio" name="sendMode" value="user" checked style="margin-right:6px" onchange="toggleMode('user')" /> @Localizer["Notif_TargetUser"]</label>
+          <label class="btn btn-sm btn-secondary"><input type="radio" name="sendMode" value="role" style="margin-right:6px" onchange="toggleMode('role')" /> @Localizer["Notif_TargetRole"]</label>
+        </div>
+      </div>
+      <div class="form-group" id="userField">
+        <label class="form-label">@Localizer["Notif_SelectUser"]</label>
+        <select class="form-control" asp-for="UserId">
+          <option value="">—</option>
+          @foreach(var u in users){<option value="@u.Id">@u.FullName (@u.Role) — @u.Email</option>}
+        </select>
+      </div>
+      <div class="form-group" id="roleField" style="display:none">
+        <label class="form-label">@Localizer["Notif_SelectRole"]</label>
+        <select class="form-control" asp-for="Role">
+          <option value="">—</option>
+          <option value="Customer">@Localizer["Users_Customers"]</option>
+          <option value="Restaurant">@Localizer["Users_RestaurantOwners"]</option>
+          <option value="Driver">@Localizer["Users_Drivers"]</option>
+          <option value="Admin">@Localizer["Users_Admins"]</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">@Localizer["Notif_MessageTitle"]</label><input class="form-control" asp-for="Title" required /></div>
+      <div class="form-group"><label class="form-label">@Localizer["Notif_MessageBody"]</label><textarea class="form-control" asp-for="Body" rows="4" required></textarea></div>
+      <button type="submit" class="btn btn-primary">@Localizer["Notif_Send"]</button>
+    </form>
+  </div>
+</div>
+@section Scripts{<script>function toggleMode(m){document.getElementById('userField').style.display=m==='user'?'block':'none';document.getElementById('roleField').style.display=m==='role'?'block':'none';}</script>}

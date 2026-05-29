@@ -112,7 +112,7 @@ namespace DeliveryAdmin.Services
         // ── Products ──────────────────────────────────────────────────────
         public async Task<PagedResult<ProductDto>?> SearchProducts(string q = "", int? restaurantId = null, int page = 1, int size = 50)
         {
-            var url = $"products/search?q={Uri.EscapeDataString(q)}&page={page}&pageSize={size}";
+            var url = $"products/admin?q={Uri.EscapeDataString(q ?? "")}&page={page}&pageSize={size}";
             if (restaurantId.HasValue) url += $"&restaurantId={restaurantId}";
             return await Get<PagedResult<ProductDto>>(url);
         }
@@ -133,6 +133,11 @@ namespace DeliveryAdmin.Services
             if (!string.IsNullOrEmpty(role)) q += $"&role={role}";
             return await Get<PagedResult<UserDto>>(q);
         }
+        public async Task<UserDto?> GetUser(int id) => await Get<UserDto>($"user/{id}");
+        public async Task<(bool ok, string? error)> CreateUser(CreateUserDto dto) { var r = await Post<object>("user/admin", dto); return (r.ok, r.error); }
+        public async Task<(bool ok, string? error)> UpdateUser(int id, UpdateUserDto dto) => await Put($"user/{id}", dto);
+        public async Task<(bool ok, string? error)> ToggleUserActive(int id) => await Put($"user/{id}/toggle-active");
+        public async Task<(bool ok, string? error)> AssignRestaurantOwner(int userId, int restaurantId) => await Put($"user/{userId}/assign-restaurant/{restaurantId}");
 
         // ── Orders ────────────────────────────────────────────────────────
         public async Task<PagedResult<OrderDto>?> GetOrders(int page = 1, int size = 20, string? status = null)
@@ -144,6 +149,16 @@ namespace DeliveryAdmin.Services
         public async Task<OrderDto?> GetOrder(int id) => await Get<OrderDto>($"orders/{id}");
         public async Task<(bool ok, string? error)> UpdateOrderStatus(int id, string status) => await Put($"orders/{id}/status", new { status });
 
+        public async Task<SettlementReportDto?> GetSettlements(DateTime? from, DateTime? to, int? driverId = null, int? restaurantId = null)
+        {
+            var q = "orders/admin/settlements?";
+            if (from.HasValue) q += $"from={from.Value:yyyy-MM-dd}&";
+            if (to.HasValue) q += $"to={to.Value:yyyy-MM-dd}&";
+            if (driverId.HasValue) q += $"driverId={driverId}&";
+            if (restaurantId.HasValue) q += $"restaurantId={restaurantId}&";
+            return await Get<SettlementReportDto>(q.TrimEnd('&', '?'));
+        }
+
         // ── Payments ──────────────────────────────────────────────────────
         public async Task<PagedResult<PaymentDto>?> GetPayments(int page = 1, int size = 20) => await Get<PagedResult<PaymentDto>>($"payments/admin?page={page}&pageSize={size}");
 
@@ -152,6 +167,23 @@ namespace DeliveryAdmin.Services
 
         // ── Notifications ─────────────────────────────────────────────────
         public async Task<PagedResult<NotificationDto>?> GetNotifications(int page = 1, int size = 20) => await Get<PagedResult<NotificationDto>>($"notifications?page={page}&pageSize={size}");
-        public async Task<(bool ok, string? error)> SendNotification(object dto) { var r = await Post<object>("notifications/send", dto); return (r.ok, r.error); }
+        public async Task<(bool ok, string? error, int count)> SendNotification(SendNotificationDto dto)
+        {
+            try
+            {
+                var content = new StringContent(JsonSerializer.Serialize(dto), Encoding.UTF8, "application/json");
+                var res = await Client().PostAsync("notifications/send", content);
+                var json = await res.Content.ReadAsStringAsync();
+                if (!res.IsSuccessStatusCode)
+                {
+                    try { var err = JsonSerializer.Deserialize<JsonElement>(json, _opts); return (false, err.TryGetProperty("message", out var m) ? m.GetString() : res.ReasonPhrase, 0); }
+                    catch { return (false, res.ReasonPhrase, 0); }
+                }
+                var doc = JsonSerializer.Deserialize<JsonElement>(json, _opts);
+                var count = doc.TryGetProperty("count", out var c) ? c.GetInt32() : 0;
+                return (true, null, count);
+            }
+            catch (Exception ex) { return (false, ex.Message, 0); }
+        }
     }
 }

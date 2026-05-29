@@ -1,17 +1,20 @@
+using DeliveryAdmin.Resources;
 using DeliveryAdmin.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 
 namespace DeliveryAdmin.Controllers
 {
     [Authorize]
-    public class DashboardController : Controller
+    public class DashboardController : LocalizedController
     {
         private readonly ApiService _api;
-        public DashboardController(ApiService api) => _api = api;
+        public DashboardController(ApiService api, IStringLocalizer<SharedResource> localizer) : base(localizer) => _api = api;
 
         public async Task<IActionResult> Index()
         {
+            SetTitle("Dashboard_Title");
             var orders = await _api.GetOrders(1, 100);
             var restaurants = await _api.GetRestaurants(1, 100);
             var drivers = await _api.GetDrivers(1, 100);

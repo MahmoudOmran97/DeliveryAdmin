@@ -1,37 +1,42 @@
+@using System.Globalization
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    var lang = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+    var isRtl = lang == "ar";
+}
 @model List<DeliveryAdmin.Models.ProductDto>
 @{
-  ViewData["Title"] = "Products";
   var page=(int)ViewBag.Page;
   var totalPages=(int)ViewBag.TotalPages;
   var rests = (List<DeliveryAdmin.Models.RestaurantDto>)ViewBag.Restaurants;
-  string currentRestId = ViewBag.RestaurantId?.ToString() ?? "";
-}
+  string currentRestId = ViewBag.RestaurantId?.ToString() ?? "";}
 <div class="card">
   <div class="card-header">
-    <div class="card-title">Products <span class="text-muted text-sm">(@ViewBag.Total total)</span></div>
+    <div class="card-title">@Localizer["Products_Title"] <span class="text-muted text-sm">(@ViewBag.Total @Localizer["Total"])</span></div>
     <div class="filters">
       <form method="get" style="display:flex;gap:8px;flex-wrap:wrap">
         <select class="filter-input" name="restaurantId" onchange="this.form.submit()">
-          <option value="">All Restaurants</option>
+          <option value="">@Localizer["Products_AllRestaurants"]</option>
           @foreach(var r in rests)
           {
             if(currentRestId==r.Id.ToString()){<option value="@r.Id" selected>@r.Name</option>}
             else{<option value="@r.Id">@r.Name</option>}
           }
         </select>
-        <input class="filter-input" name="q" value="@ViewBag.Q" placeholder="Search product...">
-        <button class="btn btn-secondary btn-sm" type="submit">Search</button>
+        <input class="filter-input" name="q" value="@ViewBag.Q" placeholder="@Localizer["Products_SearchPlaceholder"]">
+        <button class="btn btn-secondary btn-sm" type="submit">@Localizer["Products_Search"]</button>
       </form>
-      <a class="btn btn-primary btn-sm" href="/Products/Create@(!string.IsNullOrEmpty(currentRestId)?"?restaurantId="+currentRestId:"")">+ Add Product</a>
+      <a class="btn btn-primary btn-sm" asp-controller="Products" asp-action="Create" asp-route-restaurantId="@(string.IsNullOrEmpty(currentRestId)?null:currentRestId)">+ @Localizer["Products_Add"]</a>
     </div>
   </div>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>Product</th><th>Category</th><th>Restaurant</th><th>Price</th><th>Discounted</th><th>Prep Time</th><th>Calories</th><th>Available</th><th>Actions</th></tr></thead>
+      <thead><tr><th>@Localizer["Products_Title"]</th><th>@Localizer["Products_Category"]</th><th>@Localizer["Restaurant"]</th><th>@Localizer["Products_Price"]</th><th>@Localizer["Products_Discounted"]</th><th>@Localizer["Products_PrepTime"]</th><th>@Localizer["Products_Calories"]</th><th>@Localizer["Status"]</th><th>@Localizer["Products_Actions"]</th></tr></thead>
       <tbody>
         @if(!Model.Any())
         {
-          <tr><td colspan="9"><div class="empty"><div class="empty-icon">🍕</div><div>No products found</div></div></td></tr>
+          <tr><td colspan="9"><div class="empty"><div class="empty-icon">🍕</div><div>@Localizer["Products_NoData"]</div></div></td></tr>
         }
         @foreach(var p in Model)
         {
@@ -52,16 +57,16 @@
             <td class="mono" style="color:var(--green)">@(p.DiscountedPrice.HasValue?p.DiscountedPrice.Value.ToString("N2")+" EGP":"-")</td>
             <td class="mono text-muted">@p.PreparationTime min</td>
             <td class="mono text-muted">@(p.Calories.HasValue?p.Calories.Value.ToString()+" kcal":"-")</td>
-            <td><span class="badge @(p.IsAvailable?"b-active":"b-inactive")">@(p.IsAvailable?"Available":"Unavailable")</span></td>
+            <td><span class="badge @(p.IsAvailable?"b-active":"b-inactive")">@(p.IsAvailable?Localizer["Products_Available"].Value:Localizer["Products_Unavailable"].Value)</span></td>
             <td>
               <div style="display:flex;gap:4px;flex-wrap:wrap">
-                <a class="btn btn-secondary btn-sm" href="/Products/Edit/@p.Id">Edit</a>
-                <form method="post" action="/Products/Toggle/@p.Id" style="display:inline">
-                  @if(p.IsAvailable){<button class="btn btn-warning btn-sm" type="submit">Disable</button>}
-                  else{<button class="btn btn-success btn-sm" type="submit">Enable</button>}
+                <a class="btn btn-secondary btn-sm" asp-action="Edit" asp-route-id="@p.Id">@Localizer["Edit"]</a>
+                <form method="post" asp-action="Toggle" asp-route-id="@p.Id" style="display:inline">
+                  @if(p.IsAvailable){<button class="btn btn-warning btn-sm" type="submit">@Localizer["Products_Disable"]</button>}
+                  else{<button class="btn btn-success btn-sm" type="submit">@Localizer["Products_Enable"]</button>}
                 </form>
-                <form method="post" action="/Products/Delete/@p.Id" style="display:inline" onsubmit="return confirm('Delete this product?')">
-                  <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                <form method="post" asp-action="Delete" asp-route-id="@p.Id" style="display:inline" onsubmit="return confirm('Delete?')">
+                  <button class="btn btn-danger btn-sm" type="submit">@Localizer["Products_Delete"]</button>
                 </form>
               </div>
             </td>
@@ -74,7 +79,7 @@
   {
     <div style="padding:12px 18px;border-top:1px solid var(--border)">
       <div class="pagination">
-        @for(int i=1;i<=totalPages;i++){<a class="page-btn @(i==page?"active":"")" href="?page=@i&restaurantId=@currentRestId&q=@ViewBag.Q">@i</a>}
+        @for(int i=1;i<=totalPages;i++){<a class="page-btn @(i==page?"active":"")" asp-action="Index" asp-route-page="@i" asp-route-restaurantId="@currentRestId" asp-route-q="@ViewBag.Q">@i</a>}
       </div>
     </div>
   }

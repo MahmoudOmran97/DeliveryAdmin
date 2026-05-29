@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Nav_Main" xml:space="preserve"><value>Main</value></data>
+  <data name="Nav_Finance" xml:space="preserve"><value>Finance</value></data>
+  <data name="Nav_Catalog" xml:space="preserve"><value>Catalog</value></data>
+  <data name="Nav_Dashboard" xml:space="preserve"><value>Dashboard</value></data>
+  <data name="Nav_Orders" xml:space="preserve"><value>Orders</value></data>
+  <data name="Nav_Drivers" xml:space="preserve"><value>Drivers</value></data>
+  <data name="Nav_Restaurants" xml:space="preserve"><value>Restaurants</value></data>
+  <data name="Nav_Users" xml:space="preserve"><value>Users</value></data>
+  <data name="Nav_Payments" xml:space="preserve"><value>Payments</value></data>
+  <data name="Nav_Ratings" xml:space="preserve"><value>Ratings</value></data>
+  <data name="Nav_Products" xml:space="preserve"><value>Products</value></data>
+  <data name="Nav_Categories" xml:space="preserve"><value>Categories</value></data>
+  <data name="Nav_Notifications" xml:space="preserve"><value>Notifications</value></data>
+  <data name="Logout" xml:space="preserve"><value>Logout</value></data>
+  <data name="Live" xml:space="preserve"><value>Live</value></data>
+  <data name="AdminPanel" xml:space="preserve"><value>Admin Panel v2.0</value></data>
+  <data name="Theme_Light" xml:space="preserve"><value>Light</value></data>
+  <data name="Theme_Dark" xml:space="preserve"><value>Dark</value></data>
+  <data name="Lang_English" xml:space="preserve"><value>English</value></data>
+  <data name="Lang_Arabic" xml:space="preserve"><value>Arabic</value></data>
+  <data name="Users_Title" xml:space="preserve"><value>Users</value></data>
+  <data name="Users_Add" xml:space="preserve"><value>Add User</value></data>
+  <data name="Users_Edit" xml:space="preserve"><value>Edit User</value></data>
+  <data name="Users_All" xml:space="preserve"><value>All</value></data>
+  <data name="Users_Customers" xml:space="preserve"><value>Customers</value></data>
+  <data name="Users_Drivers" xml:space="preserve"><value>Drivers</value></data>
+  <data name="Users_Admins" xml:space="preserve"><value>Admins</value></data>
+  <data name="Users_RestaurantOwners" xml:space="preserve"><value>Restaurant Owners</value></data>
+  <data name="Users_RestaurantOwner" xml:space="preserve"><value>Restaurant Owner</value></data>
+  <data name="FullName" xml:space="preserve"><value>Full Name</value></data>
+  <data name="Email" xml:space="preserve"><value>Email</value></data>
+  <data name="Phone" xml:space="preserve"><value>Phone</value></data>
+  <data name="Password" xml:space="preserve"><value>Password</value></data>
+  <data name="Role" xml:space="preserve"><value>Role</value></data>
+  <data name="Address" xml:space="preserve"><value>Address</value></data>
+  <data name="Restaurant" xml:space="preserve"><value>Restaurant</value></data>
+  <data name="Save" xml:space="preserve"><value>Save</value></data>
+  <data name="Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Active" xml:space="preserve"><value>Active</value></data>
+  <data name="Inactive" xml:space="preserve"><value>Inactive</value></data>
+  <data name="ToggleStatus" xml:space="preserve"><value>Toggle Status</value></data>
+  <data name="Edit" xml:space="preserve"><value>Edit</value></data>
+  <data name="Joined" xml:space="preserve"><value>Joined</value></data>
+  <data name="Status" xml:space="preserve"><value>Status</value></data>
+  <data name="NoUsers" xml:space="preserve"><value>No users found</value></data>
+  <data name="Notif_Title" xml:space="preserve"><value>Send Notification</value></data>
+  <data name="Notif_TargetUser" xml:space="preserve"><value>Specific User</value></data>
+  <data name="Notif_TargetRole" xml:space="preserve"><value>By Role (broadcast)</value></data>
+  <data name="Notif_SelectUser" xml:space="preserve"><value>Select User</value></data>
+  <data name="Notif_SelectRole" xml:space="preserve"><value>Select Role</value></data>
+  <data name="Notif_MessageTitle" xml:space="preserve"><value>Title</value></data>
+  <data name="Notif_MessageBody" xml:space="preserve"><value>Message</value></data>
+  <data name="Notif_Send" xml:space="preserve"><value>Send Notification</value></data>
+  <data name="OptionalPassword" xml:space="preserve"><value>Leave blank to keep current password</value></data>
+  <data name="SelectRestaurant" xml:space="preserve"><value>Select restaurant (for owner)</value></data>
+  <data name="NoRestaurant" xml:space="preserve"><value>— No restaurant —</value></data>
+  <data name="Products_Title" xml:space="preserve"><value>Products</value></data>
+  <data name="Products_Add" xml:space="preserve"><value>Add Product</value></data>
+  <data name="Products_Search" xml:space="preserve"><value>Search</value></data>
+  <data name="Products_SearchPlaceholder" xml:space="preserve"><value>Search product...</value></data>
+  <data name="Products_AllRestaurants" xml:space="preserve"><value>All Restaurants</value></data>
+  <data name="Products_NoData" xml:space="preserve"><value>No products found</value></data>
+  <data name="Products_Category" xml:space="preserve"><value>Category</value></data>
+  <data name="Products_Price" xml:space="preserve"><value>Price</value></data>
+  <data name="Products_Discounted" xml:space="preserve"><value>Discounted</value></data>
+  <data name="Products_PrepTime" xml:space="preserve"><value>Prep Time</value></data>
+  <data name="Products_Calories" xml:space="preserve"><value>Calories</value></data>
+  <data name="Products_Available" xml:space="preserve"><value>Available</value></data>
+  <data name="Products_Unavailable" xml:space="preserve"><value>Unavailable</value></data>
+  <data name="Products_Actions" xml:space="preserve"><value>Actions</value></data>
+  <data name="Products_Enable" xml:space="preserve"><value>Enable</value></data>
+  <data name="Products_Disable" xml:space="preserve"><value>Disable</value></data>
+  <data name="Products_Delete" xml:space="preserve"><value>Delete</value></data>
+  <data name="Orders_Title" xml:space="preserve"><value>Orders</value></data>
+  <data name="Drivers_Title" xml:space="preserve"><value>Drivers</value></data>
+  <data name="Restaurants_Title" xml:space="preserve"><value>Restaurants</value></data>
+  <data name="Payments_Title" xml:space="preserve"><value>Payments</value></data>
+  <data name="Ratings_Title" xml:space="preserve"><value>Ratings</value></data>
+  <data name="Dashboard_Title" xml:space="preserve"><value>Dashboard</value></data>
+  <data name="Total" xml:space="preserve"><value>total</value></data>
+  <data name="Search" xml:space="preserve"><value>Search</value></data>
+  <data name="Back" xml:space="preserve"><value>Back</value></data>
+  <data name="Details" xml:space="preserve"><value>Details</value></data>
+  <data name="NoData" xml:space="preserve"><value>No data found</value></data>
+  <data name="Nav_Settlements" xml:space="preserve"><value>Settlements</value></data>
+  <data name="Settlements_Title" xml:space="preserve"><value>Settlements</value></data>
+  <data name="Settlements_TotalOrders" xml:space="preserve"><value>Delivered Orders</value></data>
+  <data name="Settlements_TotalRevenue" xml:space="preserve"><value>Total Revenue</value></data>
+  <data name="Settlements_RestaurantPayout" xml:space="preserve"><value>Restaurant Payout</value></data>
+  <data name="Settlements_CashCollected" xml:space="preserve"><value>Cash Collected</value></data>
+  <data name="Settlements_Filter" xml:space="preserve"><value>Filter Period</value></data>
+  <data name="Settlements_From" xml:space="preserve"><value>From</value></data>
+  <data name="Settlements_To" xml:space="preserve"><value>To</value></data>
+  <data name="Settlements_AllDrivers" xml:space="preserve"><value>All Drivers</value></data>
+  <data name="Settlements_AllRestaurants" xml:space="preserve"><value>All Restaurants</value></data>
+  <data name="Settlements_Calculate" xml:space="preserve"><value>Calculate</value></data>
+  <data name="Settlements_PeriodNote" xml:space="preserve"><value>Period</value></data>
+  <data name="Settlements_DeliveredOnly" xml:space="preserve"><value>Delivered orders only</value></data>
+  <data name="Settlements_DriverTotals" xml:space="preserve"><value>Driver Collections</value></data>
+  <data name="Settlements_RestaurantTotals" xml:space="preserve"><value>Restaurant Payouts</value></data>
+  <data name="Settlements_Orders" xml:space="preserve"><value>Orders</value></data>
+  <data name="Settlements_DeliveryEarnings" xml:space="preserve"><value>Delivery Earnings</value></data>
+  <data name="Settlements_RestaurantDue" xml:space="preserve"><value>Due to Restaurants</value></data>
+  <data name="Settlements_CashOrders" xml:space="preserve"><value>Cash</value></data>
+  <data name="Settlements_CardOrders" xml:space="preserve"><value>Card</value></data>
+  <data name="Settlements_Payout" xml:space="preserve"><value>Payout</value></data>
+  <data name="Settlements_TotalSales" xml:space="preserve"><value>Total Sales</value></data>
+  <data name="Settlements_DeliveryFees" xml:space="preserve"><value>Delivery Fees</value></data>
+  <data name="Restaurants_Total" xml:space="preserve"><value>Total</value></data>
+  <data name="Restaurants_OpenNow" xml:space="preserve"><value>Open Now</value></data>
+  <data name="Restaurants_Closed" xml:space="preserve"><value>Closed</value></data>
+  <data name="Restaurants_AvgRating" xml:space="preserve"><value>Avg Rating</value></data>
+  <data name="Restaurants_All" xml:space="preserve"><value>All Restaurants</value></data>
+  <data name="Restaurants_AllStatus" xml:space="preserve"><value>All Status</value></data>
+  <data name="Restaurants_Open" xml:space="preserve"><value>Open</value></data>
+  <data name="Restaurants_Close" xml:space="preserve"><value>Closed</value></data>
+  <data name="Restaurants_Filter" xml:space="preserve"><value>Filter</value></data>
+  <data name="Restaurants_Add" xml:space="preserve"><value>Add Restaurant</value></data>
+  <data name="Restaurants_NoData" xml:space="preserve"><value>No restaurants found</value></data>
+  <data name="Restaurants_Name" xml:space="preserve"><value>Name</value></data>
+  <data name="Restaurants_DeliveryFee" xml:space="preserve"><value>Delivery Fee</value></data>
+  <data name="Restaurants_MinOrder" xml:space="preserve"><value>Min Order</value></data>
+  <data name="Restaurants_Time" xml:space="preserve"><value>Time</value></data>
+  <data name="Restaurants_View" xml:space="preserve"><value>View</value></data>
+  <data name="Restaurants_Menu" xml:space="preserve"><value>Menu</value></data>
+  <data name="Restaurants_CloseBtn" xml:space="preserve"><value>Close</value></data>
+  <data name="Restaurants_OpenBtn" xml:space="preserve"><value>Open</value></data>
+  <data name="Orders_All" xml:space="preserve"><value>All Orders</value></data>
+  <data name="Orders_AllStatus" xml:space="preserve"><value>All Status</value></data>
+  <data name="Orders_Customer" xml:space="preserve"><value>Customer</value></data>
+  <data name="Orders_Items" xml:space="preserve"><value>Items</value></data>
+  <data name="Orders_Payment" xml:space="preserve"><value>Payment</value></data>
+  <data name="Orders_Date" xml:space="preserve"><value>Date</value></data>
+  <data name="Orders_Actions" xml:space="preserve"><value>Actions</value></data>
+  <data name="Orders_NoData" xml:space="preserve"><value>No orders found</value></data>
+  <data name="Drivers_TotalDrivers" xml:space="preserve"><value>Total Drivers</value></data>
+  <data name="Drivers_OnlineNow" xml:space="preserve"><value>Online Now</value></data>
+  <data name="Drivers_VerifiedCount" xml:space="preserve"><value>Verified</value></data>
+  <data name="Drivers_PendingVerify" xml:space="preserve"><value>Pending Verify</value></data>
+  <data name="Drivers_Deliveries" xml:space="preserve"><value>Deliveries</value></data>
+  <data name="Drivers_Rating" xml:space="preserve"><value>Rating</value></data>
+  <data name="Drivers_AllDrivers" xml:space="preserve"><value>All Drivers</value></data>
+  <data name="Drivers_Online" xml:space="preserve"><value>Online</value></data>
+  <data name="Drivers_Offline" xml:space="preserve"><value>Offline</value></data>
+  <data name="Drivers_Pending" xml:space="preserve"><value>Pending</value></data>
+  <data name="Drivers_Vehicle" xml:space="preserve"><value>Vehicle</value></data>
+  <data name="Drivers_License" xml:space="preserve"><value>License</value></data>
+  <data name="Drivers_NationalId" xml:space="preserve"><value>National ID</value></data>
+  <data name="Drivers_NoData" xml:space="preserve"><value>No drivers found</value></data>
+  <data name="Drivers_Verify" xml:space="preserve"><value>Verify</value></data>
+  <data name="Pay_TotalRevenue" xml:space="preserve"><value>Total Revenue</value></data>
+  <data name="Pay_CashOrders" xml:space="preserve"><value>Cash Orders</value></data>
+  <data name="Pay_CardOrders" xml:space="preserve"><value>Card (Paymob)</value></data>
+  <data name="Pay_TotalRecords" xml:space="preserve"><value>Total Records</value></data>
+  <data name="Pay_Records" xml:space="preserve"><value>Payment Records</value></data>
+  <data name="Pay_NoData" xml:space="preserve"><value>No payment records</value></data>
+  <data name="Pay_OrderNum" xml:space="preserve"><value>Order #</value></data>
+  <data name="Pay_Provider" xml:space="preserve"><value>Provider</value></data>
+  <data name="Pay_Amount" xml:space="preserve"><value>Amount</value></data>
+  <data name="Pay_TransactionId" xml:space="preserve"><value>Transaction ID</value></data>
+  <data name="Pay_PaidAt" xml:space="preserve"><value>Paid At</value></data>
+  <data name="Ratings_CustomerRatings" xml:space="preserve"><value>Customer Ratings</value></data>
+  <data name="Ratings_NoData" xml:space="preserve"><value>No ratings yet</value></data>
+  <data name="Ratings_FoodRating" xml:space="preserve"><value>Food Rating</value></data>
+  <data name="Ratings_DriverRating" xml:space="preserve"><value>Driver Rating</value></data>
+  <data name="Ratings_Comment" xml:space="preserve"><value>Comment</value></data>
+  <data name="Dash_TotalOrders" xml:space="preserve"><value>Total Orders</value></data>
+  <data name="Dash_Revenue" xml:space="preserve"><value>Revenue (EGP)</value></data>
+  <data name="Dash_FromDelivered" xml:space="preserve"><value>From delivered orders</value></data>
+  <data name="Dash_TotalDrivers" xml:space="preserve"><value>Total Drivers</value></data>
+  <data name="Dash_Online" xml:space="preserve"><value>online</value></data>
+  <data name="Dash_Restaurants" xml:space="preserve"><value>Restaurants</value></data>
+  <data name="Dash_OpenNow" xml:space="preserve"><value>open now</value></data>
+  <data name="Dash_Pending" xml:space="preserve"><value>Pending</value></data>
+  <data name="Dash_OnTheWay" xml:space="preserve"><value>On The Way</value></data>
+  <data name="Dash_Delivered" xml:space="preserve"><value>Delivered</value></data>
+  <data name="Dash_OrderStatusDist" xml:space="preserve"><value>Order Status Distribution</value></data>
+  <data name="Dash_StatusBreakdown" xml:space="preserve"><value>Status Breakdown</value></data>
+  <data name="Dash_RecentOrders" xml:space="preserve"><value>Recent Orders</value></data>
+  <data name="Dash_ViewAll" xml:space="preserve"><value>View All</value></data>
+  <data name="Dash_PendingMeta" xml:space="preserve"><value>pending</value></data>
+  <data name="Login_Title" xml:space="preserve"><value>Login</value></data>
+  <data name="Login_AdminDashboard" xml:space="preserve"><value>Admin Dashboard</value></data>
+  <data name="Login_Button" xml:space="preserve"><value>Login</value></data>
+  <data name="Currency" xml:space="preserve"><value>EGP</value></data>
+  <data name="Actions" xml:space="preserve"><value>Actions</value></data>
+  <data name="Customer" xml:space="preserve"><value>Customer</value></data>
+  <data name="Min" xml:space="preserve"><value>min</value></data>
+</root>

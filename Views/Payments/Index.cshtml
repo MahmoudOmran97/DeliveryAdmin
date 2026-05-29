@@ -1,26 +1,26 @@
 @model List<DeliveryAdmin.Models.PaymentDto>
-@{ViewData["Title"] = "Payments"; var page=(int)ViewBag.Page; var totalPages=(int)ViewBag.TotalPages;}
+@{ var page=(int)ViewBag.Page; var totalPages=(int)ViewBag.TotalPages; }
 <div class="stat-row">
-  <div class="stat-box"><div class="stat-label">Total Revenue</div><div class="stat-val" style="color:var(--accent)">@(((decimal)ViewBag.TotalRevenue).ToString("N0")) EGP</div></div>
-  <div class="stat-box"><div class="stat-label">Cash Orders</div><div class="stat-val">@ViewBag.CashCount</div></div>
-  <div class="stat-box"><div class="stat-label">Card (Paymob)</div><div class="stat-val" style="color:var(--blue)">@ViewBag.CardCount</div></div>
-  <div class="stat-box"><div class="stat-label">Total Records</div><div class="stat-val">@ViewBag.Total</div></div>
+  <div class="stat-box"><div class="stat-label">@Localizer["Pay_TotalRevenue"]</div><div class="stat-val" style="color:var(--accent)">@(((decimal)ViewBag.TotalRevenue).ToString("N0")) @Localizer["Currency"]</div></div>
+  <div class="stat-box"><div class="stat-label">@Localizer["Pay_CashOrders"]</div><div class="stat-val">@ViewBag.CashCount</div></div>
+  <div class="stat-box"><div class="stat-label">@Localizer["Pay_CardOrders"]</div><div class="stat-val" style="color:var(--blue)">@ViewBag.CardCount</div></div>
+  <div class="stat-box"><div class="stat-label">@Localizer["Pay_TotalRecords"]</div><div class="stat-val">@ViewBag.Total</div></div>
 </div>
 <div class="card">
-  <div class="card-header"><div class="card-title">Payment Records</div></div>
+  <div class="card-header"><div class="card-title">@Localizer["Pay_Records"]</div></div>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>#ID</th><th>Order #</th><th>Provider</th><th>Amount</th><th>Currency</th><th>Status</th><th>Transaction ID</th><th>Paid At</th></tr></thead>
+      <thead><tr><th>#ID</th><th>@Localizer["Pay_OrderNum"]</th><th>@Localizer["Pay_Provider"]</th><th>@Localizer["Pay_Amount"]</th><th>@Localizer["Currency"]</th><th>@Localizer["Status"]</th><th>@Localizer["Pay_TransactionId"]</th><th>@Localizer["Pay_PaidAt"]</th></tr></thead>
       <tbody>
-        @if(!Model.Any()){<tr><td colspan="8"><div class="empty"><div class="empty-icon">💳</div><div>No payment records</div></div></td></tr>}
+        @if(!Model.Any()){<tr><td colspan="8"><div class="empty"><div class="empty-icon">💳</div><div>@Localizer["Pay_NoData"]</div></div></td></tr>}
         @foreach(var p in Model)
         {
           var sc = p.Status switch{"Completed"=>"b-paid","Paid"=>"b-paid","Refunded"=>"b-driver","Failed"=>"b-failed",_=>"b-pending-pay"};
           <tr>
             <td class="mono">#@p.Id</td>
-            <td class="mono" style="color:var(--accent)"><a href="/Orders/Details/@p.OrderId" style="color:var(--accent)">#@p.OrderId</a></td>
+            <td class="mono" style="color:var(--accent)"><a asp-controller="Orders" asp-action="Details" asp-route-id="@p.OrderId" style="color:var(--accent)">#@p.OrderId</a></td>
             <td><span class="badge @(p.Provider=="Cash"?"b-cash":"b-card")">@p.Provider</span></td>
-            <td class="mono" style="font-weight:700">@p.Amount.ToString("N2") EGP</td>
+            <td class="mono" style="font-weight:700">@p.Amount.ToString("N2") @Localizer["Currency"]</td>
             <td class="mono">@p.Currency</td>
             <td><span class="badge @sc">@p.Status</span></td>
             <td class="mono text-muted text-sm">@(p.TransactionId??"-")</td>

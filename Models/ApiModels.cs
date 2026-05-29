@@ -21,6 +21,7 @@ namespace DeliveryAdmin.Models
         public double Rating { get; set; } public int TotalRatings { get; set; }
         public decimal DeliveryFee { get; set; } public decimal MinOrderAmount { get; set; }
         public int EstimatedTime { get; set; } public bool IsOpen { get; set; } public bool IsActive { get; set; }
+        public int? OwnerUserId { get; set; } public string? OwnerName { get; set; } public string? OwnerEmail { get; set; }
         public DateTime CreatedAt { get; set; }
     }
     public class CreateRestaurantDto
@@ -29,6 +30,7 @@ namespace DeliveryAdmin.Models
         public double Latitude { get; set; } public double Longitude { get; set; } public string? Phone { get; set; }
         public decimal DeliveryFee { get; set; } public decimal MinOrderAmount { get; set; } public int EstimatedTime { get; set; } = 30;
         public string? ImageUrl { get; set; } public string? CoverImageUrl { get; set; }
+        public int? OwnerUserId { get; set; }
     }
     public class UpdateRestaurantDto : CreateRestaurantDto { public bool IsOpen { get; set; } }
 
@@ -69,6 +71,39 @@ namespace DeliveryAdmin.Models
         public int Id { get; set; } public string FullName { get; set; } = ""; public string Email { get; set; } = "";
         public string Phone { get; set; } = ""; public string Role { get; set; } = ""; public string? Address { get; set; }
         public string? ProfileImageUrl { get; set; } public bool IsActive { get; set; } public DateTime CreatedAt { get; set; }
+        public int? RestaurantId { get; set; } public string? RestaurantName { get; set; }
+    }
+
+    public class CreateUserDto
+    {
+        public string FullName { get; set; } = "";
+        public string Email { get; set; } = "";
+        public string Phone { get; set; } = "";
+        public string Password { get; set; } = "";
+        public string Role { get; set; } = "Customer";
+        public string? Address { get; set; }
+        public int? RestaurantId { get; set; }
+    }
+
+    public class UpdateUserDto
+    {
+        public string? FullName { get; set; }
+        public string? Phone { get; set; }
+        public string? Address { get; set; }
+        public string? Role { get; set; }
+        public string? Password { get; set; }
+        public bool? IsActive { get; set; }
+        public int? RestaurantId { get; set; }
+    }
+
+    public class SendNotificationDto
+    {
+        public int? UserId { get; set; }
+        public string? Role { get; set; }
+        public string Title { get; set; } = "";
+        public string Body { get; set; } = "";
+        public string? Type { get; set; } = "General";
+        public int? OrderId { get; set; }
     }
 
     // ── Order ─────────────────────────────────
@@ -97,4 +132,47 @@ namespace DeliveryAdmin.Models
 
     // ── Paged ─────────────────────────────────
     public class PagedResult<T> { public int Total { get; set; } public int Page { get; set; } public int PageSize { get; set; } public List<T> Data { get; set; } = new(); }
+
+    // ── Settlements ───────────────────────────
+    public class SettlementReportDto
+    {
+        public DateTime From { get; set; }
+        public DateTime To { get; set; }
+        public SettlementSummaryDto Summary { get; set; } = new();
+        public List<DriverSettlementDto> Drivers { get; set; } = new();
+        public List<RestaurantSettlementDto> Restaurants { get; set; } = new();
+    }
+
+    public class SettlementSummaryDto
+    {
+        public int TotalOrders { get; set; }
+        public decimal TotalRevenue { get; set; }
+        public decimal TotalRestaurantPayout { get; set; }
+        public decimal TotalDeliveryFees { get; set; }
+        public decimal TotalCashCollected { get; set; }
+    }
+
+    public class DriverSettlementDto
+    {
+        public int DriverId { get; set; }
+        public string DriverName { get; set; } = "";
+        public int OrderCount { get; set; }
+        public decimal CashCollected { get; set; }
+        public decimal DeliveryEarnings { get; set; }
+        public decimal RestaurantDue { get; set; }
+        public int CashOrders { get; set; }
+        public int CardOrders { get; set; }
+    }
+
+    public class RestaurantSettlementDto
+    {
+        public int RestaurantId { get; set; }
+        public string RestaurantName { get; set; } = "";
+        public int OrderCount { get; set; }
+        public decimal PayoutAmount { get; set; }
+        public decimal TotalSales { get; set; }
+        public decimal DeliveryFees { get; set; }
+        public int CashOrders { get; set; }
+        public int CardOrders { get; set; }
+    }
 }

@@ -1,0 +1,170 @@
+@using System.Globalization
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    var lang = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+    var isRtl = lang == "ar";
+}
+@model DeliveryAdmin.Models.SettlementReportDto
+@{
+  var from = (string)ViewBag.From;
+  var to = (string)ViewBag.To;
+  var drivers = (List<DeliveryAdmin.Models.DriverDto>)ViewBag.Drivers;
+  var restaurants = (List<DeliveryAdmin.Models.RestaurantDto>)ViewBag.Restaurants;
+}
+
+<div class="stat-row">
+  <div class="stat-box"><div class="stat-label">@Localizer["Settlements_TotalOrders"]</div><div class="stat-val">@Model.Summary.TotalOrders</div></div>
+  <div class="stat-box"><div class="stat-label">@Localizer["Settlements_TotalRevenue"]</div><div class="stat-val" style="color:var(--accent)">@Model.Summary.TotalRevenue.ToString("N0") EGP</div></div>
+  <div class="stat-box"><div class="stat-label">@Localizer["Settlements_RestaurantPayout"]</div><div class="stat-val" style="color:var(--green)">@Model.Summary.TotalRestaurantPayout.ToString("N0") EGP</div></div>
+  <div class="stat-box"><div class="stat-label">@Localizer["Settlements_CashCollected"]</div><div class="stat-val" style="color:var(--amber)">@Model.Summary.TotalCashCollected.ToString("N0") EGP</div></div>
+</div>
+
+<div class="card" style="margin-bottom:18px">
+  <div class="card-header">
+    <div class="card-title">@Localizer["Settlements_Filter"]</div>
+  </div>
+  <div style="padding:16px 18px">
+    <form method="get" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+      <div>
+        <label class="form-label">@Localizer["Settlements_From"]</label>
+        <input class="filter-input" type="date" name="from" value="@from" required />
+      </div>
+      <div>
+        <label class="form-label">@Localizer["Settlements_To"]</label>
+        <input class="filter-input" type="date" name="to" value="@to" required />
+      </div>
+      <div>
+        <label class="form-label">@Localizer["Nav_Drivers"]</label>
+        <select class="filter-input" name="driverId">
+          <option value="">@Localizer["Settlements_AllDrivers"]</option>
+          @foreach (var d in drivers)
+          {
+            var name = d.FullName ?? d.UserName ?? $"Driver #{d.Id}";
+            if (ViewBag.DriverId as int? == d.Id)
+            { <option value="@d.Id" selected>@name</option> }
+            else
+            { <option value="@d.Id">@name</option> }
+          }
+        </select>
+      </div>
+      <div>
+        <label class="form-label">@Localizer["Nav_Restaurants"]</label>
+        <select class="filter-input" name="restaurantId">
+          <option value="">@Localizer["Settlements_AllRestaurants"]</option>
+          @foreach (var r in restaurants)
+          {
+            if (ViewBag.RestaurantId as int? == r.Id)
+            { <option value="@r.Id" selected>@r.Name</option> }
+            else
+            { <option value="@r.Id">@r.Name</option> }
+          }
+        </select>
+      </div>
+      <button class="btn btn-primary btn-sm" type="submit">@Localizer["Settlements_Calculate"]</button>
+    </form>
+    <div class="text-muted text-sm" style="margin-top:10px">@Localizer["Settlements_PeriodNote"]: @from → @to · @Localizer["Settlements_DeliveredOnly"]</div>
+  </div>
+</div>
+
+<div class="card" style="margin-bottom:18px">
+  <div class="card-header"><div class="card-title">@Localizer["Settlements_DriverTotals"]</div></div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>@Localizer["FullName"]</th>
+          <th>@Localizer["Settlements_Orders"]</th>
+          <th>@Localizer["Settlements_CashCollected"]</th>
+          <th>@Localizer["Settlements_DeliveryEarnings"]</th>
+          <th>@Localizer["Settlements_RestaurantDue"]</th>
+          <th>@Localizer["Settlements_CashOrders"]</th>
+          <th>@Localizer["Settlements_CardOrders"]</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (!Model.Drivers.Any())
+        {
+          <tr><td colspan="7"><div class="empty"><div class="empty-icon">🛵</div><div>@Localizer["NoData"]</div></div></td></tr>
+        }
+        @foreach (var d in Model.Drivers)
+        {
+          <tr>
+            <td style="font-weight:600">@d.DriverName</td>
+            <td class="mono">@d.OrderCount</td>
+            <td class="mono" style="color:var(--amber)">@d.CashCollected.ToString("N2") EGP</td>
+            <td class="mono" style="color:var(--green)">@d.DeliveryEarnings.ToString("N2") EGP</td>
+            <td class="mono">@d.RestaurantDue.ToString("N2") EGP</td>
+            <td class="mono">@d.CashOrders</td>
+            <td class="mono">@d.CardOrders</td>
+          </tr>
+        }
+      </tbody>
+      @if (Model.Drivers.Any())
+      {
+        <tfoot>
+          <tr style="font-weight:700;border-top:2px solid var(--border)">
+            <td>@Localizer["Total"]</td>
+            <td class="mono">@Model.Drivers.Sum(x => x.OrderCount)</td>
+            <td class="mono">@Model.Drivers.Sum(x => x.CashCollected).ToString("N2") EGP</td>
+            <td class="mono">@Model.Drivers.Sum(x => x.DeliveryEarnings).ToString("N2") EGP</td>
+            <td class="mono">@Model.Drivers.Sum(x => x.RestaurantDue).ToString("N2") EGP</td>
+            <td class="mono">@Model.Drivers.Sum(x => x.CashOrders)</td>
+            <td class="mono">@Model.Drivers.Sum(x => x.CardOrders)</td>
+          </tr>
+        </tfoot>
+      }
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header"><div class="card-title">@Localizer["Settlements_RestaurantTotals"]</div></div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>@Localizer["Restaurant"]</th>
+          <th>@Localizer["Settlements_Orders"]</th>
+          <th>@Localizer["Settlements_Payout"]</th>
+          <th>@Localizer["Settlements_TotalSales"]</th>
+          <th>@Localizer["Settlements_DeliveryFees"]</th>
+          <th>@Localizer["Settlements_CashOrders"]</th>
+          <th>@Localizer["Settlements_CardOrders"]</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (!Model.Restaurants.Any())
+        {
+          <tr><td colspan="7"><div class="empty"><div class="empty-icon">🍽️</div><div>@Localizer["NoData"]</div></div></td></tr>
+        }
+        @foreach (var r in Model.Restaurants)
+        {
+          <tr>
+            <td style="font-weight:600">@r.RestaurantName</td>
+            <td class="mono">@r.OrderCount</td>
+            <td class="mono" style="color:var(--green);font-weight:700">@r.PayoutAmount.ToString("N2") EGP</td>
+            <td class="mono">@r.TotalSales.ToString("N2") EGP</td>
+            <td class="mono">@r.DeliveryFees.ToString("N2") EGP</td>
+            <td class="mono">@r.CashOrders</td>
+            <td class="mono">@r.CardOrders</td>
+          </tr>
+        }
+      </tbody>
+      @if (Model.Restaurants.Any())
+      {
+        <tfoot>
+          <tr style="font-weight:700;border-top:2px solid var(--border)">
+            <td>@Localizer["Total"]</td>
+            <td class="mono">@Model.Restaurants.Sum(x => x.OrderCount)</td>
+            <td class="mono">@Model.Restaurants.Sum(x => x.PayoutAmount).ToString("N2") EGP</td>
+            <td class="mono">@Model.Restaurants.Sum(x => x.TotalSales).ToString("N2") EGP</td>
+            <td class="mono">@Model.Restaurants.Sum(x => x.DeliveryFees).ToString("N2") EGP</td>
+            <td class="mono">@Model.Restaurants.Sum(x => x.CashOrders)</td>
+            <td class="mono">@Model.Restaurants.Sum(x => x.CardOrders)</td>
+          </tr>
+        </tfoot>
+      }
+    </table>
+  </div>
+</div>

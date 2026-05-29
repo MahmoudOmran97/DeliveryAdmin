@@ -1,6 +1,12 @@
+@using System.Globalization
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    var lang = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+    var isRtl = lang == "ar";
+}
 @model List<DeliveryAdmin.Models.OrderDto>
 @{
-  ViewData["Title"] = "Orders";
   var page=(int)ViewBag.Page;
   var totalPages=(int)ViewBag.TotalPages;
   string currentStatus = ViewBag.Status as string ?? "";
@@ -26,11 +32,11 @@
 
 <div class="card">
   <div class="card-header">
-    <div class="card-title">All Orders <span class="text-muted text-sm">(@ViewBag.Total total)</span></div>
+    <div class="card-title">@Localizer["Orders_All"] <span class="text-muted text-sm">(@ViewBag.Total @Localizer["Total"])</span></div>
     <div class="filters">
       <form method="get" style="display:flex;gap:8px">
         <select class="filter-input" name="status" onchange="this.form.submit()">
-          <option value="">All Status</option>
+          <option value="">@Localizer["Orders_AllStatus"]</option>
           @foreach(var s in statuses)
           {
             string label = s=="ReadyForPickup"?"Ready":s;
@@ -43,11 +49,11 @@
   </div>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>#ID</th><th>Customer</th><th>Restaurant</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+      <thead><tr><th>#ID</th><th>@Localizer["Orders_Customer"]</th><th>@Localizer["Restaurant"]</th><th>@Localizer["Orders_Items"]</th><th>@Localizer["Total"]</th><th>@Localizer["Orders_Payment"]</th><th>@Localizer["Status"]</th><th>@Localizer["Orders_Date"]</th><th>@Localizer["Orders_Actions"]</th></tr></thead>
       <tbody>
         @if(!Model.Any())
         {
-          <tr><td colspan="9"><div class="empty"><div class="empty-icon">📦</div><div>No orders found</div></div></td></tr>
+          <tr><td colspan="9"><div class="empty"><div class="empty-icon">📦</div><div>@Localizer["Orders_NoData"]</div></div></td></tr>
         }
         @foreach(var o in Model)
         {
@@ -65,11 +71,11 @@
             <td style="font-weight:500">@(o.CustomerName??"–")</td>
             <td>@(o.RestaurantName??"–")</td>
             <td class="mono">@(o.ItemCount??0)</td>
-            <td class="mono" style="font-weight:600">@o.TotalAmount.ToString("N0") EGP</td>
+            <td class="mono" style="font-weight:600">@o.TotalAmount.ToString("N0") @Localizer["Currency"]</td>
             <td><span class="badge @(o.PaymentMethod=="Cash"?"b-cash":"b-card")">@o.PaymentMethod</span></td>
             <td><span class="badge @sc">@(o.Status=="ReadyForPickup"?"Ready":o.Status)</span></td>
             <td class="text-muted text-sm">@o.CreatedAt.ToString("dd MMM HH:mm")</td>
-            <td><a class="btn btn-secondary btn-sm" href="/Orders/Details/@o.Id">Details</a></td>
+            <td><a class="btn btn-secondary btn-sm" asp-action="Details" asp-route-id="@o.Id">@Localizer["Details"]</a></td>
           </tr>
         }
       </tbody>

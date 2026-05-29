@@ -1,12 +1,19 @@
+@using System.Globalization
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    var lang = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+    var isRtl = lang == "ar";
+}
 @model List<DeliveryAdmin.Models.RatingDto>
-@{ViewData["Title"] = "Ratings"; var page=(int)ViewBag.Page; var totalPages=(int)ViewBag.TotalPages;}
+@{ var page=(int)ViewBag.Page; var totalPages=(int)ViewBag.TotalPages; }
 <div class="card">
-  <div class="card-header"><div class="card-title">Customer Ratings</div></div>
+  <div class="card-header"><div class="card-title">@Localizer["Ratings_CustomerRatings"]</div></div>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>#ID</th><th>Customer</th><th>Restaurant</th><th>Rest. Rating</th><th>Food Rating</th><th>Driver Rating</th><th>Comment</th><th>Date</th></tr></thead>
+      <thead><tr><th>#ID</th><th>@Localizer["Customer"]</th><th>@Localizer["Restaurant"]</th><th>@Localizer["Drivers_Rating"]</th><th>@Localizer["Ratings_FoodRating"]</th><th>@Localizer["Ratings_DriverRating"]</th><th>@Localizer["Ratings_Comment"]</th><th>@Localizer["Orders_Date"]</th></tr></thead>
       <tbody>
-        @if(!Model.Any()){<tr><td colspan="8"><div class="empty"><div class="empty-icon">⭐</div><div>No ratings yet</div></div></td></tr>}
+        @if(!Model.Any()){<tr><td colspan="8"><div class="empty"><div class="empty-icon">⭐</div><div>@Localizer["Ratings_NoData"]</div></div></td></tr>}
         @foreach(var r in Model)
         {
           <tr>
@@ -16,7 +23,7 @@
             <td><span class="stars">@("⭐".PadRight(r.RestaurantRating,'⭐')[..r.RestaurantRating])</span> @r.RestaurantRating/5</td>
             <td>@(r.FoodRating.HasValue?r.FoodRating+"/5":"-")</td>
             <td>@(r.DriverRating.HasValue?r.DriverRating.Value.ToString("F1")+"/5":"-")</td>
-            <td class="text-muted text-sm" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">@(r.Comment??"-")</td>
+            <td class="text-muted text-sm" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white:nowrap">@(r.Comment??"-")</td>
             <td class="text-muted text-sm">@r.CreatedAt.ToString("dd MMM yyyy")</td>
           </tr>
         }

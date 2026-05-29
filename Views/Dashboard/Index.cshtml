@@ -1,4 +1,11 @@
-@{ViewData["Title"] = "Dashboard";}
+@using System.Globalization
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    var lang = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+    var isRtl = lang == "ar";
+}
+
 @{
     var statusLabels = new[]{"Pending","Accepted","Preparing","Ready","OnTheWay","Delivered","Cancelled"};
     var statusCounts = (int[])ViewBag.StatusCounts;
@@ -6,38 +13,38 @@
 }
 
 <div class="kpi-grid">
-  <a class="kpi-card" href="/Orders"><div class="kpi-icon">📦</div><div class="kpi-label">Total Orders</div><div class="kpi-value">@ViewBag.TotalOrders.ToString("N0")</div><div class="kpi-meta">@ViewBag.PendingOrders pending</div></a>
-  <a class="kpi-card kpi-green" href="/Payments"><div class="kpi-icon">💰</div><div class="kpi-label">Revenue (EGP)</div><div class="kpi-value">@(((decimal)ViewBag.Revenue).ToString("N0"))</div><div class="kpi-meta">From delivered orders</div></a>
-  <a class="kpi-card kpi-blue" href="/Drivers"><div class="kpi-icon">🛵</div><div class="kpi-label">Total Drivers</div><div class="kpi-value">@ViewBag.TotalDrivers</div><div class="kpi-meta"><span style="color:var(--green)">@ViewBag.OnlineDrivers online</span></div></a>
-  <a class="kpi-card kpi-purple" href="/Restaurants"><div class="kpi-icon">🍽️</div><div class="kpi-label">Restaurants</div><div class="kpi-value">@ViewBag.TotalRestaurants</div><div class="kpi-meta"><span style="color:var(--green)">@ViewBag.OpenRestaurants open now</span></div></a>
+  <a class="kpi-card" asp-controller="Orders" asp-action="Index"><div class="kpi-icon">📦</div><div class="kpi-label">@Localizer["Dash_TotalOrders"]</div><div class="kpi-value">@ViewBag.TotalOrders.ToString("N0")</div><div class="kpi-meta">@ViewBag.PendingOrders @Localizer["Dash_PendingMeta"]</div></a>
+  <a class="kpi-card kpi-green" asp-controller="Payments" asp-action="Index"><div class="kpi-icon">💰</div><div class="kpi-label">@Localizer["Dash_Revenue"]</div><div class="kpi-value">@(((decimal)ViewBag.Revenue).ToString("N0"))</div><div class="kpi-meta">@Localizer["Dash_FromDelivered"]</div></a>
+  <a class="kpi-card kpi-blue" asp-controller="Drivers" asp-action="Index"><div class="kpi-icon">🛵</div><div class="kpi-label">@Localizer["Dash_TotalDrivers"]</div><div class="kpi-value">@ViewBag.TotalDrivers</div><div class="kpi-meta"><span style="color:var(--green)">@ViewBag.OnlineDrivers @Localizer["Dash_Online"]</span></div></a>
+  <a class="kpi-card kpi-purple" asp-controller="Restaurants" asp-action="Index"><div class="kpi-icon">🍽️</div><div class="kpi-label">@Localizer["Dash_Restaurants"]</div><div class="kpi-value">@ViewBag.TotalRestaurants</div><div class="kpi-meta"><span style="color:var(--green)">@ViewBag.OpenRestaurants @Localizer["Dash_OpenNow"]</span></div></a>
 </div>
 
 <div class="stat-row">
-  <div class="stat-box"><div class="stat-label">Pending</div><div class="stat-val" style="color:var(--amber)">@ViewBag.PendingOrders</div></div>
-  <div class="stat-box"><div class="stat-label">On The Way</div><div class="stat-val" style="color:#60a5fa">@ViewBag.OnWayOrders</div></div>
-  <div class="stat-box"><div class="stat-label">Delivered</div><div class="stat-val" style="color:var(--green)">@ViewBag.DeliveredOrders</div></div>
-  <div class="stat-box"><div class="stat-label">Revenue EGP</div><div class="stat-val" style="color:var(--accent)">@(((decimal)ViewBag.Revenue).ToString("N0"))</div></div>
+  <div class="stat-box"><div class="stat-label">@Localizer["Dash_Pending"]</div><div class="stat-val" style="color:var(--amber)">@ViewBag.PendingOrders</div></div>
+  <div class="stat-box"><div class="stat-label">@Localizer["Dash_OnTheWay"]</div><div class="stat-val" style="color:#60a5fa">@ViewBag.OnWayOrders</div></div>
+  <div class="stat-box"><div class="stat-label">@Localizer["Dash_Delivered"]</div><div class="stat-val" style="color:var(--green)">@ViewBag.DeliveredOrders</div></div>
+  <div class="stat-box"><div class="stat-label">@Localizer["Dash_Revenue"]</div><div class="stat-val" style="color:var(--accent)">@(((decimal)ViewBag.Revenue).ToString("N0"))</div></div>
 </div>
 
 <div style="display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-bottom:24px">
   <div class="card">
-    <div class="card-header"><div class="card-title">Order Status Distribution</div></div>
+    <div class="card-header"><div class="card-title">@Localizer["Dash_OrderStatusDist"]</div></div>
     <div style="padding:18px"><canvas id="statusChart" height="80"></canvas></div>
   </div>
   <div class="card">
-    <div class="card-header"><div class="card-title">Status Breakdown</div></div>
+    <div class="card-header"><div class="card-title">@Localizer["Dash_StatusBreakdown"]</div></div>
     <div style="padding:18px"><canvas id="donutChart" height="180"></canvas></div>
   </div>
 </div>
 
 <div class="card">
   <div class="card-header">
-    <div class="card-title">Recent Orders</div>
-    <a class="btn btn-secondary btn-sm" href="/Orders">View All →</a>
+    <div class="card-title">@Localizer["Dash_RecentOrders"]</div>
+    <a class="btn btn-secondary btn-sm" asp-controller="Orders" asp-action="Index">@Localizer["Dash_ViewAll"] →</a>
   </div>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>#ID</th><th>Customer</th><th>Restaurant</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th><th></th></tr></thead>
+      <thead><tr><th>#ID</th><th>@Localizer["Customer"]</th><th>@Localizer["Restaurant"]</th><th>@Localizer["Total"]</th><th>@Localizer["Orders_Payment"]</th><th>@Localizer["Status"]</th><th>@Localizer["Orders_Date"]</th><th></th></tr></thead>
       <tbody>
         @foreach(var o in recentOrders)
         {
@@ -45,14 +52,14 @@
             <td class="mono" style="color:var(--accent)">#@o.Id</td>
             <td>@(o.CustomerName ?? "–")</td>
             <td>@(o.RestaurantName ?? "–")</td>
-            <td class="mono">@o.TotalAmount.ToString("N0") EGP</td>
+            <td class="mono">@o.TotalAmount.ToString("N0") @Localizer["Currency"]</td>
             <td><span class="badge @(o.PaymentMethod=="Cash"?"b-cash":"b-card")">@o.PaymentMethod</span></td>
             <td>
               @{var sc = o.Status switch { "Pending"=>"b-pending","Accepted"=>"b-accepted","Preparing"=>"b-preparing","ReadyForPickup"=>"b-ready","OnTheWay"=>"b-onway","Delivered"=>"b-delivered","Cancelled"=>"b-cancelled",_=>"b-inactive" };}
               <span class="badge @sc">@(o.Status=="ReadyForPickup"?"Ready":o.Status)</span>
             </td>
             <td class="text-muted text-sm">@o.CreatedAt.ToString("dd MMM")</td>
-            <td><a class="btn btn-secondary btn-sm" href="/Orders/Details/@o.Id">Details</a></td>
+            <td><a class="btn btn-secondary btn-sm" asp-controller="Orders" asp-action="Details" asp-route-id="@o.Id">@Localizer["Details"]</a></td>
           </tr>
         }
       </tbody>

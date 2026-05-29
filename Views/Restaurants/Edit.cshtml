@@ -20,6 +20,13 @@
         <div class="form-group"><label class="form-label">Longitude</label><input class="form-control" asp-for="Longitude" type="number" step="any"></div>
         <div class="form-group form-full"><label class="form-label">Image URL</label><input class="form-control" asp-for="ImageUrl"></div>
         <div class="form-group form-full"><label class="form-label">Cover Image URL</label><input class="form-control" asp-for="CoverImageUrl"></div>
+        <div class="form-group form-full">
+          <label class="form-label">Restaurant Owner</label>
+          <select class="form-control" asp-for="OwnerUserId">
+            <option value="">— No owner —</option>
+            @foreach(var o in (List<DeliveryAdmin.Models.UserDto>)ViewBag.Owners){<option value="@o.Id">@o.FullName (@o.Email)</option>}
+          </select>
+        </div>
       </div>
       <div style="display:flex;gap:8px;margin-top:8px">
         <button class="btn btn-primary" type="submit">💾 Save Changes</button>

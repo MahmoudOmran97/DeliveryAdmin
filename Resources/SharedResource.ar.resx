@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Nav_Main" xml:space="preserve"><value>الرئيسية</value></data>
+  <data name="Nav_Finance" xml:space="preserve"><value>المالية</value></data>
+  <data name="Nav_Catalog" xml:space="preserve"><value>القائمة</value></data>
+  <data name="Nav_Dashboard" xml:space="preserve"><value>لوحة التحكم</value></data>
+  <data name="Nav_Orders" xml:space="preserve"><value>الطلبات</value></data>
+  <data name="Nav_Drivers" xml:space="preserve"><value>الطيارين</value></data>
+  <data name="Nav_Restaurants" xml:space="preserve"><value>المطاعم</value></data>
+  <data name="Nav_Users" xml:space="preserve"><value>المستخدمين</value></data>
+  <data name="Nav_Payments" xml:space="preserve"><value>المدفوعات</value></data>
+  <data name="Nav_Ratings" xml:space="preserve"><value>التقييمات</value></data>
+  <data name="Nav_Products" xml:space="preserve"><value>المنتجات</value></data>
+  <data name="Nav_Categories" xml:space="preserve"><value>التصنيفات</value></data>
+  <data name="Nav_Notifications" xml:space="preserve"><value>الإشعارات</value></data>
+  <data name="Logout" xml:space="preserve"><value>تسجيل خروج</value></data>
+  <data name="Live" xml:space="preserve"><value>مباشر</value></data>
+  <data name="AdminPanel" xml:space="preserve"><value>لوحة الإدارة v2.0</value></data>
+  <data name="Theme_Light" xml:space="preserve"><value>فاتح</value></data>
+  <data name="Theme_Dark" xml:space="preserve"><value>داكن</value></data>
+  <data name="Lang_English" xml:space="preserve"><value>English</value></data>
+  <data name="Lang_Arabic" xml:space="preserve"><value>العربية</value></data>
+  <data name="Users_Title" xml:space="preserve"><value>المستخدمين</value></data>
+  <data name="Users_Add" xml:space="preserve"><value>إضافة مستخدم</value></data>
+  <data name="Users_Edit" xml:space="preserve"><value>تعديل مستخدم</value></data>
+  <data name="Users_All" xml:space="preserve"><value>الكل</value></data>
+  <data name="Users_Customers" xml:space="preserve"><value>العملاء</value></data>
+  <data name="Users_Drivers" xml:space="preserve"><value>الطيارين</value></data>
+  <data name="Users_Admins" xml:space="preserve"><value>المشرفين</value></data>
+  <data name="Users_RestaurantOwners" xml:space="preserve"><value>أصحاب المطاعم</value></data>
+  <data name="Users_RestaurantOwner" xml:space="preserve"><value>صاحب مطعم</value></data>
+  <data name="FullName" xml:space="preserve"><value>الاسم الكامل</value></data>
+  <data name="Email" xml:space="preserve"><value>البريد الإلكتروني</value></data>
+  <data name="Phone" xml:space="preserve"><value>الهاتف</value></data>
+  <data name="Password" xml:space="preserve"><value>كلمة المرور</value></data>
+  <data name="Role" xml:space="preserve"><value>الدور</value></data>
+  <data name="Address" xml:space="preserve"><value>العنوان</value></data>
+  <data name="Restaurant" xml:space="preserve"><value>المطعم</value></data>
+  <data name="Save" xml:space="preserve"><value>حفظ</value></data>
+  <data name="Cancel" xml:space="preserve"><value>إلغاء</value></data>
+  <data name="Active" xml:space="preserve"><value>نشط</value></data>
+  <data name="Inactive" xml:space="preserve"><value>غير نشط</value></data>
+  <data name="ToggleStatus" xml:space="preserve"><value>تغيير الحالة</value></data>
+  <data name="Edit" xml:space="preserve"><value>تعديل</value></data>
+  <data name="Joined" xml:space="preserve"><value>تاريخ الانضمام</value></data>
+  <data name="Status" xml:space="preserve"><value>الحالة</value></data>
+  <data name="NoUsers" xml:space="preserve"><value>لا يوجد مستخدمين</value></data>
+  <data name="Notif_Title" xml:space="preserve"><value>إرسال إشعار</value></data>
+  <data name="Notif_TargetUser" xml:space="preserve"><value>مستخدم محدد</value></data>
+  <data name="Notif_TargetRole" xml:space="preserve"><value>حسب الدور (جماعي)</value></data>
+  <data name="Notif_SelectUser" xml:space="preserve"><value>اختر المستخدم</value></data>
+  <data name="Notif_SelectRole" xml:space="preserve"><value>اختر الدور</value></data>
+  <data name="Notif_MessageTitle" xml:space="preserve"><value>العنوان</value></data>
+  <data name="Notif_MessageBody" xml:space="preserve"><value>الرسالة</value></data>
+  <data name="Notif_Send" xml:space="preserve"><value>إرسال الإشعار</value></data>
+  <data name="OptionalPassword" xml:space="preserve"><value>اتركه فارغاً للإبقاء على كلمة المرور الحالية</value></data>
+  <data name="SelectRestaurant" xml:space="preserve"><value>اختر المطعم (لصاحب المطعم)</value></data>
+  <data name="NoRestaurant" xml:space="preserve"><value>— بدون مطعم —</value></data>
+  <data name="Products_Title" xml:space="preserve"><value>المنتجات</value></data>
+  <data name="Products_Add" xml:space="preserve"><value>إضافة منتج</value></data>
+  <data name="Products_Search" xml:space="preserve"><value>بحث</value></data>
+  <data name="Products_SearchPlaceholder" xml:space="preserve"><value>ابحث عن منتج...</value></data>
+  <data name="Products_AllRestaurants" xml:space="preserve"><value>كل المطاعم</value></data>
+  <data name="Products_NoData" xml:space="preserve"><value>لا توجد منتجات</value></data>
+  <data name="Products_Category" xml:space="preserve"><value>التصنيف</value></data>
+  <data name="Products_Price" xml:space="preserve"><value>السعر</value></data>
+  <data name="Products_Discounted" xml:space="preserve"><value>بعد الخصم</value></data>
+  <data name="Products_PrepTime" xml:space="preserve"><value>وقت التحضير</value></data>
+  <data name="Products_Calories" xml:space="preserve"><value>السعرات</value></data>
+  <data name="Products_Available" xml:space="preserve"><value>متاح</value></data>
+  <data name="Products_Unavailable" xml:space="preserve"><value>غير متاح</value></data>
+  <data name="Products_Actions" xml:space="preserve"><value>إجراءات</value></data>
+  <data name="Products_Enable" xml:space="preserve"><value>تفعيل</value></data>
+  <data name="Products_Disable" xml:space="preserve"><value>إيقاف</value></data>
+  <data name="Products_Delete" xml:space="preserve"><value>حذف</value></data>
+  <data name="Orders_Title" xml:space="preserve"><value>الطلبات</value></data>
+  <data name="Drivers_Title" xml:space="preserve"><value>الطيارين</value></data>
+  <data name="Restaurants_Title" xml:space="preserve"><value>المطاعم</value></data>
+  <data name="Payments_Title" xml:space="preserve"><value>المدفوعات</value></data>
+  <data name="Ratings_Title" xml:space="preserve"><value>التقييمات</value></data>
+  <data name="Dashboard_Title" xml:space="preserve"><value>لوحة التحكم</value></data>
+  <data name="Total" xml:space="preserve"><value>الإجمالي</value></data>
+  <data name="Search" xml:space="preserve"><value>بحث</value></data>
+  <data name="Back" xml:space="preserve"><value>رجوع</value></data>
+  <data name="Details" xml:space="preserve"><value>التفاصيل</value></data>
+  <data name="NoData" xml:space="preserve"><value>لا توجد بيانات</value></data>
+  <data name="Nav_Settlements" xml:space="preserve"><value>التسويات</value></data>
+  <data name="Settlements_Title" xml:space="preserve"><value>التسويات المالية</value></data>
+  <data name="Settlements_TotalOrders" xml:space="preserve"><value>الطلبات المُسلّمة</value></data>
+  <data name="Settlements_TotalRevenue" xml:space="preserve"><value>إجمالي الإيراد</value></data>
+  <data name="Settlements_RestaurantPayout" xml:space="preserve"><value>مستحقات المطاعم</value></data>
+  <data name="Settlements_CashCollected" xml:space="preserve"><value>الكاش المُحصّل</value></data>
+  <data name="Settlements_Filter" xml:space="preserve"><value>فلترة الفترة</value></data>
+  <data name="Settlements_From" xml:space="preserve"><value>من</value></data>
+  <data name="Settlements_To" xml:space="preserve"><value>إلى</value></data>
+  <data name="Settlements_AllDrivers" xml:space="preserve"><value>كل الطيارين</value></data>
+  <data name="Settlements_AllRestaurants" xml:space="preserve"><value>كل المطاعم</value></data>
+  <data name="Settlements_Calculate" xml:space="preserve"><value>احسب</value></data>
+  <data name="Settlements_PeriodNote" xml:space="preserve"><value>الفترة</value></data>
+  <data name="Settlements_DeliveredOnly" xml:space="preserve"><value>الطلبات المُسلّمة فقط</value></data>
+  <data name="Settlements_DriverTotals" xml:space="preserve"><value>تحصيلات الطيارين</value></data>
+  <data name="Settlements_RestaurantTotals" xml:space="preserve"><value>مستحقات المطاعم</value></data>
+  <data name="Settlements_Orders" xml:space="preserve"><value>الطلبات</value></data>
+  <data name="Settlements_DeliveryEarnings" xml:space="preserve"><value>أرباح التوصيل</value></data>
+  <data name="Settlements_RestaurantDue" xml:space="preserve"><value>مستحق للمطاعم</value></data>
+  <data name="Settlements_CashOrders" xml:space="preserve"><value>كاش</value></data>
+  <data name="Settlements_CardOrders" xml:space="preserve"><value>بطاقة</value></data>
+  <data name="Settlements_Payout" xml:space="preserve"><value>المستحق</value></data>
+  <data name="Settlements_TotalSales" xml:space="preserve"><value>إجمالي المبيعات</value></data>
+  <data name="Settlements_DeliveryFees" xml:space="preserve"><value>رسوم التوصيل</value></data>
+  <data name="Restaurants_Total" xml:space="preserve"><value>الإجمالي</value></data>
+  <data name="Restaurants_OpenNow" xml:space="preserve"><value>مفتوح الآن</value></data>
+  <data name="Restaurants_Closed" xml:space="preserve"><value>مغلق</value></data>
+  <data name="Restaurants_AvgRating" xml:space="preserve"><value>متوسط التقييم</value></data>
+  <data name="Restaurants_All" xml:space="preserve"><value>كل المطاعم</value></data>
+  <data name="Restaurants_AllStatus" xml:space="preserve"><value>كل الحالات</value></data>
+  <data name="Restaurants_Open" xml:space="preserve"><value>مفتوح</value></data>
+  <data name="Restaurants_Close" xml:space="preserve"><value>مغلق</value></data>
+  <data name="Restaurants_Filter" xml:space="preserve"><value>فلتر</value></data>
+  <data name="Restaurants_Add" xml:space="preserve"><value>إضافة مطعم</value></data>
+  <data name="Restaurants_NoData" xml:space="preserve"><value>لا توجد مطاعم</value></data>
+  <data name="Restaurants_Name" xml:space="preserve"><value>الاسم</value></data>
+  <data name="Restaurants_DeliveryFee" xml:space="preserve"><value>رسوم التوصيل</value></data>
+  <data name="Restaurants_MinOrder" xml:space="preserve"><value>الحد الأدنى</value></data>
+  <data name="Restaurants_Time" xml:space="preserve"><value>الوقت</value></data>
+  <data name="Restaurants_View" xml:space="preserve"><value>عرض</value></data>
+  <data name="Restaurants_Menu" xml:space="preserve"><value>القائمة</value></data>
+  <data name="Restaurants_CloseBtn" xml:space="preserve"><value>إغلاق</value></data>
+  <data name="Restaurants_OpenBtn" xml:space="preserve"><value>فتح</value></data>
+  <data name="Orders_All" xml:space="preserve"><value>كل الطلبات</value></data>
+  <data name="Orders_AllStatus" xml:space="preserve"><value>كل الحالات</value></data>
+  <data name="Orders_Customer" xml:space="preserve"><value>العميل</value></data>
+  <data name="Orders_Items" xml:space="preserve"><value>الأصناف</value></data>
+  <data name="Orders_Payment" xml:space="preserve"><value>الدفع</value></data>
+  <data name="Orders_Date" xml:space="preserve"><value>التاريخ</value></data>
+  <data name="Orders_Actions" xml:space="preserve"><value>إجراءات</value></data>
+  <data name="Orders_NoData" xml:space="preserve"><value>لا توجد طلبات</value></data>
+  <data name="Drivers_TotalDrivers" xml:space="preserve"><value>إجمالي الطيارين</value></data>
+  <data name="Drivers_OnlineNow" xml:space="preserve"><value>متصل الآن</value></data>
+  <data name="Drivers_VerifiedCount" xml:space="preserve"><value>موثّق</value></data>
+  <data name="Drivers_PendingVerify" xml:space="preserve"><value>بانتظار التوثيق</value></data>
+  <data name="Drivers_Deliveries" xml:space="preserve"><value>التوصيلات</value></data>
+  <data name="Drivers_Rating" xml:space="preserve"><value>التقييم</value></data>
+  <data name="Drivers_AllDrivers" xml:space="preserve"><value>كل الطيارين</value></data>
+  <data name="Drivers_Online" xml:space="preserve"><value>متصل</value></data>
+  <data name="Drivers_Offline" xml:space="preserve"><value>غير متصل</value></data>
+  <data name="Drivers_Pending" xml:space="preserve"><value>معلق</value></data>
+  <data name="Drivers_Vehicle" xml:space="preserve"><value>المركبة</value></data>
+  <data name="Drivers_License" xml:space="preserve"><value>الرخصة</value></data>
+  <data name="Drivers_NationalId" xml:space="preserve"><value>الرقم القومي</value></data>
+  <data name="Drivers_NoData" xml:space="preserve"><value>لا يوجد طيارين</value></data>
+  <data name="Drivers_Verify" xml:space="preserve"><value>توثيق</value></data>
+  <data name="Pay_TotalRevenue" xml:space="preserve"><value>إجمالي الإيراد</value></data>
+  <data name="Pay_CashOrders" xml:space="preserve"><value>طلبات كاش</value></data>
+  <data name="Pay_CardOrders" xml:space="preserve"><value>بطاقة (Paymob)</value></data>
+  <data name="Pay_TotalRecords" xml:space="preserve"><value>إجمالي السجلات</value></data>
+  <data name="Pay_Records" xml:space="preserve"><value>سجلات الدفع</value></data>
+  <data name="Pay_NoData" xml:space="preserve"><value>لا توجد مدفوعات</value></data>
+  <data name="Pay_OrderNum" xml:space="preserve"><value>طلب #</value></data>
+  <data name="Pay_Provider" xml:space="preserve"><value>مزود الدفع</value></data>
+  <data name="Pay_Amount" xml:space="preserve"><value>المبلغ</value></data>
+  <data name="Pay_TransactionId" xml:space="preserve"><value>رقم المعاملة</value></data>
+  <data name="Pay_PaidAt" xml:space="preserve"><value>تاريخ الدفع</value></data>
+  <data name="Ratings_CustomerRatings" xml:space="preserve"><value>تقييمات العملاء</value></data>
+  <data name="Ratings_NoData" xml:space="preserve"><value>لا توجد تقييمات</value></data>
+  <data name="Ratings_FoodRating" xml:space="preserve"><value>تقييم الطعام</value></data>
+  <data name="Ratings_DriverRating" xml:space="preserve"><value>تقييم الطيار</value></data>
+  <data name="Ratings_Comment" xml:space="preserve"><value>التعليق</value></data>
+  <data name="Dash_TotalOrders" xml:space="preserve"><value>إجمالي الطلبات</value></data>
+  <data name="Dash_Revenue" xml:space="preserve"><value>الإيراد (جنيه)</value></data>
+  <data name="Dash_FromDelivered" xml:space="preserve"><value>من الطلبات المُسلّمة</value></data>
+  <data name="Dash_TotalDrivers" xml:space="preserve"><value>إجمالي الطيارين</value></data>
+  <data name="Dash_Online" xml:space="preserve"><value>متصل</value></data>
+  <data name="Dash_Restaurants" xml:space="preserve"><value>المطاعم</value></data>
+  <data name="Dash_OpenNow" xml:space="preserve"><value>مفتوح الآن</value></data>
+  <data name="Dash_Pending" xml:space="preserve"><value>معلق</value></data>
+  <data name="Dash_OnTheWay" xml:space="preserve"><value>في الطريق</value></data>
+  <data name="Dash_Delivered" xml:space="preserve"><value>تم التسليم</value></data>
+  <data name="Dash_OrderStatusDist" xml:space="preserve"><value>توزيع حالات الطلب</value></data>
+  <data name="Dash_StatusBreakdown" xml:space="preserve"><value>تفصيل الحالات</value></data>
+  <data name="Dash_RecentOrders" xml:space="preserve"><value>أحدث الطلبات</value></data>
+  <data name="Dash_ViewAll" xml:space="preserve"><value>عرض الكل</value></data>
+  <data name="Dash_PendingMeta" xml:space="preserve"><value>معلق</value></data>
+  <data name="Login_Title" xml:space="preserve"><value>تسجيل الدخول</value></data>
+  <data name="Login_AdminDashboard" xml:space="preserve"><value>لوحة الإدارة</value></data>
+  <data name="Login_Button" xml:space="preserve"><value>دخول</value></data>
+  <data name="Currency" xml:space="preserve"><value>جنيه</value></data>
+  <data name="Actions" xml:space="preserve"><value>إجراءات</value></data>
+  <data name="Customer" xml:space="preserve"><value>العميل</value></data>
+  <data name="Min" xml:space="preserve"><value>د</value></data>
+</root>

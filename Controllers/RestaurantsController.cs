@@ -1,18 +1,21 @@
 using DeliveryAdmin.Models;
+using DeliveryAdmin.Resources;
 using DeliveryAdmin.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 
 namespace DeliveryAdmin.Controllers
 {
     [Authorize]
-    public class RestaurantsController : Controller
+    public class RestaurantsController : LocalizedController
     {
         private readonly ApiService _api;
-        public RestaurantsController(ApiService api) => _api = api;
+        public RestaurantsController(ApiService api, IStringLocalizer<SharedResource> localizer) : base(localizer) => _api = api;
 
         public async Task<IActionResult> Index(string? search, bool? isOpen, int page = 1)
         {
+            SetTitle("Restaurants_Title");
             var result = await _api.GetRestaurants(page, 12, search, isOpen);
             ViewBag.Search = search; ViewBag.IsOpen = isOpen;
             ViewBag.Page = page; ViewBag.TotalPages = (int)Math.Ceiling((result?.Total ?? 0) / 12.0);
@@ -28,27 +31,36 @@ namespace DeliveryAdmin.Controllers
             return View(rest);
         }
 
-        public IActionResult Create() => View(new CreateRestaurantDto());
+        public async Task<IActionResult> Create()
+        {
+            await LoadOwnerOptionsAsync();
+            return View(new CreateRestaurantDto());
+        }
 
         [HttpPost]
         public async Task<IActionResult> Create(CreateRestaurantDto dto)
         {
             var (ok, error) = await _api.CreateRestaurant(dto);
-            if (!ok) { TempData["Error"] = error; return View(dto); }
+            if (!ok) { TempData["Error"] = error; await LoadOwnerOptionsAsync(); return View(dto); }
             TempData["Success"] = "Restaurant created successfully!";
             return RedirectToAction("Index");
         }
+
+        private async Task LoadOwnerOptionsAsync() =>
+            ViewBag.Owners = (await _api.GetUsers(1, 200))?.Data?.Where(u => u.IsActive).ToList() ?? new();
 
         public async Task<IActionResult> Edit(int id)
         {
             var r = await _api.GetRestaurant(id);
             if (r == null) return NotFound();
+            ViewBag.Owners = (await _api.GetUsers(1, 200))?.Data?.Where(u => u.IsActive).ToList() ?? new();
             var dto = new UpdateRestaurantDto
             {
                 Name=r.Name, Description=r.Description, Address=r.Address, Phone=r.Phone,
                 Latitude=r.Latitude, Longitude=r.Longitude, DeliveryFee=r.DeliveryFee,
                 MinOrderAmount=r.MinOrderAmount, EstimatedTime=r.EstimatedTime,
-                ImageUrl=r.ImageUrl, CoverImageUrl=r.CoverImageUrl, IsOpen=r.IsOpen
+                ImageUrl=r.ImageUrl, CoverImageUrl=r.CoverImageUrl, IsOpen=r.IsOpen,
+                OwnerUserId = r.OwnerUserId
             };
             ViewBag.RestaurantId = id; ViewBag.RestaurantName = r.Name;
             return View(dto);
