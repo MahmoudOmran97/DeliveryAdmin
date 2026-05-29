@@ -1,23 +1,65 @@
 @using System.Globalization
-
 @{
     var lang = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
     var isRtl = lang == "ar";
 }
-
 @{
     var statusLabels = new[]{"Pending","Accepted","Preparing","Ready","OnTheWay","Delivered","Cancelled"};
     var statusCounts = (int[])ViewBag.StatusCounts;
     var recentOrders = (List<DeliveryAdmin.Models.OrderDto>)ViewBag.RecentOrders;
 }
 
-<div class="kpi-grid">
-  <a class="kpi-card" asp-controller="Orders" asp-action="Index"><div class="kpi-icon">📦</div><div class="kpi-label">@Localizer["Dash_TotalOrders"]</div><div class="kpi-value">@ViewBag.TotalOrders.ToString("N0")</div><div class="kpi-meta">@ViewBag.PendingOrders @Localizer["Dash_PendingMeta"]</div></a>
-  <a class="kpi-card kpi-green" asp-controller="Payments" asp-action="Index"><div class="kpi-icon">💰</div><div class="kpi-label">@Localizer["Dash_Revenue"]</div><div class="kpi-value">@(((decimal)ViewBag.Revenue).ToString("N0"))</div><div class="kpi-meta">@Localizer["Dash_FromDelivered"]</div></a>
-  <a class="kpi-card kpi-blue" asp-controller="Drivers" asp-action="Index"><div class="kpi-icon">🛵</div><div class="kpi-label">@Localizer["Dash_TotalDrivers"]</div><div class="kpi-value">@ViewBag.TotalDrivers</div><div class="kpi-meta"><span style="color:var(--green)">@ViewBag.OnlineDrivers @Localizer["Dash_Online"]</span></div></a>
-  <a class="kpi-card kpi-purple" asp-controller="Restaurants" asp-action="Index"><div class="kpi-icon">🍽️</div><div class="kpi-label">@Localizer["Dash_Restaurants"]</div><div class="kpi-value">@ViewBag.TotalRestaurants</div><div class="kpi-meta"><span style="color:var(--green)">@ViewBag.OpenRestaurants @Localizer["Dash_OpenNow"]</span></div></a>
+@* Row 1: الـ KPI الرئيسية *@
+<div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+  <a class="kpi-card" asp-controller="Orders" asp-action="Index">
+    <div class="kpi-icon">📦</div>
+    <div class="kpi-label">@Localizer["Dash_TotalOrders"]</div>
+    <div class="kpi-value">@ViewBag.TotalOrders.ToString("N0")</div>
+    <div class="kpi-meta">@ViewBag.PendingOrders @Localizer["Dash_PendingMeta"]</div>
+  </a>
+  <a class="kpi-card kpi-green" asp-controller="Payments" asp-action="Index">
+    <div class="kpi-icon">💰</div>
+    <div class="kpi-label">@Localizer["Dash_Revenue"]</div>
+    <div class="kpi-value">@(((decimal)ViewBag.Revenue).ToString("N0"))</div>
+    <div class="kpi-meta">@Localizer["Dash_FromDelivered"]</div>
+  </a>
+  <a class="kpi-card kpi-blue" asp-controller="Drivers" asp-action="Index">
+    <div class="kpi-icon">🛵</div>
+    <div class="kpi-label">@Localizer["Dash_TotalDrivers"]</div>
+    <div class="kpi-value">@ViewBag.TotalDrivers</div>
+    <div class="kpi-meta"><span style="color:var(--green)">@ViewBag.OnlineDrivers @Localizer["Dash_Online"]</span></div>
+  </a>
+  <a class="kpi-card kpi-purple" asp-controller="Restaurants" asp-action="Index">
+    <div class="kpi-icon">🍽️</div>
+    <div class="kpi-label">@Localizer["Dash_Restaurants"]</div>
+    <div class="kpi-value">@ViewBag.TotalRestaurants</div>
+    <div class="kpi-meta"><span style="color:var(--green)">@ViewBag.OpenRestaurants @Localizer["Dash_OpenNow"]</span></div>
+  </a>
 </div>
 
+@* Row 2: KPI إضافية *@
+<div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);margin-top:0">
+  <a class="kpi-card" asp-controller="Users" asp-action="Index">
+    <div class="kpi-icon">👥</div>
+    <div class="kpi-label">@Localizer["Dash_TotalUsers"]</div>
+    <div class="kpi-value">@ViewBag.TotalUsers.ToString("N0")</div>
+    <div class="kpi-meta"><span style="color:var(--green)">@ViewBag.TotalCustomers @Localizer["Users_Customers"]</span></div>
+  </a>
+  <a class="kpi-card kpi-green" asp-controller="Products" asp-action="Index">
+    <div class="kpi-icon">🍕</div>
+    <div class="kpi-label">@Localizer["Dash_TotalProducts"]</div>
+    <div class="kpi-value">@ViewBag.TotalProducts.ToString("N0")</div>
+    <div class="kpi-meta">@Localizer["Nav_Products"]</div>
+  </a>
+  <a class="kpi-card kpi-blue" asp-controller="Users" asp-action="Index" asp-route-role="Restaurant">
+    <div class="kpi-icon">🏪</div>
+    <div class="kpi-label">@Localizer["Users_RestaurantOwners"]</div>
+    <div class="kpi-value">@ViewBag.TotalRestaurants</div>
+    <div class="kpi-meta">@Localizer["Users_RestaurantOwner"]</div>
+  </a>
+</div>
+
+@* Order Status Summary *@
 <div class="stat-row">
   <div class="stat-box"><div class="stat-label">@Localizer["Dash_Pending"]</div><div class="stat-val" style="color:var(--amber)">@ViewBag.PendingOrders</div></div>
   <div class="stat-box"><div class="stat-label">@Localizer["Dash_OnTheWay"]</div><div class="stat-val" style="color:#60a5fa">@ViewBag.OnWayOrders</div></div>
@@ -25,6 +67,7 @@
   <div class="stat-box"><div class="stat-label">@Localizer["Dash_Revenue"]</div><div class="stat-val" style="color:var(--accent)">@(((decimal)ViewBag.Revenue).ToString("N0"))</div></div>
 </div>
 
+@* Charts *@
 <div style="display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-bottom:24px">
   <div class="card">
     <div class="card-header"><div class="card-title">@Localizer["Dash_OrderStatusDist"]</div></div>
@@ -36,6 +79,7 @@
   </div>
 </div>
 
+@* Recent Orders Table *@
 <div class="card">
   <div class="card-header">
     <div class="card-title">@Localizer["Dash_RecentOrders"]</div>
@@ -43,9 +87,20 @@
   </div>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>#ID</th><th>@Localizer["Customer"]</th><th>@Localizer["Restaurant"]</th><th>@Localizer["Total"]</th><th>@Localizer["Orders_Payment"]</th><th>@Localizer["Status"]</th><th>@Localizer["Orders_Date"]</th><th></th></tr></thead>
+      <thead>
+        <tr>
+          <th>#ID</th>
+          <th>@Localizer["Customer"]</th>
+          <th>@Localizer["Restaurant"]</th>
+          <th>@Localizer["Total"]</th>
+          <th>@Localizer["Orders_Payment"]</th>
+          <th>@Localizer["Status"]</th>
+          <th>@Localizer["Orders_Date"]</th>
+          <th></th>
+        </tr>
+      </thead>
       <tbody>
-        @foreach(var o in recentOrders)
+        @foreach (var o in recentOrders)
         {
           <tr>
             <td class="mono" style="color:var(--accent)">#@o.Id</td>
@@ -54,11 +109,24 @@
             <td class="mono">@o.TotalAmount.ToString("N0") @Localizer["Currency"]</td>
             <td><span class="badge @(o.PaymentMethod=="Cash"?"b-cash":"b-card")">@o.PaymentMethod</span></td>
             <td>
-              @{var sc = o.Status switch { "Pending"=>"b-pending","Accepted"=>"b-accepted","Preparing"=>"b-preparing","ReadyForPickup"=>"b-ready","OnTheWay"=>"b-onway","Delivered"=>"b-delivered","Cancelled"=>"b-cancelled",_=>"b-inactive" };}
-              <span class="badge @sc">@(o.Status=="ReadyForPickup"?"Ready":o.Status)</span>
+              @{
+                var sc = o.Status switch {
+                  "Pending"        => "b-pending",
+                  "Accepted"       => "b-accepted",
+                  "Preparing"      => "b-preparing",
+                  "ReadyForPickup" => "b-ready",
+                  "OnTheWay"       => "b-onway",
+                  "Delivered"      => "b-delivered",
+                  "Cancelled"      => "b-cancelled",
+                  _                => "b-inactive"
+                };
+              }
+              <span class="badge @sc">@(o.Status == "ReadyForPickup" ? "Ready" : o.Status)</span>
             </td>
             <td class="text-muted text-sm">@o.CreatedAt.ToString("dd MMM")</td>
-            <td><a class="btn btn-secondary btn-sm" asp-controller="Orders" asp-action="Details" asp-route-id="@o.Id">@Localizer["Details"]</a></td>
+            <td>
+              <a class="btn btn-secondary btn-sm" asp-controller="Orders" asp-action="Details" asp-route-id="@o.Id">@Localizer["Details"]</a>
+            </td>
           </tr>
         }
       </tbody>
@@ -72,8 +140,16 @@ const colors = ['#f59e0b','#3b82f6','#a855f7','#f97316','#60a5fa','#22c55e','#ef
 const labels = ['Pending','Accepted','Preparing','Ready','OnTheWay','Delivered','Cancelled'];
 const data = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(statusCounts));
 
-new Chart(document.getElementById('statusChart'),{type:'bar',data:{labels,datasets:[{data,backgroundColor:colors.map(c=>c+'bb'),borderRadius:6,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#55555f',font:{size:11}}},y:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#55555f'}}}}});
+new Chart(document.getElementById('statusChart'), {
+  type: 'bar',
+  data: { labels, datasets: [{ data, backgroundColor: colors.map(c => c + 'bb'), borderRadius: 6, borderSkipped: false }] },
+  options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { color: '#55555f', font: { size: 11 } } }, y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#55555f' } } } }
+});
 
-new Chart(document.getElementById('donutChart'),{type:'doughnut',data:{labels,datasets:[{data,backgroundColor:colors,borderWidth:0}]},options:{responsive:true,cutout:'68%',plugins:{legend:{position:'right',labels:{color:'#8a8a96',font:{size:11},padding:10}}}}});
+new Chart(document.getElementById('donutChart'), {
+  type: 'doughnut',
+  data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 0 }] },
+  options: { responsive: true, cutout: '68%', plugins: { legend: { position: 'right', labels: { color: '#8a8a96', font: { size: 11 }, padding: 10 } } } }
+});
 </script>
 }

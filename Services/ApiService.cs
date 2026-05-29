@@ -55,7 +55,24 @@ namespace DeliveryAdmin.Services
                 var json = await res.Content.ReadAsStringAsync();
                 if (!res.IsSuccessStatusCode)
                 {
-                    try { var err = JsonSerializer.Deserialize<JsonElement>(json, _opts); return (false, err.TryGetProperty("message", out var m) ? m.GetString() : res.ReasonPhrase, default); }
+                    try
+                    {
+                        var err = JsonSerializer.Deserialize<JsonElement>(json, _opts);
+                        // 1) Custom API error: { "message": "..." }
+                        if (err.TryGetProperty("message", out var msg) && msg.GetString() is string s && !string.IsNullOrEmpty(s))
+                            return (false, s, default);
+                        // 2) ASP.NET [ApiController] validation error: { "errors": { "Field": ["msg"] }, "title": "..." }
+                        if (err.TryGetProperty("errors", out var errs))
+                        {
+                            var msgs = errs.EnumerateObject()
+                                .SelectMany(p => p.Value.EnumerateArray().Select(v => v.GetString()))
+                                .Where(v => v != null)
+                                .ToList();
+                            if (msgs.Any()) return (false, string.Join(" | ", msgs!), default);
+                        }
+                        if (err.TryGetProperty("title", out var title)) return (false, title.GetString(), default);
+                        return (false, res.ReasonPhrase, default);
+                    }
                     catch { return (false, res.ReasonPhrase, default); }
                 }
                 return (true, null, JsonSerializer.Deserialize<T>(json, _opts));
@@ -73,7 +90,21 @@ namespace DeliveryAdmin.Services
             var json = await res.Content.ReadAsStringAsync();
             if (!res.IsSuccessStatusCode)
             {
-                try { var err = JsonSerializer.Deserialize<JsonElement>(json, _opts); return (false, err.TryGetProperty("message", out var m) ? m.GetString() : res.ReasonPhrase); }
+                try
+                {
+                    var err = JsonSerializer.Deserialize<JsonElement>(json, _opts);
+                    if (err.TryGetProperty("message", out var msg) && msg.GetString() is string s && !string.IsNullOrEmpty(s))
+                        return (false, s);
+                    if (err.TryGetProperty("errors", out var errs))
+                    {
+                        var msgs = errs.EnumerateObject()
+                            .SelectMany(p => p.Value.EnumerateArray().Select(v => v.GetString()))
+                            .Where(v => v != null).ToList();
+                        if (msgs.Any()) return (false, string.Join(" | ", msgs!));
+                    }
+                    if (err.TryGetProperty("title", out var title)) return (false, title.GetString());
+                    return (false, res.ReasonPhrase);
+                }
                 catch { return (false, res.ReasonPhrase); }
             }
             return (true, null);
@@ -110,10 +141,12 @@ namespace DeliveryAdmin.Services
         public async Task<(bool ok, string? error)> DeleteCategory(int id) => await Delete($"categories/{id}");
 
         // ── Products ──────────────────────────────────────────────────────
-        public async Task<PagedResult<ProductDto>?> SearchProducts(string q = "", int? restaurantId = null, int page = 1, int size = 50)
+        public async Task<PagedResult<ProductDto>?> SearchProducts(string q = "", int? restaurantId = null, int page = 1, int size = 50, int? categoryId = null, bool? isAvailable = null)
         {
             var url = $"products/admin?q={Uri.EscapeDataString(q ?? "")}&page={page}&pageSize={size}";
             if (restaurantId.HasValue) url += $"&restaurantId={restaurantId}";
+            if (categoryId.HasValue)   url += $"&categoryId={categoryId}";
+            if (isAvailable.HasValue)  url += $"&isAvailable={isAvailable.Value.ToString().ToLower()}";
             return await Get<PagedResult<ProductDto>>(url);
         }
         public async Task<ProductDto?> GetProduct(int id) => await Get<ProductDto>($"products/{id}");

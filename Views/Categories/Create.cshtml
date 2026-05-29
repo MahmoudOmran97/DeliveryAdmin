@@ -1,18 +1,33 @@
 @model DeliveryAdmin.Models.CreateCategoryDto
-@{ViewData["Title"] = "Add Category"; var rest = ViewBag.Restaurant as DeliveryAdmin.Models.RestaurantDto;}
+@{
+    var rest = ViewBag.Restaurant as DeliveryAdmin.Models.RestaurantDto;
+}
 <div style="max-width:500px">
-<div class="card">
-  <div class="card-header"><div class="card-title">➕ Add Category to @rest?.Name</div><a class="btn btn-secondary btn-sm" href="/Categories/Index?restaurantId=@ViewBag.RestaurantId">← Back</a></div>
-  <div class="card-body">
-    <form method="post">
-      <input type="hidden" asp-for="RestaurantId" value="@ViewBag.RestaurantId">
-      <div class="form-group"><label class="form-label">Category Name *</label><input class="form-control" asp-for="Name" placeholder="e.g. Burgers, Drinks, Desserts…" required></div>
-      <div class="form-group"><label class="form-label">Image URL</label><input class="form-control" asp-for="ImageUrl" placeholder="https://..."></div>
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <button class="btn btn-primary" type="submit">💾 Create Category</button>
-        <a class="btn btn-secondary" href="/Categories/Index?restaurantId=@ViewBag.RestaurantId">Cancel</a>
-      </div>
-    </form>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">➕ @Localizer["Cat_Add"] — @rest?.Name</div>
+      <a class="btn btn-secondary btn-sm" asp-action="Index" asp-route-restaurantId="@ViewBag.RestaurantId">← @Localizer["Cancel"]</a>
+    </div>
+    <div class="card-body">
+      @if (TempData["Error"] != null)
+      {
+        <div class="alert alert-danger" style="margin-bottom:14px">@TempData["Error"]</div>
+      }
+      <form method="post">
+        <input type="hidden" asp-for="RestaurantId" value="@ViewBag.RestaurantId" />
+        <div class="form-group">
+          <label class="form-label">@Localizer["Cat_Name"] *</label>
+          <input class="form-control" asp-for="Name" placeholder="@Localizer["Cat_NamePlaceholder"]" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">@Localizer["Cat_ImageUrl"]</label>
+          <input class="form-control" asp-for="ImageUrl" placeholder="https://..." />
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="btn btn-primary" type="submit">@Localizer["Cat_CreateBtn"]</button>
+          <a class="btn btn-secondary" asp-action="Index" asp-route-restaurantId="@ViewBag.RestaurantId">@Localizer["Cancel"]</a>
+        </div>
+      </form>
+    </div>
   </div>
-</div>
 </div>

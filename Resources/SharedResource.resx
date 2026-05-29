@@ -192,4 +192,29 @@
   <data name="Actions" xml:space="preserve"><value>Actions</value></data>
   <data name="Customer" xml:space="preserve"><value>Customer</value></data>
   <data name="Min" xml:space="preserve"><value>min</value></data>
+
+  <data name="Cat_Add" xml:space="preserve"><value>Add Category</value></data>
+  <data name="Cat_Edit" xml:space="preserve"><value>Edit Category</value></data>
+  <data name="Cat_Name" xml:space="preserve"><value>Category Name</value></data>
+  <data name="Cat_ImageUrl" xml:space="preserve"><value>Image URL</value></data>
+  <data name="Cat_SortOrder" xml:space="preserve"><value>Sort Order</value></data>
+  <data name="Cat_Products" xml:space="preserve"><value>Products</value></data>
+  <data name="Cat_NoData" xml:space="preserve"><value>No categories yet</value></data>
+  <data name="Cat_AddFirst" xml:space="preserve"><value>Add the first one</value></data>
+  <data name="Cat_Created" xml:space="preserve"><value>Category created successfully</value></data>
+  <data name="Cat_Updated" xml:space="preserve"><value>Category updated</value></data>
+  <data name="Cat_Deleted" xml:space="preserve"><value>Category deleted</value></data>
+  <data name="Cat_BackToRestaurant" xml:space="preserve"><value>← Restaurant</value></data>
+  <data name="Cat_AllProducts" xml:space="preserve"><value>🍕 All Products</value></data>
+  <data name="Cat_SearchPlaceholder" xml:space="preserve"><value>Search categories...</value></data>
+  <data name="Cat_MenuCategories" xml:space="preserve"><value>Menu Categories</value></data>
+  <data name="Cat_ManageDesc" xml:space="preserve"><value>Manage categories and products for this restaurant</value></data>
+  <data name="Cat_Sort" xml:space="preserve"><value>Sort</value></data>
+  <data name="Cat_NamePlaceholder" xml:space="preserve"><value>e.g. Burgers, Drinks, Desserts…</value></data>
+  <data name="Cat_CreateBtn" xml:space="preserve"><value>💾 Create Category</value></data>
+  <data name="Cat_SaveBtn" xml:space="preserve"><value>💾 Save Changes</value></data>
+  <data name="Dash_TotalUsers" xml:space="preserve"><value>Total Users</value></data>
+  <data name="Dash_TotalProducts" xml:space="preserve"><value>Products</value></data>
+  <data name="Dash_TotalCustomers" xml:space="preserve"><value>Customers</value></data>
+  <data name="Dash_ActiveUsers" xml:space="preserve"><value>active</value></data>
 </root>

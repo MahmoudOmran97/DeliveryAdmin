@@ -1,85 +1,194 @@
 @using System.Globalization
-
 @{
     var lang = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
     var isRtl = lang == "ar";
 }
 @model List<DeliveryAdmin.Models.ProductDto>
 @{
-  var page=(int)ViewBag.Page;
-  var totalPages=(int)ViewBag.TotalPages;
-  var rests = (List<DeliveryAdmin.Models.RestaurantDto>)ViewBag.Restaurants;
-  string currentRestId = ViewBag.RestaurantId?.ToString() ?? "";}
+    var page = (int)ViewBag.Page;
+    var totalPages = (int)ViewBag.TotalPages;
+    var rests = (List<DeliveryAdmin.Models.RestaurantDto>)ViewBag.Restaurants;
+    var cats = ViewBag.Categories as List<DeliveryAdmin.Models.CategoryDto> ?? new();
+    string currentRestId = ViewBag.RestaurantId?.ToString() ?? "";
+    string currentCatId = ViewBag.CategoryId?.ToString() ?? "";
+    string currentAvail = ViewBag.IsAvailable?.ToString() ?? "";
+}
 <div class="card">
-  <div class="card-header">
-    <div class="card-title">@Localizer["Products_Title"] <span class="text-muted text-sm">(@ViewBag.Total @Localizer["Total"])</span></div>
-    <div class="filters">
-      <form method="get" style="display:flex;gap:8px;flex-wrap:wrap">
-        <select class="filter-input" name="restaurantId" onchange="this.form.submit()">
-          <option value="">@Localizer["Products_AllRestaurants"]</option>
-          @foreach(var r in rests)
-          {
-            if(currentRestId==r.Id.ToString()){<option value="@r.Id" selected>@r.Name</option>}
-            else{<option value="@r.Id">@r.Name</option>}
-          }
-        </select>
-        <input class="filter-input" name="q" value="@ViewBag.Q" placeholder="@Localizer["Products_SearchPlaceholder"]">
-        <button class="btn btn-secondary btn-sm" type="submit">@Localizer["Products_Search"]</button>
-      </form>
-      <a class="btn btn-primary btn-sm" asp-controller="Products" asp-action="Create" asp-route-restaurantId="@(string.IsNullOrEmpty(currentRestId)?null:currentRestId)">+ @Localizer["Products_Add"]</a>
+    <div class="card-header">
+        <div class="card-title">@Localizer["Products_Title"] <span class="text-muted text-sm">(@ViewBag.Total @Localizer["Total"])</span></div>
+        <div class="filters">
+            <form method="get" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center" id="productFilterForm">
+
+                @* فلتر المطعم *@
+                <select class="filter-input" name="restaurantId" onchange="this.form.submit()">
+                    <option value="">@Localizer["Products_AllRestaurants"]</option>
+                    @foreach (var r in rests)
+                    {
+                        if (currentRestId == r.Id.ToString())
+                        {
+                            <option value="@r.Id" selected>@r.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@r.Id">@r.Name</option>
+                        }
+                    }
+                </select>
+
+                @* فلتر التصنيف (يظهر بس لو في مطعم مختار) *@
+                @if (cats.Any())
+                {
+                    <select class="filter-input" name="categoryId" onchange="this.form.submit()">
+                        <option value="">@Localizer["Products_Category"] (@Localizer["Users_All"])</option>
+                        @foreach (var c in cats)
+                        {
+                            if (currentCatId == c.Id.ToString())
+                            {
+                                <option value="@c.Id" selected>@c.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@c.Id">@c.Name</option>
+                            }
+                        }
+                    </select>
+                }
+
+                @* فلتر الإتاحة *@
+                <select class="filter-input" name="isAvailable" onchange="this.form.submit()">
+                    <option value="">@Localizer["Status"] (@Localizer["Users_All"])</option>
+                    @if (currentAvail == "True")
+                    {
+                        <option value="true" selected>@Localizer["Products_Available"]</option>
+                        <option value="false">@Localizer["Products_Unavailable"]</option>
+                    }
+                    else if (currentAvail == "False")
+                    {
+                        <option value="true">@Localizer["Products_Available"]</option>
+                        <option value="false" selected>@Localizer["Products_Unavailable"]</option>
+                    }
+                    else
+                    {
+                        <option value="true">@Localizer["Products_Available"]</option>
+                        <option value="false">@Localizer["Products_Unavailable"]</option>
+                    }
+                </select>
+
+                @* بحث نصي *@
+                <input class="filter-input" name="q" value="@ViewBag.Q" placeholder="@Localizer["Products_SearchPlaceholder"]" />
+
+                <button class="btn btn-secondary btn-sm" type="submit">@Localizer["Products_Search"]</button>
+
+                @if (!string.IsNullOrEmpty(ViewBag.Q as string) || !string.IsNullOrEmpty(currentRestId) || !string.IsNullOrEmpty(currentCatId) || !string.IsNullOrEmpty(currentAvail))
+                {
+                    <a class="btn btn-secondary btn-sm" asp-action="Index">✕</a>
+                }
+            </form>
+            <a class="btn btn-primary btn-sm" asp-controller="Products" asp-action="Create" asp-route-restaurantId="@(string.IsNullOrEmpty(currentRestId) ? null : currentRestId)">
+                + @Localizer["Products_Add"]
+            </a>
+        </div>
     </div>
-  </div>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>@Localizer["Products_Title"]</th><th>@Localizer["Products_Category"]</th><th>@Localizer["Restaurant"]</th><th>@Localizer["Products_Price"]</th><th>@Localizer["Products_Discounted"]</th><th>@Localizer["Products_PrepTime"]</th><th>@Localizer["Products_Calories"]</th><th>@Localizer["Status"]</th><th>@Localizer["Products_Actions"]</th></tr></thead>
-      <tbody>
-        @if(!Model.Any())
-        {
-          <tr><td colspan="9"><div class="empty"><div class="empty-icon">🍕</div><div>@Localizer["Products_NoData"]</div></div></td></tr>
-        }
-        @foreach(var p in Model)
-        {
-          <tr>
-            <td>
-              <div style="display:flex;align-items:center;gap:10px">
-                @if(!string.IsNullOrEmpty(p.ImageUrl)){<img src="@p.ImageUrl" class="img-preview" alt="">}
-                else{<div class="img-preview" style="display:flex;align-items:center;justify-content:center;font-size:18px">🍕</div>}
-                <div>
-                  <div style="font-weight:600">@p.Name</div>
-                  <div class="text-muted text-sm" style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">@p.Description</div>
-                </div>
-              </div>
-            </td>
-            <td class="text-muted text-sm">@(p.CategoryName??"-")</td>
-            <td class="text-sm">@(p.RestaurantName??"-")</td>
-            <td class="mono" style="font-weight:600">@p.Price.ToString("N2") EGP</td>
-            <td class="mono" style="color:var(--green)">@(p.DiscountedPrice.HasValue?p.DiscountedPrice.Value.ToString("N2")+" EGP":"-")</td>
-            <td class="mono text-muted">@p.PreparationTime min</td>
-            <td class="mono text-muted">@(p.Calories.HasValue?p.Calories.Value.ToString()+" kcal":"-")</td>
-            <td><span class="badge @(p.IsAvailable?"b-active":"b-inactive")">@(p.IsAvailable?Localizer["Products_Available"].Value:Localizer["Products_Unavailable"].Value)</span></td>
-            <td>
-              <div style="display:flex;gap:4px;flex-wrap:wrap">
-                <a class="btn btn-secondary btn-sm" asp-action="Edit" asp-route-id="@p.Id">@Localizer["Edit"]</a>
-                <form method="post" asp-action="Toggle" asp-route-id="@p.Id" style="display:inline">
-                  @if(p.IsAvailable){<button class="btn btn-warning btn-sm" type="submit">@Localizer["Products_Disable"]</button>}
-                  else{<button class="btn btn-success btn-sm" type="submit">@Localizer["Products_Enable"]</button>}
-                </form>
-                <form method="post" asp-action="Delete" asp-route-id="@p.Id" style="display:inline" onsubmit="return confirm('Delete?')">
-                  <button class="btn btn-danger btn-sm" type="submit">@Localizer["Products_Delete"]</button>
-                </form>
-              </div>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
-  @if(totalPages>1)
-  {
-    <div style="padding:12px 18px;border-top:1px solid var(--border)">
-      <div class="pagination">
-        @for(int i=1;i<=totalPages;i++){<a class="page-btn @(i==page?"active":"")" asp-action="Index" asp-route-page="@i" asp-route-restaurantId="@currentRestId" asp-route-q="@ViewBag.Q">@i</a>}
-      </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>@Localizer["Products_Title"]</th>
+                    <th>@Localizer["Products_Category"]</th>
+                    <th>@Localizer["Restaurant"]</th>
+                    <th>@Localizer["Products_Price"]</th>
+                    <th>@Localizer["Products_Discounted"]</th>
+                    <th>@Localizer["Products_PrepTime"]</th>
+                    <th>@Localizer["Products_Calories"]</th>
+                    <th>@Localizer["Status"]</th>
+                    <th>@Localizer["Products_Actions"]</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="9"><div class="empty"><div class="empty-icon">🍕</div><div>@Localizer["Products_NoData"]</div></div></td></tr>
+                }
+                @foreach (var p in Model)
+                {
+                    <tr>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:10px">
+                                @if (!string.IsNullOrEmpty(p.ImageUrl))
+                                {
+                                    <img src="@p.ImageUrl" class="img-preview" alt="">
+                                }
+                                else
+                                {
+                                    <div class="img-preview" style="display:flex;align-items:center;justify-content:center;font-size:18px">🍕</div>
+                                }
+                                <div>
+                                    <div style="font-weight:600">@p.Name</div>
+                                    <div class="text-muted text-sm" style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">@p.Description</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-muted text-sm">@(p.CategoryName ?? "-")</td>
+                        <td class="text-sm">@(p.RestaurantName ?? "-")</td>
+                        <td class="mono" style="font-weight:600">@p.Price.ToString("N2") @Localizer["Currency"]</td>
+                        <td class="mono" style="color:var(--green)">@(p.DiscountedPrice.HasValue? p.DiscountedPrice.Value.ToString("N2") + " " + Localizer["Currency"] : "-")</td>
+                        <td class="mono text-muted">@p.PreparationTime @Localizer["Min"]</td>
+                        <td class="mono text-muted">@(p.Calories.HasValue? p.Calories.Value + " kcal" : "-")</td>
+                        <td>
+                            <span class="badge @(p.IsAvailable ? "b-active" : "b-inactive")">
+                                @(p.IsAvailable? Localizer["Products_Available"].Value : Localizer["Products_Unavailable"].Value)
+                            </span>
+                        </td>
+                        <td>
+                            <div style="display:flex;gap:4px;flex-wrap:wrap">
+                                <a class="btn btn-secondary btn-sm" asp-action="Edit" asp-route-id="@p.Id">@Localizer["Edit"]</a>
+                                <form method="post" asp-action="Toggle" asp-route-id="@p.Id" style="display:inline">
+                                    @if (p.IsAvailable)
+                                    {
+                                        <button class="btn btn-warning btn-sm" type="submit">@Localizer["Products_Disable"]</button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-success btn-sm" type="submit">@Localizer["Products_Enable"]</button>
+                                    }
+                                </form>
+                                <form method="post" asp-action="Delete" asp-route-id="@p.Id" style="display:inline" onsubmit="return confirm('@Localizer["DeleteConfirm"]')">
+                                    <button class="btn btn-danger btn-sm" type="submit">@Localizer["Products_Delete"]</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
-  }
+
+    @if (totalPages > 1)
+    {
+        <div style="padding:12px 18px;border-top:1px solid var(--border)">
+            <div class="pagination">
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    <a class="page-btn @(i == page ? "active" : "")"
+                       asp-action="Index"
+                       asp-route-page="@i"
+                       asp-route-restaurantId="@currentRestId"
+                       asp-route-categoryId="@currentCatId"
+                       asp-route-isAvailable="@currentAvail"
+                       asp-route-q="@ViewBag.Q">@i</a>
+                }
+            </div>
+        </div>
+    }
 </div>
+
+@section Scripts {
+    <script>
+        // لما المطعم يتغير، امسح الكاتيجوري المختارة عشان ميبقاش conflict
+        document.querySelector('select[name="restaurantId"]')?.addEventListener('change', function () {
+            const catSel = document.querySelector('select[name="categoryId"]');
+            if (catSel) catSel.value = '';
+        });
+    </script>
+}

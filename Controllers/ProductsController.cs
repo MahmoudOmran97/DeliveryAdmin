@@ -13,14 +13,25 @@ namespace DeliveryAdmin.Controllers
         private readonly ApiService _api;
         public ProductsController(ApiService api, IStringLocalizer<SharedResource> localizer) : base(localizer) => _api = api;
 
-        public async Task<IActionResult> Index(string? q, int? restaurantId, int page = 1)
+        public async Task<IActionResult> Index(string? q, int? restaurantId, int? categoryId, bool? isAvailable, int page = 1)
         {
             SetTitle("Products_Title");
-            var result = await _api.SearchProducts(q ?? "", restaurantId, page, 20);
+            var result = await _api.SearchProducts(q ?? "", restaurantId, page, 20, categoryId, isAvailable);
             var rests = await _api.GetRestaurants(1, 100);
             ViewBag.Restaurants = rests?.Data ?? new();
-            ViewBag.Q = q; ViewBag.RestaurantId = restaurantId;
-            ViewBag.Page = page; ViewBag.TotalPages = (int)Math.Ceiling((result?.Total ?? 0) / 20.0);
+            ViewBag.Q = q;
+            ViewBag.RestaurantId = restaurantId;
+            ViewBag.CategoryId = categoryId;
+            ViewBag.IsAvailable = isAvailable;
+
+            // Load categories for selected restaurant
+            if (restaurantId.HasValue)
+                ViewBag.Categories = await _api.GetCategories(restaurantId.Value) ?? new();
+            else
+                ViewBag.Categories = new List<DeliveryAdmin.Models.CategoryDto>();
+
+            ViewBag.Page = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((result?.Total ?? 0) / 20.0);
             ViewBag.Total = result?.Total ?? 0;
             return View(result?.Data ?? new());
         }

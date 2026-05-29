@@ -192,4 +192,32 @@
   <data name="Actions" xml:space="preserve"><value>إجراءات</value></data>
   <data name="Customer" xml:space="preserve"><value>العميل</value></data>
   <data name="Min" xml:space="preserve"><value>د</value></data>
+
+  <!-- Categories -->
+  <data name="Cat_Add" xml:space="preserve"><value>إضافة تصنيف</value></data>
+  <data name="Cat_Edit" xml:space="preserve"><value>تعديل التصنيف</value></data>
+  <data name="Cat_Name" xml:space="preserve"><value>اسم التصنيف</value></data>
+  <data name="Cat_ImageUrl" xml:space="preserve"><value>رابط الصورة</value></data>
+  <data name="Cat_SortOrder" xml:space="preserve"><value>ترتيب العرض</value></data>
+  <data name="Cat_Products" xml:space="preserve"><value>المنتجات</value></data>
+  <data name="Cat_NoData" xml:space="preserve"><value>لا توجد تصنيفات بعد</value></data>
+  <data name="Cat_AddFirst" xml:space="preserve"><value>أضف أول تصنيف</value></data>
+  <data name="Cat_Created" xml:space="preserve"><value>تم إنشاء التصنيف بنجاح</value></data>
+  <data name="Cat_Updated" xml:space="preserve"><value>تم تحديث التصنيف</value></data>
+  <data name="Cat_Deleted" xml:space="preserve"><value>تم حذف التصنيف</value></data>
+  <data name="Cat_BackToRestaurant" xml:space="preserve"><value>← المطعم</value></data>
+  <data name="Cat_AllProducts" xml:space="preserve"><value>🍕 كل المنتجات</value></data>
+  <data name="Cat_SearchPlaceholder" xml:space="preserve"><value>ابحث عن تصنيف...</value></data>
+  <data name="Cat_MenuCategories" xml:space="preserve"><value>تصنيفات المنيو</value></data>
+  <data name="Cat_ManageDesc" xml:space="preserve"><value>إدارة التصنيفات والمنتجات لهذا المطعم</value></data>
+  <data name="Cat_Sort" xml:space="preserve"><value>ترتيب</value></data>
+  <data name="Cat_NamePlaceholder" xml:space="preserve"><value>مثال: برجر، مشروبات، حلويات…</value></data>
+  <data name="Cat_CreateBtn" xml:space="preserve"><value>💾 إنشاء التصنيف</value></data>
+  <data name="Cat_SaveBtn" xml:space="preserve"><value>💾 حفظ التغييرات</value></data>
+
+  <!-- Dashboard extras -->
+  <data name="Dash_TotalUsers" xml:space="preserve"><value>إجمالي المستخدمين</value></data>
+  <data name="Dash_TotalProducts" xml:space="preserve"><value>المنتجات</value></data>
+  <data name="Dash_TotalCustomers" xml:space="preserve"><value>العملاء</value></data>
+  <data name="Dash_ActiveUsers" xml:space="preserve"><value>نشط</value></data>
 </root>

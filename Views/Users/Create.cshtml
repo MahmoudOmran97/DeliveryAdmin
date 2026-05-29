@@ -6,12 +6,42 @@
     <a class="btn btn-secondary btn-sm" asp-action="Index">← @Localizer["Cancel"]</a>
   </div>
   <div class="card-body">
+
+    @* Show API/validation errors *@
+    @if (TempData["Error"] != null)
+    {
+      <div class="alert alert-danger" style="margin-bottom:16px">❌ @TempData["Error"]</div>
+    }
+    @if (!ViewData.ModelState.IsValid)
+    {
+      <div class="alert alert-danger" style="margin-bottom:16px">
+        @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+          <div>❌ @err.ErrorMessage</div>
+        }
+      </div>
+    }
+
     <form method="post">
       <div class="form-grid">
-        <div class="form-group"><label class="form-label">@Localizer["FullName"]</label><input class="form-control" asp-for="FullName" required /></div>
-        <div class="form-group"><label class="form-label">@Localizer["Email"]</label><input class="form-control" asp-for="Email" type="email" required /></div>
-        <div class="form-group"><label class="form-label">@Localizer["Phone"]</label><input class="form-control" asp-for="Phone" required /></div>
-        <div class="form-group"><label class="form-label">@Localizer["Password"]</label><input class="form-control" asp-for="Password" type="password" required /></div>
+        <div class="form-group">
+          <label class="form-label">@Localizer["FullName"] *</label>
+          <input class="form-control" asp-for="FullName" required />
+          <span asp-validation-for="FullName" class="text-danger text-sm"></span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">@Localizer["Email"] *</label>
+          <input class="form-control" asp-for="Email" type="email" required />
+          <span asp-validation-for="Email" class="text-danger text-sm"></span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">@Localizer["Phone"] *</label>
+          <input class="form-control" asp-for="Phone" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">@Localizer["Password"] *</label>
+          <input class="form-control" asp-for="Password" type="password" required minlength="6" />
+        </div>
         <div class="form-group">
           <label class="form-label">@Localizer["Role"]</label>
           <select class="form-control" asp-for="Role" id="roleSelect">
@@ -25,10 +55,16 @@
           <label class="form-label">@Localizer["SelectRestaurant"]</label>
           <select class="form-control" asp-for="RestaurantId">
             <option value="">@Localizer["NoRestaurant"]</option>
-            @foreach(var r in restaurants){<option value="@r.Id">@r.Name</option>}
+            @foreach (var r in restaurants)
+            {
+              <option value="@r.Id">@r.Name</option>
+            }
           </select>
         </div>
-        <div class="form-group form-full"><label class="form-label">@Localizer["Address"]</label><input class="form-control" asp-for="Address" /></div>
+        <div class="form-group form-full">
+          <label class="form-label">@Localizer["Address"]</label>
+          <input class="form-control" asp-for="Address" />
+        </div>
       </div>
       <div style="margin-top:16px;display:flex;gap:10px">
         <button type="submit" class="btn btn-primary">@Localizer["Save"]</button>
@@ -37,4 +73,15 @@
     </form>
   </div>
 </div>
-@section Scripts{<script>document.getElementById('roleSelect')?.addEventListener('change',function(){document.getElementById('restaurantField').style.display=this.value==='Restaurant'?'block':'none';});document.getElementById('roleSelect')?.dispatchEvent(new Event('change'));</script>}
+
+@section Scripts {
+<script>
+  function toggleRestaurantField() {
+    const role = document.getElementById('roleSelect')?.value;
+    const field = document.getElementById('restaurantField');
+    if (field) field.style.display = (role === 'Restaurant') ? 'block' : 'none';
+  }
+  document.getElementById('roleSelect')?.addEventListener('change', toggleRestaurantField);
+  toggleRestaurantField();
+</script>
+}
