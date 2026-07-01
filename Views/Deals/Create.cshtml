@@ -1,0 +1,87 @@
+@model DeliveryAdmin.Models.CreateDealDto
+@{
+  ViewData["Title"] = "Add Deal";
+  var rests = (List<DeliveryAdmin.Models.RestaurantDto>)ViewBag.Restaurants;
+  string preselectedRest = ViewBag.RestaurantId?.ToString() ?? "";
+}
+<div style="max-width:700px">
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">@Localizer["Deals_Add"]</div>
+    <a class="btn btn-secondary btn-sm" asp-action="Index">← @Localizer["Back"]</a>
+  </div>
+  <div class="card-body">
+    @if (TempData["Error"] != null)
+    {
+      <div class="alert alert-danger" style="margin-bottom:12px">@TempData["Error"]</div>
+    }
+    <form method="post">
+      <div class="form-grid">
+        <div class="form-group form-full"><label class="form-label">@Localizer["Deals_Title"] *</label><input class="form-control" asp-for="Title" required></div>
+        <div class="form-group form-full"><label class="form-label">@Localizer["Description"]</label><textarea class="form-control" asp-for="Description"></textarea></div>
+
+        <div class="form-group">
+          <label class="form-label">@Localizer["Restaurant"]</label>
+          <select class="form-control" id="restSelect" name="RestaurantId" onchange="loadProducts(this.value)">
+            <option value="">@Localizer["Products_AllRestaurants"]</option>
+            @foreach(var r in rests)
+            {
+              if(preselectedRest==r.Id.ToString()){<option value="@r.Id" selected>@r.Name</option>}
+              else{<option value="@r.Id">@r.Name</option>}
+            }
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">@Localizer["Products_Title"]</label>
+          <select class="form-control" name="ProductId" id="prodSelect">
+            <option value="">@Localizer["Deals_NoProduct"]</option>
+            @if(ViewBag.Products!=null)
+            {
+              @foreach(var p in (List<DeliveryAdmin.Models.ProductDto>)ViewBag.Products)
+              {<option value="@p.Id">@p.Name</option>}
+            }
+          </select>
+        </div>
+
+        <div class="form-group"><label class="form-label">@Localizer["Deals_OriginalPrice"]</label><input class="form-control" asp-for="OriginalPrice" type="number" step="0.01"></div>
+        <div class="form-group"><label class="form-label">@Localizer["Deals_DiscountedPrice"]</label><input class="form-control" asp-for="DiscountedPrice" type="number" step="0.01"></div>
+        <div class="form-group"><label class="form-label">@Localizer["Deals_DiscountPercent"]</label><input class="form-control" asp-for="DiscountPercent" type="number" placeholder="30"></div>
+        <div class="form-group"><label class="form-label">@Localizer["Deals_SortOrder"]</label><input class="form-control" asp-for="SortOrder" type="number" value="0"></div>
+
+        <div class="form-group"><label class="form-label">@Localizer["Deals_BadgeText"]</label><input class="form-control" asp-for="BadgeText" placeholder="@Localizer["Deals_BadgeHint"]"></div>
+        <div class="form-group"><label class="form-label">@Localizer["Deals_BadgeColor"]</label><input class="form-control" asp-for="BadgeColor" type="color" value="#ff5722" style="height:42px;padding:4px"></div>
+
+        <div class="form-group form-full"><label class="form-label">@Localizer["Products_Image"]</label><input class="form-control" asp-for="ImageUrl" placeholder="https://..."></div>
+        <div class="form-group"><label class="form-label">@Localizer["Coupons_Expires"]</label><input class="form-control" asp-for="ExpiresAt" type="date"></div>
+        <div class="form-group">
+          <label class="form-label">@Localizer["Status"]</label>
+          <select class="form-control" asp-for="IsActive">
+            <option value="true">@Localizer["Products_Available"]</option>
+            <option value="false">@Localizer["Coupons_Disabled"]</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn btn-primary" type="submit">@Localizer["Save"]</button>
+        <a class="btn btn-secondary" asp-action="Index">@Localizer["Cancel"]</a>
+      </div>
+    </form>
+  </div>
+</div>
+</div>
+@section Scripts {
+<script>
+async function loadProducts(restaurantId) {
+  const sel = document.getElementById('prodSelect');
+  sel.innerHTML = '<option value="">@Localizer["Deals_NoProduct"]</option>';
+  if (!restaurantId) return;
+  try {
+    const res = await fetch('/Deals/GetProductsJson?restaurantId=' + restaurantId);
+    const products = await res.json();
+    sel.innerHTML += products.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+  } catch(e) {}
+}
+const rs = document.getElementById('restSelect');
+if (rs.value) loadProducts(rs.value);
+</script>
+}

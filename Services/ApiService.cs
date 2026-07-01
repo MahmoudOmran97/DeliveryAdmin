@@ -198,6 +198,24 @@ namespace DeliveryAdmin.Services
         // ── Ratings ───────────────────────────────────────────────────────
         public async Task<PagedResult<RatingDto>?> GetRatings(int page = 1, int size = 20) => await Get<PagedResult<RatingDto>>($"ratings/admin?page={page}&pageSize={size}");
 
+        // ── Coupons ───────────────────────────────────────────────────────
+        public async Task<List<CouponDto>?> GetCoupons() => await Get<List<CouponDto>>("coupons/admin");
+        public async Task<(bool ok, string? error)> CreateCoupon(CreateCouponDto dto) { var r = await Post<object>("coupons", dto); return (r.ok, r.error); }
+        public async Task<(bool ok, string? error)> UpdateCoupon(int id, CreateCouponDto dto) => await Put($"coupons/{id}", dto);
+        public async Task<(bool ok, string? error)> DeleteCoupon(int id) => await Delete($"coupons/{id}");
+
+        // ── Deals ─────────────────────────────────────────────────────────
+        public async Task<List<DealDto>?> GetDeals() => await Get<List<DealDto>>("deals/admin");
+        public async Task<(bool ok, string? error)> CreateDeal(CreateDealDto dto) { var r = await Post<object>("deals", dto); return (r.ok, r.error); }
+        public async Task<(bool ok, string? error)> UpdateDeal(int id, CreateDealDto dto) => await Put($"deals/{id}", dto);
+        public async Task<(bool ok, string? error)> DeleteDeal(int id) => await Delete($"deals/{id}");
+
+        // ── Banners ───────────────────────────────────────────────────────
+        public async Task<List<BannerDto>?> GetBanners() => await Get<List<BannerDto>>("banners/admin");
+        public async Task<(bool ok, string? error)> CreateBanner(CreateBannerDto dto) { var r = await Post<object>("banners", dto); return (r.ok, r.error); }
+        public async Task<(bool ok, string? error)> UpdateBanner(int id, CreateBannerDto dto) => await Put($"banners/{id}", dto);
+        public async Task<(bool ok, string? error)> DeleteBanner(int id) => await Delete($"banners/{id}");
+
         // ── Notifications ─────────────────────────────────────────────────
         public async Task<PagedResult<NotificationDto>?> GetNotifications(int page = 1, int size = 20) => await Get<PagedResult<NotificationDto>>($"notifications?page={page}&pageSize={size}");
         public async Task<(bool ok, string? error, int count)> SendNotification(SendNotificationDto dto)

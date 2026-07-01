@@ -220,4 +220,59 @@
   <data name="Dash_TotalProducts" xml:space="preserve"><value>المنتجات</value></data>
   <data name="Dash_TotalCustomers" xml:space="preserve"><value>العملاء</value></data>
   <data name="Dash_ActiveUsers" xml:space="preserve"><value>نشط</value></data>
+  <data name="Nav_Marketing" xml:space="preserve"><value>التسويق</value></data>
+  <data name="Nav_Coupons" xml:space="preserve"><value>الكوبونات</value></data>
+  <data name="Nav_Deals" xml:space="preserve"><value>العروض</value></data>
+  <data name="Nav_Banners" xml:space="preserve"><value>البانرات</value></data>
+  <data name="Description" xml:space="preserve"><value>الوصف</value></data>
+  <data name="SaveChanges" xml:space="preserve"><value>حفظ التغييرات</value></data>
+  <data name="Products_Image" xml:space="preserve"><value>رابط الصورة</value></data>
+  <data name="Coupons_Title" xml:space="preserve"><value>الكوبونات</value></data>
+  <data name="Coupons_Add" xml:space="preserve"><value>إضافة كوبون</value></data>
+  <data name="Coupons_Edit" xml:space="preserve"><value>تعديل كوبون</value></data>
+  <data name="Coupons_Code" xml:space="preserve"><value>الكود</value></data>
+  <data name="Coupons_Discount" xml:space="preserve"><value>الخصم</value></data>
+  <data name="Coupons_DiscountType" xml:space="preserve"><value>نوع الخصم</value></data>
+  <data name="Coupons_DiscountValue" xml:space="preserve"><value>قيمة الخصم</value></data>
+  <data name="Coupons_Fixed" xml:space="preserve"><value>مبلغ ثابت</value></data>
+  <data name="Coupons_Percentage" xml:space="preserve"><value>نسبة مئوية</value></data>
+  <data name="Coupons_MinOrder" xml:space="preserve"><value>الحد الأدنى للطلب</value></data>
+  <data name="Coupons_MaxDiscount" xml:space="preserve"><value>أقصى خصم</value></data>
+  <data name="Coupons_MaxDiscountHint" xml:space="preserve"><value>اختياري لحد أقصى في حالة النسبة المئوية</value></data>
+  <data name="Coupons_UsageLimit" xml:space="preserve"><value>حد الاستخدام</value></data>
+  <data name="Coupons_UnlimitedHint" xml:space="preserve"><value>اتركه فارغاً لاستخدام غير محدود</value></data>
+  <data name="Coupons_Usage" xml:space="preserve"><value>الاستخدام</value></data>
+  <data name="Coupons_Expires" xml:space="preserve"><value>تاريخ الانتهاء</value></data>
+  <data name="Coupons_AllRestaurants" xml:space="preserve"><value>كل المطاعم</value></data>
+  <data name="Coupons_NoData" xml:space="preserve"><value>لا توجد كوبونات</value></data>
+  <data name="Coupons_Disabled" xml:space="preserve"><value>معطل</value></data>
+  <data name="Coupons_Expired" xml:space="preserve"><value>منتهي</value></data>
+  <data name="Coupons_DeleteConfirm" xml:space="preserve"><value>هل تريد حذف هذا الكوبون؟</value></data>
+  <data name="Deals_Title" xml:space="preserve"><value>العروض</value></data>
+  <data name="Deals_Add" xml:space="preserve"><value>إضافة عرض</value></data>
+  <data name="Deals_Edit" xml:space="preserve"><value>تعديل عرض</value></data>
+  <data name="Deals_Price" xml:space="preserve"><value>السعر</value></data>
+  <data name="Deals_Badge" xml:space="preserve"><value>الشارة</value></data>
+  <data name="Deals_NoData" xml:space="preserve"><value>لا توجد عروض</value></data>
+  <data name="Deals_DeleteConfirm" xml:space="preserve"><value>هل تريد حذف هذا العرض؟</value></data>
+  <data name="Deals_OriginalPrice" xml:space="preserve"><value>السعر الأصلي</value></data>
+  <data name="Deals_DiscountedPrice" xml:space="preserve"><value>السعر بعد الخصم</value></data>
+  <data name="Deals_DiscountPercent" xml:space="preserve"><value>نسبة الخصم %</value></data>
+  <data name="Deals_SortOrder" xml:space="preserve"><value>الترتيب</value></data>
+  <data name="Deals_BadgeText" xml:space="preserve"><value>نص الشارة</value></data>
+  <data name="Deals_BadgeHint" xml:space="preserve"><value>مثال: خصم 30%، عرض محدود</value></data>
+  <data name="Deals_BadgeColor" xml:space="preserve"><value>لون الشارة</value></data>
+  <data name="Deals_NoProduct" xml:space="preserve"><value>بدون منتج محدد</value></data>
+  <data name="Banners_Title" xml:space="preserve"><value>البانرات</value></data>
+  <data name="Banners_Add" xml:space="preserve"><value>إضافة بانر</value></data>
+  <data name="Banners_Edit" xml:space="preserve"><value>تعديل بانر</value></data>
+  <data name="Banners_SubTitle" xml:space="preserve"><value>العنوان الفرعي</value></data>
+  <data name="Banners_Order" xml:space="preserve"><value>الترتيب</value></data>
+  <data name="Banners_Period" xml:space="preserve"><value>فترة التفعيل</value></data>
+  <data name="Banners_NoData" xml:space="preserve"><value>لا توجد بانرات</value></data>
+  <data name="Banners_DeleteConfirm" xml:space="preserve"><value>هل تريد حذف هذا البانر؟</value></data>
+  <data name="Banners_ActionUrl" xml:space="preserve"><value>رابط الإجراء / الديب لينك</value></data>
+  <data name="Banners_Color" xml:space="preserve"><value>لون الخلفية</value></data>
+  <data name="Banners_StartsAt" xml:space="preserve"><value>تاريخ البداية</value></data>
+  <data name="Banners_EndsAt" xml:space="preserve"><value>تاريخ النهاية</value></data>
 </root>

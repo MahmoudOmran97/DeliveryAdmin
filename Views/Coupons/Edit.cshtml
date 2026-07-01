@@ -1,0 +1,59 @@
+@model DeliveryAdmin.Models.CreateCouponDto
+@{
+  ViewData["Title"] = "Edit Coupon";
+  var rests = (List<DeliveryAdmin.Models.RestaurantDto>)ViewBag.Restaurants;
+}
+<div style="max-width:700px">
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">✏️ @Localizer["Coupons_Edit"]</div>
+    <a class="btn btn-secondary btn-sm" asp-action="Index">← @Localizer["Back"]</a>
+  </div>
+  <div class="card-body">
+    @if (TempData["Error"] != null)
+    {
+      <div class="alert alert-danger" style="margin-bottom:12px">@TempData["Error"]</div>
+    }
+    <form method="post">
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">@Localizer["Coupons_Code"] *</label><input class="form-control" asp-for="Code" required></div>
+        <div class="form-group"><label class="form-label">@Localizer["Coupons_Title"] *</label><input class="form-control" asp-for="Title" required></div>
+        <div class="form-group form-full"><label class="form-label">@Localizer["Description"]</label><textarea class="form-control" asp-for="Description"></textarea></div>
+
+        <div class="form-group">
+          <label class="form-label">@Localizer["Coupons_DiscountType"]</label>
+          <select class="form-control" asp-for="DiscountType">
+            <option value="Fixed">@Localizer["Coupons_Fixed"]</option>
+            <option value="Percentage">@Localizer["Coupons_Percentage"]</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">@Localizer["Coupons_DiscountValue"] *</label><input class="form-control" asp-for="DiscountValue" type="number" step="0.01" required></div>
+        <div class="form-group"><label class="form-label">@Localizer["Coupons_MinOrder"]</label><input class="form-control" asp-for="MinOrderAmount" type="number" step="0.01"></div>
+        <div class="form-group"><label class="form-label">@Localizer["Coupons_MaxDiscount"]</label><input class="form-control" asp-for="MaxDiscount" type="number" step="0.01"></div>
+
+        <div class="form-group">
+          <label class="form-label">@Localizer["Restaurant"]</label>
+          <select class="form-control" asp-for="RestaurantId">
+            <option value="">@Localizer["Coupons_AllRestaurants"]</option>
+            @foreach (var r in rests) { <option value="@r.Id">@r.Name</option> }
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">@Localizer["Coupons_UsageLimit"]</label><input class="form-control" asp-for="UsageLimit" type="number"></div>
+        <div class="form-group"><label class="form-label">@Localizer["Coupons_Expires"]</label><input class="form-control" asp-for="ExpiresAt" type="date"></div>
+
+        <div class="form-group">
+          <label class="form-label">@Localizer["Status"]</label>
+          <select class="form-control" asp-for="IsActive">
+            <option value="true">@Localizer["Products_Available"]</option>
+            <option value="false">@Localizer["Coupons_Disabled"]</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn btn-primary" type="submit">💾 @Localizer["SaveChanges"]</button>
+        <a class="btn btn-secondary" asp-action="Index">@Localizer["Cancel"]</a>
+      </div>
+    </form>
+  </div>
+</div>
+</div>

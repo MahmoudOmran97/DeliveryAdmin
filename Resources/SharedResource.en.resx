@@ -220,4 +220,59 @@
   <data name="Dash_TotalProducts" xml:space="preserve"><value>Products</value></data>
   <data name="Dash_TotalCustomers" xml:space="preserve"><value>Customers</value></data>
   <data name="Dash_ActiveUsers" xml:space="preserve"><value>active</value></data>
+  <data name="Nav_Marketing" xml:space="preserve"><value>Marketing</value></data>
+  <data name="Nav_Coupons" xml:space="preserve"><value>Coupons</value></data>
+  <data name="Nav_Deals" xml:space="preserve"><value>Deals</value></data>
+  <data name="Nav_Banners" xml:space="preserve"><value>Banners</value></data>
+  <data name="Description" xml:space="preserve"><value>Description</value></data>
+  <data name="SaveChanges" xml:space="preserve"><value>Save Changes</value></data>
+  <data name="Products_Image" xml:space="preserve"><value>Image URL</value></data>
+  <data name="Coupons_Title" xml:space="preserve"><value>Coupons</value></data>
+  <data name="Coupons_Add" xml:space="preserve"><value>Add Coupon</value></data>
+  <data name="Coupons_Edit" xml:space="preserve"><value>Edit Coupon</value></data>
+  <data name="Coupons_Code" xml:space="preserve"><value>Code</value></data>
+  <data name="Coupons_Discount" xml:space="preserve"><value>Discount</value></data>
+  <data name="Coupons_DiscountType" xml:space="preserve"><value>Discount Type</value></data>
+  <data name="Coupons_DiscountValue" xml:space="preserve"><value>Discount Value</value></data>
+  <data name="Coupons_Fixed" xml:space="preserve"><value>Fixed Amount</value></data>
+  <data name="Coupons_Percentage" xml:space="preserve"><value>Percentage</value></data>
+  <data name="Coupons_MinOrder" xml:space="preserve"><value>Min Order Amount</value></data>
+  <data name="Coupons_MaxDiscount" xml:space="preserve"><value>Max Discount</value></data>
+  <data name="Coupons_MaxDiscountHint" xml:space="preserve"><value>Optional cap for percentage discounts</value></data>
+  <data name="Coupons_UsageLimit" xml:space="preserve"><value>Usage Limit</value></data>
+  <data name="Coupons_UnlimitedHint" xml:space="preserve"><value>Leave blank for unlimited</value></data>
+  <data name="Coupons_Usage" xml:space="preserve"><value>Usage</value></data>
+  <data name="Coupons_Expires" xml:space="preserve"><value>Expires</value></data>
+  <data name="Coupons_AllRestaurants" xml:space="preserve"><value>All Restaurants</value></data>
+  <data name="Coupons_NoData" xml:space="preserve"><value>No coupons found</value></data>
+  <data name="Coupons_Disabled" xml:space="preserve"><value>Disabled</value></data>
+  <data name="Coupons_Expired" xml:space="preserve"><value>Expired</value></data>
+  <data name="Coupons_DeleteConfirm" xml:space="preserve"><value>Delete this coupon?</value></data>
+  <data name="Deals_Title" xml:space="preserve"><value>Deals</value></data>
+  <data name="Deals_Add" xml:space="preserve"><value>Add Deal</value></data>
+  <data name="Deals_Edit" xml:space="preserve"><value>Edit Deal</value></data>
+  <data name="Deals_Price" xml:space="preserve"><value>Price</value></data>
+  <data name="Deals_Badge" xml:space="preserve"><value>Badge</value></data>
+  <data name="Deals_NoData" xml:space="preserve"><value>No deals found</value></data>
+  <data name="Deals_DeleteConfirm" xml:space="preserve"><value>Delete this deal?</value></data>
+  <data name="Deals_OriginalPrice" xml:space="preserve"><value>Original Price</value></data>
+  <data name="Deals_DiscountedPrice" xml:space="preserve"><value>Discounted Price</value></data>
+  <data name="Deals_DiscountPercent" xml:space="preserve"><value>Discount %</value></data>
+  <data name="Deals_SortOrder" xml:space="preserve"><value>Sort Order</value></data>
+  <data name="Deals_BadgeText" xml:space="preserve"><value>Badge Text</value></data>
+  <data name="Deals_BadgeHint" xml:space="preserve"><value>e.g. 30% Off, Limited Time</value></data>
+  <data name="Deals_BadgeColor" xml:space="preserve"><value>Badge Color</value></data>
+  <data name="Deals_NoProduct" xml:space="preserve"><value>No specific product</value></data>
+  <data name="Banners_Title" xml:space="preserve"><value>Banners</value></data>
+  <data name="Banners_Add" xml:space="preserve"><value>Add Banner</value></data>
+  <data name="Banners_Edit" xml:space="preserve"><value>Edit Banner</value></data>
+  <data name="Banners_SubTitle" xml:space="preserve"><value>Subtitle</value></data>
+  <data name="Banners_Order" xml:space="preserve"><value>Order</value></data>
+  <data name="Banners_Period" xml:space="preserve"><value>Active Period</value></data>
+  <data name="Banners_NoData" xml:space="preserve"><value>No banners found</value></data>
+  <data name="Banners_DeleteConfirm" xml:space="preserve"><value>Delete this banner?</value></data>
+  <data name="Banners_ActionUrl" xml:space="preserve"><value>Action URL / Deep Link</value></data>
+  <data name="Banners_Color" xml:space="preserve"><value>Background Color</value></data>
+  <data name="Banners_StartsAt" xml:space="preserve"><value>Starts At</value></data>
+  <data name="Banners_EndsAt" xml:space="preserve"><value>Ends At</value></data>
 </root>

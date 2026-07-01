@@ -1,0 +1,96 @@
+@model List<DeliveryAdmin.Models.DealDto>
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">@Localizer["Deals_Title"] <span class="text-muted text-sm">(@Model.Count @Localizer["Total"])</span></div>
+        <a class="btn btn-primary btn-sm" asp-action="Create">+ @Localizer["Deals_Add"]</a>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>@Localizer["Deals_Title"]</th>
+                    <th>@Localizer["Restaurant"]</th>
+                    <th>@Localizer["Products_Title"]</th>
+                    <th>@Localizer["Deals_Price"]</th>
+                    <th>@Localizer["Deals_Badge"]</th>
+                    <th>@Localizer["Coupons_Expires"]</th>
+                    <th>@Localizer["Status"]</th>
+                    <th>@Localizer["Products_Actions"]</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="8"><div class="empty"><div class="empty-icon">🔥</div><div>@Localizer["Deals_NoData"]</div></div></td></tr>
+                }
+                @foreach (var d in Model)
+                {
+                    <tr>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:10px">
+                                @if (!string.IsNullOrEmpty(d.ImageUrl))
+                                {
+                                    <img src="@d.ImageUrl" class="img-preview" alt="">
+                                }
+                                else
+                                {
+                                    <div class="img-preview" style="display:flex;align-items:center;justify-content:center;font-size:18px">🔥</div>
+                                }
+                                <div>
+                                    <div style="font-weight:600">@d.Title</div>
+                                    <div class="text-muted text-sm" style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">@d.Description</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-sm">@(d.RestaurantName ?? "-")</td>
+                        <td class="text-sm">@(d.ProductName ?? "-")</td>
+                        <td class="mono">
+                            @if (d.OriginalPrice.HasValue)
+                            {
+                                <span class="text-muted" style="text-decoration:line-through">@d.OriginalPrice.Value.ToString("N2")</span> <span> </span>
+                            }
+                            @if (d.DiscountedPrice.HasValue)
+                            {
+                                <span style="font-weight:600;color:var(--green)">@d.DiscountedPrice.Value.ToString("N2") @Localizer["Currency"]</span>
+                            }
+                            else if (d.DiscountPercent.HasValue)
+                            {
+                                <span style="font-weight:600;color:var(--green)">-@d.DiscountPercent%</span>
+                            }
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(d.BadgeText))
+                            {
+                                <span class="badge" style="background:@(d.BadgeColor ?? "#ff5722");color:#fff">@d.BadgeText</span>
+                            }
+                        </td>
+                        <td class="text-sm">@(d.ExpiresAt.HasValue ? d.ExpiresAt.Value.ToString("yyyy-MM-dd") : "-")</td>
+                        <td>
+                            @if (!d.IsActive)
+                            {
+                                <span class="badge b-inactive">@Localizer["Coupons_Disabled"]</span>
+                            }
+                            else if (d.IsExpired)
+                            {
+                                <span class="badge b-inactive">@Localizer["Coupons_Expired"]</span>
+                            }
+                            else
+                            {
+                                <span class="badge b-active">@Localizer["Products_Available"]</span>
+                            }
+                        </td>
+                        <td>
+                            <div style="display:flex;gap:4px;flex-wrap:wrap">
+                                <a class="btn btn-secondary btn-sm" asp-action="Edit" asp-route-id="@d.Id">@Localizer["Edit"]</a>
+                                <form method="post" asp-action="Delete" asp-route-id="@d.Id" style="display:inline" onsubmit="return confirm('@Localizer["Deals_DeleteConfirm"]')">
+                                    <button class="btn btn-danger btn-sm" type="submit">@Localizer["Products_Delete"]</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -130,6 +130,60 @@ namespace DeliveryAdmin.Models
     // ── Notification ──────────────────────────
     public class NotificationDto { public int Id { get; set; } public string Title { get; set; } = ""; public string Body { get; set; } = ""; public string Type { get; set; } = ""; public bool IsRead { get; set; } public int? OrderId { get; set; } public DateTime CreatedAt { get; set; } }
 
+    // ── Coupons ───────────────────────────────
+    public class CouponDto
+    {
+        public int Id { get; set; } public string Code { get; set; } = ""; public string Title { get; set; } = ""; public string? Description { get; set; }
+        public string DiscountType { get; set; } = "Fixed"; public decimal DiscountValue { get; set; }
+        public decimal? MinOrderAmount { get; set; } public decimal? MaxDiscount { get; set; }
+        public int? RestaurantId { get; set; } public string? RestaurantName { get; set; }
+        public int? UsageLimit { get; set; } public int UsedCount { get; set; }
+        public bool IsActive { get; set; } = true; public DateTime? ExpiresAt { get; set; } public DateTime CreatedAt { get; set; }
+        public bool IsExpired { get; set; }
+    }
+    public class CreateCouponDto
+    {
+        public string Code { get; set; } = ""; public string Title { get; set; } = ""; public string? Description { get; set; }
+        public string DiscountType { get; set; } = "Fixed"; public decimal DiscountValue { get; set; }
+        public decimal? MinOrderAmount { get; set; } public decimal? MaxDiscount { get; set; }
+        public int? RestaurantId { get; set; } public int? UsageLimit { get; set; }
+        public bool IsActive { get; set; } = true; public DateTime? ExpiresAt { get; set; }
+    }
+
+    // ── Deals ─────────────────────────────────
+    public class DealDto
+    {
+        public int Id { get; set; } public string Title { get; set; } = ""; public string? Description { get; set; } public string? ImageUrl { get; set; }
+        public int? RestaurantId { get; set; } public string? RestaurantName { get; set; }
+        public int? ProductId { get; set; } public string? ProductName { get; set; }
+        public decimal? OriginalPrice { get; set; } public decimal? DiscountedPrice { get; set; } public int? DiscountPercent { get; set; }
+        public string? BadgeText { get; set; } public string? BadgeColor { get; set; }
+        public bool IsActive { get; set; } = true; public int SortOrder { get; set; } public DateTime? ExpiresAt { get; set; } public DateTime CreatedAt { get; set; }
+        public bool IsExpired { get; set; }
+    }
+    public class CreateDealDto
+    {
+        public string Title { get; set; } = ""; public string? Description { get; set; } public string? ImageUrl { get; set; }
+        public int? RestaurantId { get; set; } public int? ProductId { get; set; }
+        public decimal? OriginalPrice { get; set; } public decimal? DiscountedPrice { get; set; } public int? DiscountPercent { get; set; }
+        public string? BadgeText { get; set; } public string? BadgeColor { get; set; }
+        public bool IsActive { get; set; } = true; public int SortOrder { get; set; } public DateTime? ExpiresAt { get; set; }
+    }
+
+    // ── Banners ───────────────────────────────
+    public class BannerDto
+    {
+        public int Id { get; set; } public string Title { get; set; } = ""; public string? SubTitle { get; set; } public string? ImageUrl { get; set; }
+        public string? ActionUrl { get; set; } public string? BackgroundColor { get; set; } public int SortOrder { get; set; }
+        public bool IsActive { get; set; } = true; public DateTime? StartsAt { get; set; } public DateTime? EndsAt { get; set; } public DateTime CreatedAt { get; set; }
+    }
+    public class CreateBannerDto
+    {
+        public string Title { get; set; } = ""; public string? SubTitle { get; set; } public string? ImageUrl { get; set; }
+        public string? ActionUrl { get; set; } public string? BackgroundColor { get; set; } public int SortOrder { get; set; }
+        public bool IsActive { get; set; } = true; public DateTime? StartsAt { get; set; } public DateTime? EndsAt { get; set; }
+    }
+
     // ── Paged ─────────────────────────────────
     public class PagedResult<T> { public int Total { get; set; } public int Page { get; set; } public int PageSize { get; set; } public List<T> Data { get; set; } = new(); }
 

@@ -1,0 +1,64 @@
+@model List<DeliveryAdmin.Models.BannerDto>
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">@Localizer["Banners_Title"] <span class="text-muted text-sm">(@Model.Count @Localizer["Total"])</span></div>
+        <a class="btn btn-primary btn-sm" asp-action="Create">+ @Localizer["Banners_Add"]</a>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>@Localizer["Banners_Order"]</th>
+                    <th>@Localizer["Banners_Title"]</th>
+                    <th>@Localizer["Banners_SubTitle"]</th>
+                    <th>@Localizer["Banners_Period"]</th>
+                    <th>@Localizer["Status"]</th>
+                    <th>@Localizer["Products_Actions"]</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="6"><div class="empty"><div class="empty-icon">🖼️</div><div>@Localizer["Banners_NoData"]</div></div></td></tr>
+                }
+                @foreach (var b in Model)
+                {
+                    <tr>
+                        <td class="mono text-muted">@b.SortOrder</td>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:10px">
+                                @if (!string.IsNullOrEmpty(b.ImageUrl))
+                                {
+                                    <img src="@b.ImageUrl" class="img-preview" alt="">
+                                }
+                                else
+                                {
+                                    <div class="img-preview" style="background:@(b.BackgroundColor ?? "#333");display:flex;align-items:center;justify-content:center;font-size:18px">🖼️</div>
+                                }
+                                <div style="font-weight:600">@b.Title</div>
+                            </div>
+                        </td>
+                        <td class="text-muted text-sm">@(b.SubTitle ?? "-")</td>
+                        <td class="text-sm">
+                            @(b.StartsAt.HasValue ? b.StartsAt.Value.ToString("yyyy-MM-dd") : "-") → @(b.EndsAt.HasValue ? b.EndsAt.Value.ToString("yyyy-MM-dd") : "∞")
+                        </td>
+                        <td>
+                            <span class="badge @(b.IsActive ? "b-active" : "b-inactive")">
+                                @(b.IsActive ? Localizer["Products_Available"].Value : Localizer["Coupons_Disabled"].Value)
+                            </span>
+                        </td>
+                        <td>
+                            <div style="display:flex;gap:4px;flex-wrap:wrap">
+                                <a class="btn btn-secondary btn-sm" asp-action="Edit" asp-route-id="@b.Id">@Localizer["Edit"]</a>
+                                <form method="post" asp-action="Delete" asp-route-id="@b.Id" style="display:inline" onsubmit="return confirm('@Localizer["Banners_DeleteConfirm"]')">
+                                    <button class="btn btn-danger btn-sm" type="submit">@Localizer["Products_Delete"]</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

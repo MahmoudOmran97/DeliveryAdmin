@@ -47,6 +47,10 @@
             <div class="nav-section">@Localizer["Nav_Catalog"]</div>
             <a class="nav-item @(ctrl == "Products" ? "active" : "")" asp-controller="Products" asp-action="Index"><span class="nav-icon">🍕</span> @Localizer["Nav_Products"]</a>
             <a class="nav-item @(ctrl == "Restaurants" ? "active" : "")" asp-controller="Restaurants" asp-action="Index"><span class="nav-icon">📂</span> @Localizer["Nav_Categories"]</a>
+            <div class="nav-section">@Localizer["Nav_Marketing"]</div>
+            <a class="nav-item @(ctrl == "Coupons" ? "active" : "")" asp-controller="Coupons" asp-action="Index"><span class="nav-icon">🎟️</span> @Localizer["Nav_Coupons"]</a>
+            <a class="nav-item @(ctrl == "Deals" ? "active" : "")" asp-controller="Deals" asp-action="Index"><span class="nav-icon">🔥</span> @Localizer["Nav_Deals"]</a>
+            <a class="nav-item @(ctrl == "Banners" ? "active" : "")" asp-controller="Banners" asp-action="Index"><span class="nav-icon">🖼️</span> @Localizer["Nav_Banners"]</a>
             <div class="nav-section">@Localizer["Nav_Notifications"]</div>
             <a class="nav-item @(ctrl == "Notifications" ? "active" : "")" asp-controller="Notifications" asp-action="Send"><span class="nav-icon">🔔</span> @Localizer["Notif_Title"]</a>
         </nav>

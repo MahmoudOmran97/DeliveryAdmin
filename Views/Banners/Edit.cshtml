@@ -1,0 +1,39 @@
+@model DeliveryAdmin.Models.CreateBannerDto
+@{ ViewData["Title"] = "Edit Banner"; }
+<div style="max-width:700px">
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">✏️ @Localizer["Banners_Edit"]</div>
+    <a class="btn btn-secondary btn-sm" asp-action="Index">← @Localizer["Back"]</a>
+  </div>
+  <div class="card-body">
+    @if (TempData["Error"] != null)
+    {
+      <div class="alert alert-danger" style="margin-bottom:12px">@TempData["Error"]</div>
+    }
+    <form method="post">
+      <div class="form-grid">
+        <div class="form-group form-full"><label class="form-label">@Localizer["Banners_Title"] *</label><input class="form-control" asp-for="Title" required></div>
+        <div class="form-group form-full"><label class="form-label">@Localizer["Banners_SubTitle"]</label><input class="form-control" asp-for="SubTitle"></div>
+        <div class="form-group form-full"><label class="form-label">@Localizer["Products_Image"]</label><input class="form-control" asp-for="ImageUrl"></div>
+        <div class="form-group form-full"><label class="form-label">@Localizer["Banners_ActionUrl"]</label><input class="form-control" asp-for="ActionUrl"></div>
+        <div class="form-group"><label class="form-label">@Localizer["Banners_Color"]</label><input class="form-control" asp-for="BackgroundColor" type="color" style="height:42px;padding:4px"></div>
+        <div class="form-group"><label class="form-label">@Localizer["Banners_Order"]</label><input class="form-control" asp-for="SortOrder" type="number"></div>
+        <div class="form-group"><label class="form-label">@Localizer["Banners_StartsAt"]</label><input class="form-control" asp-for="StartsAt" type="date"></div>
+        <div class="form-group"><label class="form-label">@Localizer["Banners_EndsAt"]</label><input class="form-control" asp-for="EndsAt" type="date"></div>
+        <div class="form-group">
+          <label class="form-label">@Localizer["Status"]</label>
+          <select class="form-control" asp-for="IsActive">
+            <option value="true">@Localizer["Products_Available"]</option>
+            <option value="false">@Localizer["Coupons_Disabled"]</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn btn-primary" type="submit">💾 @Localizer["SaveChanges"]</button>
+        <a class="btn btn-secondary" asp-action="Index">@Localizer["Cancel"]</a>
+      </div>
+    </form>
+  </div>
+</div>
+</div>

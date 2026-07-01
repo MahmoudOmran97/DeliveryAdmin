@@ -1,0 +1,70 @@
+@model List<DeliveryAdmin.Models.CouponDto>
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">@Localizer["Coupons_Title"] <span class="text-muted text-sm">(@Model.Count @Localizer["Total"])</span></div>
+        <a class="btn btn-primary btn-sm" asp-action="Create">+ @Localizer["Coupons_Add"]</a>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>@Localizer["Coupons_Code"]</th>
+                    <th>@Localizer["Coupons_Title"]</th>
+                    <th>@Localizer["Restaurant"]</th>
+                    <th>@Localizer["Coupons_Discount"]</th>
+                    <th>@Localizer["Coupons_MinOrder"]</th>
+                    <th>@Localizer["Coupons_Usage"]</th>
+                    <th>@Localizer["Coupons_Expires"]</th>
+                    <th>@Localizer["Status"]</th>
+                    <th>@Localizer["Products_Actions"]</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="9"><div class="empty"><div class="empty-icon">🎟️</div><div>@Localizer["Coupons_NoData"]</div></div></td></tr>
+                }
+                @foreach (var c in Model)
+                {
+                    <tr>
+                        <td class="mono" style="font-weight:600">@c.Code</td>
+                        <td>
+                            <div style="font-weight:600">@c.Title</div>
+                            <div class="text-muted text-sm" style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">@c.Description</div>
+                        </td>
+                        <td class="text-sm">@(c.RestaurantName ?? Localizer["Coupons_AllRestaurants"].Value)</td>
+                        <td class="mono" style="font-weight:600">
+                            @(c.DiscountType == "Percentage" ? c.DiscountValue.ToString("N0") + "%" : c.DiscountValue.ToString("N2") + " " + Localizer["Currency"])
+                        </td>
+                        <td class="mono text-muted">@(c.MinOrderAmount.HasValue ? c.MinOrderAmount.Value.ToString("N2") + " " + Localizer["Currency"] : "-")</td>
+                        <td class="mono text-muted">@c.UsedCount / @(c.UsageLimit?.ToString() ?? "∞")</td>
+                        <td class="text-sm">@(c.ExpiresAt.HasValue ? c.ExpiresAt.Value.ToString("yyyy-MM-dd") : "-")</td>
+                        <td>
+                            @if (!c.IsActive)
+                            {
+                                <span class="badge b-inactive">@Localizer["Coupons_Disabled"]</span>
+                            }
+                            else if (c.IsExpired)
+                            {
+                                <span class="badge b-inactive">@Localizer["Coupons_Expired"]</span>
+                            }
+                            else
+                            {
+                                <span class="badge b-active">@Localizer["Products_Available"]</span>
+                            }
+                        </td>
+                        <td>
+                            <div style="display:flex;gap:4px;flex-wrap:wrap">
+                                <a class="btn btn-secondary btn-sm" asp-action="Edit" asp-route-id="@c.Id">@Localizer["Edit"]</a>
+                                <form method="post" asp-action="Delete" asp-route-id="@c.Id" style="display:inline" onsubmit="return confirm('@Localizer["Coupons_DeleteConfirm"]')">
+                                    <button class="btn btn-danger btn-sm" type="submit">@Localizer["Products_Delete"]</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
