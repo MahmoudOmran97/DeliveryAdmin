@@ -19,6 +19,7 @@
 <div class="detail-grid">
   <div class="detail-section">
     <div class="detail-section-title">Restaurant Info</div>
+    <div class="detail-row"><span class="detail-key">Store Type</span><span class="detail-val">@{ var st = DeliveryAdmin.Models.StoreTypes.All.FirstOrDefault(x => x.Value == Model.StoreType); }@(st.Emoji ?? "🍽️") @(st.LabelAr ?? Model.StoreType)</span></div>
     <div class="detail-row"><span class="detail-key">Phone</span><span class="detail-val">@(Model.Phone??"-")</span></div>
     <div class="detail-row"><span class="detail-key">Owner</span><span class="detail-val">@(Model.OwnerName ?? "—") @(Model.OwnerEmail != null ? $"({Model.OwnerEmail})" : "")</span></div>
     <div class="detail-row"><span class="detail-key">Status</span><span class="badge @(Model.IsOpen?"b-open":"b-closed")">@(Model.IsOpen?"Open":"Closed")</span></div>

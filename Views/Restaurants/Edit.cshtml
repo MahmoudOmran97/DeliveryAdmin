@@ -8,6 +8,12 @@
       <div class="form-grid">
         <div class="form-group"><label class="form-label">Name *</label><input class="form-control" asp-for="Name" required></div>
         <div class="form-group"><label class="form-label">Phone</label><input class="form-control" asp-for="Phone"></div>
+        <div class="form-group">
+          <label class="form-label">Store Type *</label>
+          <select class="form-control" asp-for="StoreType" required>
+            @foreach(var t in DeliveryAdmin.Models.StoreTypes.All){<option value="@t.Value">@t.Emoji @t.LabelAr (@t.Value)</option>}
+          </select>
+        </div>
         <div class="form-group form-full"><label class="form-label">Address *</label><input class="form-control" asp-for="Address" required></div>
         <div class="form-group form-full"><label class="form-label">Description</label><textarea class="form-control" asp-for="Description"></textarea></div>
         <div class="form-group"><label class="form-label">Delivery Fee (EGP)</label><input class="form-control" asp-for="DeliveryFee" type="number" step="0.01"></div>

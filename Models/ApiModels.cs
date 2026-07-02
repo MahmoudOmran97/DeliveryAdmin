@@ -22,6 +22,7 @@ namespace DeliveryAdmin.Models
         public decimal DeliveryFee { get; set; } public decimal MinOrderAmount { get; set; }
         public int EstimatedTime { get; set; } public bool IsOpen { get; set; } public bool IsActive { get; set; }
         public int? OwnerUserId { get; set; } public string? OwnerName { get; set; } public string? OwnerEmail { get; set; }
+        public string StoreType { get; set; } = "Restaurant";
         public DateTime CreatedAt { get; set; }
     }
     public class CreateRestaurantDto
@@ -31,8 +32,24 @@ namespace DeliveryAdmin.Models
         public decimal DeliveryFee { get; set; } public decimal MinOrderAmount { get; set; } public int EstimatedTime { get; set; } = 30;
         public string? ImageUrl { get; set; } public string? CoverImageUrl { get; set; }
         public int? OwnerUserId { get; set; }
+        public string StoreType { get; set; } = "Restaurant";
     }
     public class UpdateRestaurantDto : CreateRestaurantDto { public bool IsOpen { get; set; } }
+
+    // خيارات نوع المحل المتاحة في المنصة
+    public static class StoreTypes
+    {
+        public static readonly (string Value, string LabelAr, string Emoji)[] All = new[]
+        {
+            ("Restaurant", "مطعم", "🍽️"),
+            ("Pharmacy", "صيدلية", "💊"),
+            ("Grocery", "بقالة", "🛒"),
+            ("Supermarket", "سوبر ماركت", "🏬"),
+            ("Vegetables", "خضار وفاكهة", "🥦"),
+            ("Drinks", "مشروبات", "🥤"),
+            ("Accessories", "إكسسوارات", "🎁"),
+        };
+    }
 
     // ── Category ──────────────────────────────
     public class CategoryDto { public int Id { get; set; } public string Name { get; set; } = ""; public string? ImageUrl { get; set; } public int SortOrder { get; set; } public int RestaurantId { get; set; } public int ProductCount { get; set; } }
@@ -47,12 +64,22 @@ namespace DeliveryAdmin.Models
         public int PreparationTime { get; set; } public int? Calories { get; set; } public bool IsAvailable { get; set; }
         public string? CategoryName { get; set; } public int? RestaurantId { get; set; } public string? RestaurantName { get; set; }
         public object? Category { get; set; }
+        public List<ProductVariantDto>? Variants { get; set; }
     }
     public class CreateProductDto
     {
         public int CategoryId { get; set; } public string Name { get; set; } = ""; public string? Description { get; set; }
         public decimal Price { get; set; } public decimal? DiscountedPrice { get; set; } public string? ImageUrl { get; set; }
         public int PreparationTime { get; set; } = 15; public int? Calories { get; set; }
+    }
+
+    // منتج بأكتر من سعر (مقاس وسط/كبير، شريط/علبة، إلخ)
+    public class ProductVariantDto
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = "";
+        public decimal Price { get; set; }
+        public int SortOrder { get; set; }
     }
 
     // ── Driver ────────────────────────────────
@@ -63,6 +90,16 @@ namespace DeliveryAdmin.Models
         public double Rating { get; set; } public int TotalRatings { get; set; } public int TotalDeliveries { get; set; }
         public bool IsOnline { get; set; } public bool IsAvailable { get; set; } public bool IsVerified { get; set; }
         public double? CurrentLatitude { get; set; } public double? CurrentLongitude { get; set; } public DateTime JoinedAt { get; set; }
+        public string? Phone { get; set; }
+    }
+
+    public class AdminUpdateDriverDto
+    {
+        public string? VehicleType { get; set; }
+        public string? LicensePlate { get; set; }
+        public string? NationalId { get; set; }
+        public bool? IsVerified { get; set; }
+        public bool? IsAvailable { get; set; }
     }
 
     // ── User ──────────────────────────────────
@@ -83,6 +120,10 @@ namespace DeliveryAdmin.Models
         public string Role { get; set; } = "Customer";
         public string? Address { get; set; }
         public int? RestaurantId { get; set; }
+        // بيانات الطيار (تُستخدم فقط لما Role = Driver)
+        public string? VehicleType { get; set; }
+        public string? LicensePlate { get; set; }
+        public string? NationalId { get; set; }
     }
 
     public class UpdateUserDto
@@ -186,6 +227,9 @@ namespace DeliveryAdmin.Models
 
     // ── Paged ─────────────────────────────────
     public class PagedResult<T> { public int Total { get; set; } public int Page { get; set; } public int PageSize { get; set; } public List<T> Data { get; set; } = new(); }
+
+    // نتيجة إنشاء عنصر جديد (فيها الـ Id بس)
+    public class CreatedIdResult { public int Id { get; set; } public string? Name { get; set; } }
 
     // ── Settlements ───────────────────────────
     public class SettlementReportDto

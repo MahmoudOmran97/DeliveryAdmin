@@ -36,11 +36,11 @@
   </div>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>@Localizer["Restaurants_Name"]</th><th>@Localizer["Address"]</th><th>@Localizer["Drivers_Rating"]</th><th>@Localizer["Restaurants_DeliveryFee"]</th><th>@Localizer["Restaurants_MinOrder"]</th><th>@Localizer["Restaurants_Time"]</th><th>@Localizer["Status"]</th><th>@Localizer["Actions"]</th></tr></thead>
+      <thead><tr><th>@Localizer["Restaurants_Name"]</th><th>Type</th><th>@Localizer["Address"]</th><th>@Localizer["Drivers_Rating"]</th><th>@Localizer["Restaurants_DeliveryFee"]</th><th>@Localizer["Restaurants_MinOrder"]</th><th>@Localizer["Restaurants_Time"]</th><th>@Localizer["Status"]</th><th>@Localizer["Actions"]</th></tr></thead>
       <tbody>
         @if(!Model.Any())
         {
-          <tr><td colspan="8"><div class="empty"><div class="empty-icon">🍽️</div><div>@Localizer["Restaurants_NoData"]</div></div></td></tr>
+          <tr><td colspan="9"><div class="empty"><div class="empty-icon">🍽️</div><div>@Localizer["Restaurants_NoData"]</div></div></td></tr>
         }
         @foreach(var r in Model)
         {
@@ -56,6 +56,10 @@
                   <div class="text-muted text-sm">@r.Phone</div>
                 </div>
               </div>
+            </td>
+            <td>
+              @{ var st = DeliveryAdmin.Models.StoreTypes.All.FirstOrDefault(x => x.Value == r.StoreType); }
+              <span class="badge" style="background:var(--bg4)">@(st.Emoji ?? "🍽️") @(st.LabelAr ?? r.StoreType)</span>
             </td>
             <td class="text-muted text-sm" style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">@r.Address</td>
             <td>⭐ @r.Rating.ToString("F1") <span class="text-muted text-sm">(@r.TotalRatings)</span></td>

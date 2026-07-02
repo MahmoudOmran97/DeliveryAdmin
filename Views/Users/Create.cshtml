@@ -61,6 +61,23 @@
             }
           </select>
         </div>
+        <div class="form-group" id="vehicleTypeField">
+          <label class="form-label">🚗 Vehicle Type *</label>
+          <select class="form-control" asp-for="VehicleType">
+            <option value="Motorcycle">Motorcycle</option>
+            <option value="Car">Car</option>
+            <option value="Bicycle">Bicycle</option>
+            <option value="Tuk-Tuk">Tuk-Tuk</option>
+          </select>
+        </div>
+        <div class="form-group" id="licensePlateField">
+          <label class="form-label">🪪 License Plate *</label>
+          <input class="form-control" asp-for="LicensePlate" placeholder="e.g. ن ط ص 1234" />
+        </div>
+        <div class="form-group" id="nationalIdField">
+          <label class="form-label">🆔 National ID</label>
+          <input class="form-control" asp-for="NationalId" placeholder="Optional" />
+        </div>
         <div class="form-group form-full">
           <label class="form-label">@Localizer["Address"]</label>
           <input class="form-control" asp-for="Address" />
@@ -76,12 +93,22 @@
 
 @section Scripts {
 <script>
-  function toggleRestaurantField() {
+  function toggleRoleFields() {
     const role = document.getElementById('roleSelect')?.value;
-    const field = document.getElementById('restaurantField');
-    if (field) field.style.display = (role === 'Restaurant') ? 'block' : 'none';
+    const restField = document.getElementById('restaurantField');
+    if (restField) restField.style.display = (role === 'Restaurant') ? 'block' : 'none';
+
+    const isDriver = (role === 'Driver');
+    ['vehicleTypeField','licensePlateField','nationalIdField'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = isDriver ? 'block' : 'none';
+    });
+    const vt = document.querySelector('#vehicleTypeField select');
+    const lp = document.querySelector('#licensePlateField input');
+    if (vt) vt.required = isDriver;
+    if (lp) lp.required = isDriver;
   }
-  document.getElementById('roleSelect')?.addEventListener('change', toggleRestaurantField);
-  toggleRestaurantField();
+  document.getElementById('roleSelect')?.addEventListener('change', toggleRoleFields);
+  toggleRoleFields();
 </script>
 }

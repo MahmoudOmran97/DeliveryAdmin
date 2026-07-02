@@ -44,5 +44,35 @@ namespace DeliveryAdmin.Controllers
             TempData[ok ? "Success" : "Error"] = ok ? "Driver verified!" : error;
             return RedirectToAction("Index");
         }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var d = await _api.GetDriver(id);
+            if (d == null) return NotFound();
+            ViewBag.DriverId = id;
+            ViewBag.DriverName = d.FullName ?? d.UserName;
+            return View(new DeliveryAdmin.Models.AdminUpdateDriverDto
+            {
+                VehicleType = d.VehicleType,
+                LicensePlate = d.LicensePlate,
+                NationalId = d.NationalId,
+                IsVerified = d.IsVerified,
+                IsAvailable = d.IsAvailable
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, DeliveryAdmin.Models.AdminUpdateDriverDto dto)
+        {
+            var (ok, error) = await _api.UpdateDriver(id, dto);
+            if (!ok)
+            {
+                TempData["Error"] = error;
+                ViewBag.DriverId = id;
+                return View(dto);
+            }
+            TempData["Success"] = "Driver updated successfully";
+            return RedirectToAction("Index");
+        }
     }
 }

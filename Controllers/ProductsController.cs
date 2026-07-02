@@ -46,10 +46,18 @@ namespace DeliveryAdmin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateProductDto dto)
+        public async Task<IActionResult> Create(CreateProductDto dto, string? variantsJson)
         {
-            var (ok, error) = await _api.CreateProduct(dto);
-            if (!ok) { TempData["Error"] = error; return RedirectToAction("Create"); }
+            var (ok, error, newId) = await _api.CreateProductWithId(dto);
+            if (!ok || newId == null) { TempData["Error"] = error; return RedirectToAction("Create"); }
+
+            var variants = ParseVariants(variantsJson);
+            if (variants.Any())
+            {
+                var (vOk, vErr) = await _api.SetProductVariants(newId.Value, variants);
+                if (!vOk) TempData["Error"] = "Product saved, but variants failed: " + vErr;
+            }
+
             TempData["Success"] = "Product created!";
             return RedirectToAction("Index");
         }
@@ -61,6 +69,7 @@ namespace DeliveryAdmin.Controllers
             var rests = await _api.GetRestaurants(1, 100);
             ViewBag.Restaurants = rests?.Data ?? new();
             ViewBag.ProductId = id; ViewBag.ProductName = p.Name;
+            ViewBag.Variants = p.Variants ?? new List<ProductVariantDto>();
 
             // Fix: load categories for the product's restaurant so the dropdown is populated
             if (p.RestaurantId.HasValue)
@@ -74,12 +83,32 @@ namespace DeliveryAdmin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, CreateProductDto dto)
+        public async Task<IActionResult> Edit(int id, CreateProductDto dto, string? variantsJson)
         {
             var (ok, error) = await _api.UpdateProduct(id, dto);
             if (!ok) { TempData["Error"] = error; return RedirectToAction("Edit", new { id }); }
-            TempData["Success"] = "Product updated!";
+
+            var variants = ParseVariants(variantsJson);
+            var (vOk, vErr) = await _api.SetProductVariants(id, variants);
+            if (!vOk) TempData["Error"] = "Product saved, but variants failed: " + vErr;
+            else TempData["Success"] = "Product updated!";
+
             return RedirectToAction("Index");
+        }
+
+        private static List<ProductVariantDto> ParseVariants(string? variantsJson)
+        {
+            if (string.IsNullOrWhiteSpace(variantsJson)) return new();
+            try
+            {
+                var list = System.Text.Json.JsonSerializer.Deserialize<List<ProductVariantDto>>(
+                    variantsJson,
+                    new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                return (list ?? new())
+                    .Where(v => !string.IsNullOrWhiteSpace(v.Name))
+                    .ToList();
+            }
+            catch { return new(); }
         }
 
         [HttpPost]

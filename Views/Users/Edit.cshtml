@@ -27,6 +27,12 @@
             @foreach(var r in restaurants){<option value="@r.Id">@r.Name</option>}
           </select>
         </div>
+        <div class="form-group form-full" id="driverHint" style="display:none">
+          <div class="alert" style="background:var(--bg4);padding:10px 14px;border-radius:8px;font-size:13px">
+            🚗 To edit vehicle/license/national ID for this driver, go to
+            <a asp-controller="Drivers" asp-action="Index">Drivers section</a>.
+          </div>
+        </div>
         <div class="form-group form-full"><label class="form-label">@Localizer["Address"]</label><input class="form-control" asp-for="Address" /></div>
         <div class="form-group">
           <label class="form-label">@Localizer["Status"]</label>
@@ -43,4 +49,10 @@
     </form>
   </div>
 </div>
-@section Scripts{<script>document.getElementById('roleSelect')?.addEventListener('change',function(){document.getElementById('restaurantField').style.display=this.value==='Restaurant'?'block':'none';});document.getElementById('roleSelect')?.dispatchEvent(new Event('change'));</script>}
+@section Scripts{<script>
+document.getElementById('roleSelect')?.addEventListener('change',function(){
+  document.getElementById('restaurantField').style.display=this.value==='Restaurant'?'block':'none';
+  document.getElementById('driverHint').style.display=this.value==='Driver'?'block':'none';
+});
+document.getElementById('roleSelect')?.dispatchEvent(new Event('change'));
+</script>}

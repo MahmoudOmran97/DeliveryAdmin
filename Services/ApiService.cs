@@ -150,14 +150,22 @@ namespace DeliveryAdmin.Services
             return await Get<PagedResult<ProductDto>>(url);
         }
         public async Task<ProductDto?> GetProduct(int id) => await Get<ProductDto>($"products/{id}");
+        public async Task<(bool ok, string? error, int? id)> CreateProductWithId(CreateProductDto dto)
+        {
+            var r = await Post<CreatedIdResult>("products", dto);
+            return (r.ok, r.error, r.data?.Id);
+        }
         public async Task<(bool ok, string? error)> CreateProduct(CreateProductDto dto) { var r = await Post<object>("products", dto); return (r.ok, r.error); }
         public async Task<(bool ok, string? error)> UpdateProduct(int id, CreateProductDto dto) => await Put($"products/{id}", dto);
         public async Task<(bool ok, string? error)> ToggleProduct(int id) => await Put($"products/{id}/toggle-availability");
         public async Task<(bool ok, string? error)> DeleteProduct(int id) => await Delete($"products/{id}");
+        public async Task<(bool ok, string? error)> SetProductVariants(int id, List<ProductVariantDto> variants) => await Put($"products/{id}/variants", variants);
 
         // ── Drivers ───────────────────────────────────────────────────────
         public async Task<PagedResult<DriverDto>?> GetDrivers(int page = 1, int size = 50) => await Get<PagedResult<DriverDto>>($"drivers/admin?page={page}&pageSize={size}");
+        public async Task<DriverDto?> GetDriver(int id) => await Get<DriverDto>($"drivers/{id}/admin");
         public async Task<(bool ok, string? error)> VerifyDriver(int id) => await Put($"drivers/{id}/verify");
+        public async Task<(bool ok, string? error)> UpdateDriver(int id, AdminUpdateDriverDto dto) => await Put($"drivers/{id}/admin-update", dto);
 
         // ── Users ─────────────────────────────────────────────────────────
         public async Task<PagedResult<UserDto>?> GetUsers(int page = 1, int size = 20, string? role = null)

@@ -68,7 +68,8 @@ namespace DeliveryAdmin.Controllers
                 ImageUrl = r.ImageUrl,
                 CoverImageUrl = r.CoverImageUrl,
                 IsOpen = r.IsOpen,
-                OwnerUserId = r.OwnerUserId
+                OwnerUserId = r.OwnerUserId,
+                StoreType = r.StoreType
             };
             ViewBag.RestaurantId = id; ViewBag.RestaurantName = r.Name;
             return View(dto);

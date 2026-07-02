@@ -65,11 +65,14 @@
             <td>@if(d.IsVerified){<span class="badge b-verified">@Localizer["Drivers_VerifiedCount"]</span>}else{<span class="badge b-pending">@Localizer["Drivers_Pending"]</span>}</td>
             <td class="text-muted text-sm">@d.JoinedAt.ToString("dd MMM yyyy")</td>
             <td>
-              @if(!d.IsVerified){
-                <form method="post" asp-action="Verify" asp-route-id="@d.Id">
-                  <button class="btn btn-success btn-sm" type="submit">✓ @Localizer["Drivers_Verify"]</button>
-                </form>
-              }else{<span class="text-muted text-sm">–</span>}
+              <div style="display:flex;gap:4px;flex-wrap:wrap">
+                <a class="btn btn-secondary btn-sm" asp-action="Edit" asp-route-id="@d.Id">✏️ @Localizer["Edit"]</a>
+                @if(!d.IsVerified){
+                  <form method="post" asp-action="Verify" asp-route-id="@d.Id">
+                    <button class="btn btn-success btn-sm" type="submit">✓ @Localizer["Drivers_Verify"]</button>
+                  </form>
+                }
+              </div>
             </td>
           </tr>
         }
