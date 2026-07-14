@@ -83,6 +83,35 @@ namespace DeliveryAdmin.Services
             }
         }
 
+        // POST بدون رجوع بيانات — بنستخدمها للـ endpoints اللي بتاخد POST بس بترجع رسالة/status بس
+        private async Task<(bool ok, string? error)> PostNoContent(string path, object? body = null)
+        {
+            HttpContent? content = body != null ? new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json") : null;
+            var res = await Client().PostAsync(path, content);
+            var json = await res.Content.ReadAsStringAsync();
+            if (!res.IsSuccessStatusCode)
+            {
+                try
+                {
+                    var err = JsonSerializer.Deserialize<JsonElement>(json, _opts);
+                    if (err.TryGetProperty("message", out var msg) && msg.GetString() is string s && !string.IsNullOrEmpty(s))
+                        return (false, s);
+                    if (err.TryGetProperty("errors", out var errs))
+                    {
+                        var msgs = errs.EnumerateObject()
+                            .SelectMany(p => p.Value.EnumerateArray().Select(v => v.GetString()))
+                            .Where(v => v != null)
+                            .ToList();
+                        if (msgs.Any()) return (false, string.Join(" | ", msgs!));
+                    }
+                    if (err.TryGetProperty("title", out var title)) return (false, title.GetString());
+                    return (false, res.ReasonPhrase);
+                }
+                catch { return (false, res.ReasonPhrase); }
+            }
+            return (true, null);
+        }
+
         private async Task<(bool ok, string? error)> Put(string path, object? body = null)
         {
             HttpContent? content = body != null ? new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json") : null;
@@ -145,8 +174,8 @@ namespace DeliveryAdmin.Services
         {
             var url = $"products/admin?q={Uri.EscapeDataString(q ?? "")}&page={page}&pageSize={size}";
             if (restaurantId.HasValue) url += $"&restaurantId={restaurantId}";
-            if (categoryId.HasValue)   url += $"&categoryId={categoryId}";
-            if (isAvailable.HasValue)  url += $"&isAvailable={isAvailable.Value.ToString().ToLower()}";
+            if (categoryId.HasValue) url += $"&categoryId={categoryId}";
+            if (isAvailable.HasValue) url += $"&isAvailable={isAvailable.Value.ToString().ToLower()}";
             return await Get<PagedResult<ProductDto>>(url);
         }
         public async Task<ProductDto?> GetProduct(int id) => await Get<ProductDto>($"products/{id}");
@@ -159,7 +188,8 @@ namespace DeliveryAdmin.Services
         public async Task<(bool ok, string? error)> UpdateProduct(int id, CreateProductDto dto) => await Put($"products/{id}", dto);
         public async Task<(bool ok, string? error)> ToggleProduct(int id) => await Put($"products/{id}/toggle-availability");
         public async Task<(bool ok, string? error)> DeleteProduct(int id) => await Delete($"products/{id}");
-        public async Task<(bool ok, string? error)> SetProductVariants(int id, List<ProductVariantDto> variants) => await Put($"products/{id}/variants", variants);
+        // ملاحظة: الإندبوينت ده POST في الـ API مش PUT، فلازم يتبعت بـ PostNoContent
+        public async Task<(bool ok, string? error)> SetProductVariants(int id, List<ProductVariantDto> variants) => await PostNoContent($"products/{id}/variants", variants);
 
         // ── Drivers ───────────────────────────────────────────────────────
         public async Task<PagedResult<DriverDto>?> GetDrivers(int page = 1, int size = 50) => await Get<PagedResult<DriverDto>>($"drivers/admin?page={page}&pageSize={size}");

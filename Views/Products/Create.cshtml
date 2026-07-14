@@ -1,101 +1,140 @@
 @model DeliveryAdmin.Models.CreateProductDto
 @{
-  ViewData["Title"] = "Add Product";
-  var rests = (List<DeliveryAdmin.Models.RestaurantDto>)ViewBag.Restaurants;
-  string preselectedRest = ViewBag.RestaurantId?.ToString() ?? "";
+    ViewData["Title"] = "Add Product";
+    var rests = (List<DeliveryAdmin.Models.RestaurantDto>)ViewBag.Restaurants;
+    string preselectedRest = ViewBag.RestaurantId?.ToString() ?? "";
 }
 <div style="max-width:700px">
-<div class="card">
-  <div class="card-header">
-    <div class="card-title">New Product</div>
-    <a class="btn btn-secondary btn-sm" href="/Products">← Back</a>
-  </div>
-  <div class="card-body">
-    <form method="post">
-      <div class="form-grid">
-        <div class="form-group">
-          <label class="form-label">Restaurant *</label>
-          <select class="form-control" id="restSelect" onchange="loadCategories(this.value)">
-            <option value="">Select Restaurant...</option>
-            @foreach(var r in rests)
-            {
-              if(preselectedRest==r.Id.ToString()){<option value="@r.Id" selected>@r.Name</option>}
-              else{<option value="@r.Id">@r.Name</option>}
-            }
-          </select>
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">New Product</div>
+            <a class="btn btn-secondary btn-sm" href="/Products">← Back</a>
         </div>
-        <div class="form-group">
-          <label class="form-label">Category *</label>
-          <select class="form-control" name="CategoryId" id="catSelect" required>
-            <option value="">Select category...</option>
-            @if(ViewBag.Categories!=null)
-            {
-              @foreach(var c in (List<DeliveryAdmin.Models.CategoryDto>)ViewBag.Categories)
-              {<option value="@c.Id">@c.Name</option>}
-            }
-          </select>
+        <div class="card-body">
+            <form method="post">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Restaurant *</label>
+                        <select class="form-control" id="restSelect" onchange="loadCategories(this.value)">
+                            <option value="">Select Restaurant...</option>
+                            @foreach (var r in rests)
+                            {
+                                if (preselectedRest == r.Id.ToString())
+                                {
+                                    <option value="@r.Id" selected>@r.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@r.Id">@r.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Category *</label>
+                        <select class="form-control" name="CategoryId" id="catSelect" required>
+                            <option value="">Select category...</option>
+                            @if (ViewBag.Categories != null)
+                            {
+                                @foreach (var c in (List<DeliveryAdmin.Models.CategoryDto>)ViewBag.Categories)
+                                {
+                                    <option value="@c.Id">@c.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group form-full"><label class="form-label">Name *</label><input class="form-control" asp-for="Name" placeholder="Product name" required></div>
+                    <div class="form-group form-full"><label class="form-label">Description</label><textarea class="form-control" asp-for="Description" placeholder="Product description..."></textarea></div>
+                    <div class="form-group"><label class="form-label">Price (EGP) *</label><input class="form-control" asp-for="Price" type="number" step="0.01" placeholder="45.00" required></div>
+                    <div class="form-group"><label class="form-label">Discounted Price</label><input class="form-control" asp-for="DiscountedPrice" type="number" step="0.01" placeholder="Optional"></div>
+                    <div class="form-group"><label class="form-label">Prep Time (min)</label><input class="form-control" asp-for="PreparationTime" type="number" placeholder="15" value="15"></div>
+                    <div class="form-group"><label class="form-label">Calories</label><input class="form-control" asp-for="Calories" type="number" placeholder="Optional"></div>
+                    <div class="form-group form-full"><label class="form-label">Image URL</label><input class="form-control" asp-for="ImageUrl" placeholder="https://..."></div>
+                    <div class="form-group form-full">
+                        <label class="form-label">📏 Sizes / Options (optional) — e.g. Small/Medium/Large, or Strip/Box</label>
+                        <div id="variantsList"></div>
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="addVariantRow()" style="margin-top:6px">+ Add Option</button>
+                        <input type="hidden" name="variantsJson" id="variantsJson">
+                        <div id="variantsWarning" style="display:none;color:#dc3545;margin-top:6px;font-size:.85rem"></div>
+                    </div>
+                </div>
+                <div style="display:flex;gap:8px;margin-top:8px">
+                    <button class="btn btn-primary" type="submit">Save Product</button>
+                    <a class="btn btn-secondary" href="/Products">Cancel</a>
+                </div>
+            </form>
         </div>
-        <div class="form-group form-full"><label class="form-label">Name *</label><input class="form-control" asp-for="Name" placeholder="Product name" required></div>
-        <div class="form-group form-full"><label class="form-label">Description</label><textarea class="form-control" asp-for="Description" placeholder="Product description..."></textarea></div>
-        <div class="form-group"><label class="form-label">Price (EGP) *</label><input class="form-control" asp-for="Price" type="number" step="0.01" placeholder="45.00" required></div>
-        <div class="form-group"><label class="form-label">Discounted Price</label><input class="form-control" asp-for="DiscountedPrice" type="number" step="0.01" placeholder="Optional"></div>
-        <div class="form-group"><label class="form-label">Prep Time (min)</label><input class="form-control" asp-for="PreparationTime" type="number" placeholder="15" value="15"></div>
-        <div class="form-group"><label class="form-label">Calories</label><input class="form-control" asp-for="Calories" type="number" placeholder="Optional"></div>
-        <div class="form-group form-full"><label class="form-label">Image URL</label><input class="form-control" asp-for="ImageUrl" placeholder="https://..."></div>
-        <div class="form-group form-full">
-          <label class="form-label">📏 Sizes / Options (optional) — e.g. Small/Medium/Large, or Strip/Box</label>
-          <div id="variantsList"></div>
-          <button type="button" class="btn btn-secondary btn-sm" onclick="addVariantRow()" style="margin-top:6px">+ Add Option</button>
-          <input type="hidden" name="variantsJson" id="variantsJson">
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <button class="btn btn-primary" type="submit">Save Product</button>
-        <a class="btn btn-secondary" href="/Products">Cancel</a>
-      </div>
-    </form>
-  </div>
-</div>
+    </div>
 </div>
 @section Scripts {
-<script>
-let variantRowCount = 0;
-function addVariantRow(name = '', price = '') {
-  const list = document.getElementById('variantsList');
-  const rowId = 'vrow_' + (variantRowCount++);
-  const row = document.createElement('div');
-  row.id = rowId;
-  row.style = 'display:flex;gap:8px;margin-top:6px;align-items:center';
-  row.innerHTML = `
-    <input class="form-control" placeholder="e.g. Large / علبة" value="${name}" style="flex:2">
-    <input class="form-control" type="number" step="0.01" placeholder="Price (EGP)" value="${price}" style="flex:1">
-    <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('${rowId}').remove()">✕</button>
-  `;
-  list.appendChild(row);
-}
-function collectVariants() {
-  const rows = document.querySelectorAll('#variantsList > div');
-  const variants = [];
-  rows.forEach((row, i) => {
-    const inputs = row.querySelectorAll('input');
-    const name = inputs[0].value.trim();
-    const price = parseFloat(inputs[1].value);
-    if (name && !isNaN(price)) variants.push({ name: name, price: price, sortOrder: i });
-  });
-  document.getElementById('variantsJson').value = JSON.stringify(variants);
-}
-document.querySelector('form').addEventListener('submit', collectVariants);
-async function loadCategories(restaurantId) {
-  const sel = document.getElementById('catSelect');
-  sel.innerHTML = '<option value="">Loading...</option>';
-  if (!restaurantId) { sel.innerHTML = '<option value="">Select category...</option>'; return; }
-  try {
-    const res = await fetch('/Products/GetCategoriesJson?restaurantId=' + restaurantId);
-    const cats = await res.json();
-    sel.innerHTML = '<option value="">Select category...</option>' + cats.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-  } catch(e) { sel.innerHTML = '<option value="">Error loading</option>'; }
-}
-const rs = document.getElementById('restSelect');
-if (rs.value) loadCategories(rs.value);
-</script>
+    <script>
+        let variantRowCount = 0;
+        function addVariantRow(name = '', price = '') {
+          const list = document.getElementById('variantsList');
+          const rowId = 'vrow_' + (variantRowCount++);
+          const row = document.createElement('div');
+          row.id = rowId;
+          row.dataset.rowMarker = '1';
+          row.style = 'display:flex;gap:8px;margin-top:6px;align-items:center';
+          row.innerHTML = `
+            <input class="form-control vname" placeholder="e.g. Large / علبة" value="${name}" style="flex:2">
+            <input class="form-control vprice" type="number" step="0.01" placeholder="Price (EGP)" value="${price}" style="flex:1">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('${rowId}').remove()">✕</button>
+          `;
+          list.appendChild(row);
+        }
+        function parsePrice(raw) {
+          if (raw === null || raw === undefined) return NaN;
+          return parseFloat(String(raw).trim().replace(',', '.'));
+        }
+        function collectVariants() {
+          const rows = document.querySelectorAll('#variantsList > div[data-row-marker]');
+          const variants = [];
+          const problems = [];
+          rows.forEach((row, i) => {
+            const nameInput = row.querySelector('.vname');
+            const priceInput = row.querySelector('.vprice');
+            if (!nameInput || !priceInput) { problems.push(`Row ${i + 1}: missing input fields`); return; }
+            const name = nameInput.value.trim();
+            const priceRaw = priceInput.value;
+            const price = parsePrice(priceRaw);
+            if (!name && !priceRaw) return;
+            if (!name || isNaN(price)) { problems.push(`Row ${i + 1}: "${name || '(no name)'}" needs both a name and a valid price`); return; }
+            variants.push({ name: name, price: price, sortOrder: i });
+          });
+          return { variants, problems, totalRows: rows.length };
+        }
+        document.querySelector('form').addEventListener('submit', function (e) {
+          const { variants, problems, totalRows } = collectVariants();
+          const warningEl = document.getElementById('variantsWarning');
+          if (problems.length > 0) {
+            e.preventDefault();
+            warningEl.style.display = 'block';
+            warningEl.textContent = '⚠️ Fix these options before saving: ' + problems.join(' | ');
+            console.error('Variant collection problems:', problems);
+            return;
+          }
+          if (totalRows > 0 && variants.length === 0) {
+            e.preventDefault();
+            warningEl.style.display = 'block';
+            warningEl.textContent = '⚠️ Could not read the options you entered — please check them and try again.';
+            console.error('collectVariants produced an empty list despite', totalRows, 'rows being present.');
+            return;
+          }
+          warningEl.style.display = 'none';
+          document.getElementById('variantsJson').value = JSON.stringify(variants);
+        });
+        async function loadCategories(restaurantId) {
+          const sel = document.getElementById('catSelect');
+          sel.innerHTML = '<option value="">Loading...</option>';
+          if (!restaurantId) { sel.innerHTML = '<option value="">Select category...</option>'; return; }
+          try {
+            const res = await fetch('/Products/GetCategoriesJson?restaurantId=' + restaurantId);
+            const cats = await res.json();
+            sel.innerHTML = '<option value="">Select category...</option>' + cats.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+          } catch(e) { sel.innerHTML = '<option value="">Error loading</option>'; }
+        }
+        const rs = document.getElementById('restSelect');
+        if (rs.value) loadCategories(rs.value);
+    </script>
 }
