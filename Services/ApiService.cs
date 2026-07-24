@@ -254,6 +254,11 @@ namespace DeliveryAdmin.Services
         public async Task<(bool ok, string? error)> UpdateBanner(int id, CreateBannerDto dto) => await Put($"banners/{id}", dto);
         public async Task<(bool ok, string? error)> DeleteBanner(int id) => await Delete($"banners/{id}");
 
+        // ── Delivery Settings ─────────────────────────────────────────────
+        public async Task<DeliverySettingsDto?> GetDeliverySettings() => await Get<DeliverySettingsDto>("deliverysettings");
+        public async Task<(bool ok, string? error)> UpdateDeliverySettings(UpdateDeliverySettingsDto dto) => await Put("deliverysettings", dto);
+
+
         // ── Notifications ─────────────────────────────────────────────────
         public async Task<PagedResult<NotificationDto>?> GetNotifications(int page = 1, int size = 20) => await Get<PagedResult<NotificationDto>>($"notifications?page={page}&pageSize={size}");
         public async Task<(bool ok, string? error, int count)> SendNotification(SendNotificationDto dto)

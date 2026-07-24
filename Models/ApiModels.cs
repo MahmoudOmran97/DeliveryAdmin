@@ -273,4 +273,18 @@ namespace DeliveryAdmin.Models
         public int CashOrders { get; set; }
         public int CardOrders { get; set; }
     }
+
+    // ── Delivery Settings ─────────────────────
+    public class DeliverySettingsDto
+    {
+        public int Id { get; set; }
+        public double FreeRadiusKm { get; set; }
+        public decimal ExtraFeePerKm { get; set; }
+        public DateTime UpdatedAt { get; set; }
+    }
+    public class UpdateDeliverySettingsDto
+    {
+        public double FreeRadiusKm { get; set; }
+        public decimal ExtraFeePerKm { get; set; }
+    }
 }
