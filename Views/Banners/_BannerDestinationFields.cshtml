@@ -1,0 +1,97 @@
+@model DeliveryAdmin.Models.CreateBannerDto
+@{
+  var rests = (List<DeliveryAdmin.Models.RestaurantDto>)(ViewBag.Restaurants ?? new List<DeliveryAdmin.Models.RestaurantDto>());
+}
+
+<div class="form-group form-full">
+  <label class="form-label">@Localizer["Banners_Destination"]</label>
+  <select class="form-control" id="destType" onchange="onDestTypeChange()">
+    <option value="">@Localizer["Banners_DestNone"]</option>
+    <option value="restaurant">@Localizer["Banners_DestStore"]</option>
+    <option value="category">@Localizer["Banners_DestCategory"]</option>
+    <option value="external">@Localizer["Banners_DestExternal"]</option>
+  </select>
+</div>
+
+<div class="form-group form-full" id="destStoreGroup" style="display:none">
+  <label class="form-label">@Localizer["Banners_SelectStore"]</label>
+  <select class="form-control" id="destStoreSelect" onchange="buildActionUrl()">
+    <option value="">— @Localizer["Banners_SelectStore"] —</option>
+    @foreach (var r in rests)
+    {
+      <option value="@r.Id">@r.Name</option>
+    }
+  </select>
+</div>
+
+<div class="form-group form-full" id="destCategoryGroup" style="display:none">
+  <label class="form-label">@Localizer["Banners_SelectCategory"]</label>
+  <select class="form-control" id="destCategorySelect" onchange="buildActionUrl()">
+    <option value="">— @Localizer["Banners_SelectCategory"] —</option>
+    @foreach (var t in DeliveryAdmin.Models.StoreTypes.All)
+    {
+      <option value="@t.Value">@t.Emoji @t.LabelAr</option>
+    }
+  </select>
+</div>
+
+<div class="form-group form-full" id="destExternalGroup" style="display:none">
+  <label class="form-label">@Localizer["Banners_ExternalUrlLabel"]</label>
+  <input class="form-control" id="destExternalInput" placeholder="https://..." oninput="buildActionUrl()">
+</div>
+
+<input type="hidden" asp-for="ActionUrl" id="ActionUrlHidden">
+
+<script>
+(function () {
+  function $(id) { return document.getElementById(id); }
+
+  window.buildActionUrl = function () {
+    var type = $('destType').value;
+    var value = '';
+    if (type === 'restaurant') value = 'restaurant/' + ($('destStoreSelect').value || '');
+    else if (type === 'category') value = 'category/' + ($('destCategorySelect').value || '');
+    else if (type === 'external') value = ($('destExternalInput').value || '').trim();
+    else value = '';
+    // لو مفيش قيمة فعلية اتحددت لسه، سيب الحقل فاضي بدل ما نسجّل "restaurant/" ناقصة
+    if (type === 'restaurant' && !$('destStoreSelect').value) value = '';
+    if (type === 'category' && !$('destCategorySelect').value) value = '';
+    $('ActionUrlHidden').value = value;
+  };
+
+  window.onDestTypeChange = function () {
+    var type = $('destType').value;
+    $('destStoreGroup').style.display = (type === 'restaurant') ? '' : 'none';
+    $('destCategoryGroup').style.display = (type === 'category') ? '' : 'none';
+    $('destExternalGroup').style.display = (type === 'external') ? '' : 'none';
+    buildActionUrl();
+  };
+
+  // فك القيمة الحالية (لو موجودة أصلاً، حالة التعديل) ونظبط الفورم عليها
+  document.addEventListener('DOMContentLoaded', function () {
+    var current = ($('ActionUrlHidden').value || '').trim();
+    if (!current) { onDestTypeChange(); return; }
+
+    if (/^https?:\/\//i.test(current)) {
+      $('destType').value = 'external';
+      $('destExternalInput').value = current;
+    } else {
+      var parts = current.split('/');
+      var type = (parts[0] || '').toLowerCase();
+      var value = parts.slice(1).join('/');
+      if (type === 'restaurant' || type === 'store') {
+        $('destType').value = 'restaurant';
+        $('destStoreSelect').value = value;
+      } else if (type === 'category') {
+        $('destType').value = 'category';
+        $('destCategorySelect').value = value;
+      } else {
+        // صيغة قديمة/غير معروفة → عاملها كرابط خارجي عشان القيمة متتفقدش
+        $('destType').value = 'external';
+        $('destExternalInput').value = current;
+      }
+    }
+    onDestTypeChange();
+  });
+})();
+</script>

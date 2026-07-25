@@ -20,7 +20,11 @@ namespace DeliveryAdmin.Controllers
             return View(banners.OrderBy(b => b.SortOrder).ToList());
         }
 
-        public IActionResult Create() => View(new CreateBannerDto());
+        public async Task<IActionResult> Create()
+        {
+            ViewBag.Restaurants = (await _api.GetRestaurants(1, 500))?.Data ?? new();
+            return View(new CreateBannerDto());
+        }
 
         [HttpPost]
         public async Task<IActionResult> Create(CreateBannerDto dto)
@@ -38,6 +42,7 @@ namespace DeliveryAdmin.Controllers
             if (b == null) return NotFound();
 
             ViewBag.BannerId = id;
+            ViewBag.Restaurants = (await _api.GetRestaurants(1, 500))?.Data ?? new();
             var dto = new CreateBannerDto
             {
                 Title = b.Title,
