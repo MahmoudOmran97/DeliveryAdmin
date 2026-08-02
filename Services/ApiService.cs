@@ -2,6 +2,8 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using DeliveryAdmin.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace DeliveryAdmin.Services
 {
@@ -26,6 +28,18 @@ namespace DeliveryAdmin.Services
             return client;
         }
 
+        // لو الـ API رجع 401 لازم نمسح الـ cookie authentication كمان مش بس الـ Session
+        // عشان مانقعش في redirect loop: Session ممكن تفضى (لو الـ app اتعمله restart)
+        // والـ cookie لسه valid → Auth/Login هيرجعك MyStore/Index تاني وتاني وتاني.
+        private async Task InvalidateAuth()
+        {
+            var httpContext = _ctx.HttpContext;
+            if (httpContext == null) return;
+            httpContext.Session.Clear();
+            if (httpContext.User.Identity?.IsAuthenticated == true)
+                await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        }
+
         private async Task<T?> Get<T>(string path)
         {
             try
@@ -33,7 +47,7 @@ namespace DeliveryAdmin.Services
                 var res = await Client().GetAsync(path);
                 if (res.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
-                    _ctx.HttpContext?.Session.Clear();
+                    await InvalidateAuth();
                     return default;
                 }
                 if (!res.IsSuccessStatusCode) return default;

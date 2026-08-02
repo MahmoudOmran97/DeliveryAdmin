@@ -1,0 +1,58 @@
+@model List<DeliveryAdmin.Models.ProductDto>
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:10px">
+  <div>
+    <h2 style="font-size:18px;font-weight:800">🍕 @ViewData["Title"]</h2>
+    <div class="text-muted text-sm">منتجات القسم</div>
+  </div>
+  <a class="btn btn-secondary" asp-action="Menu">← رجوع للمنيو</a>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>المنتج</th>
+          <th>السعر</th>
+          <th>سعر بعد الخصم</th>
+          <th>مدة التحضير</th>
+          <th>السعرات</th>
+          <th>الحالة</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (!Model.Any())
+        {
+          <tr><td colspan="6"><div class="empty"><div class="empty-icon">🍕</div><div>مفيش منتجات في القسم ده</div></div></td></tr>
+        }
+        @foreach (var p in Model)
+        {
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:10px">
+                @if (!string.IsNullOrEmpty(p.ImageUrl))
+                {
+                  <img src="@p.ImageUrl" class="img-preview" alt="">
+                }
+                else
+                {
+                  <div class="img-preview" style="display:flex;align-items:center;justify-content:center;font-size:18px">🍕</div>
+                }
+                <div>
+                  <div style="font-weight:600">@p.Name</div>
+                  <div class="text-muted text-sm" style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">@p.Description</div>
+                </div>
+              </div>
+            </td>
+            <td class="mono" style="font-weight:600">@p.Price.ToString("N2") @Localizer["Currency"]</td>
+            <td class="mono" style="color:var(--green)">@(p.DiscountedPrice.HasValue ? p.DiscountedPrice.Value.ToString("N2") + " " + Localizer["Currency"] : "-")</td>
+            <td class="mono text-muted">@p.PreparationTime دقيقة</td>
+            <td class="mono text-muted">@(p.Calories.HasValue ? p.Calories.Value + " kcal" : "-")</td>
+            <td><span class="badge @(p.IsAvailable ? "b-active" : "b-inactive")">@(p.IsAvailable ? "متاح" : "غير متاح")</span></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

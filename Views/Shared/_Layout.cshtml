@@ -38,6 +38,7 @@
             @if (isPharmacyOwner)
             {
                 <div class="nav-section">@Localizer["Nav_Main"]</div>
+                <a class="nav-item @(ctrl == "MyStore" ? "active" : "")" asp-controller="MyStore" asp-action="Index"><span class="nav-icon">🏪</span> محلي</a>
                 <a class="nav-item @(ctrl == "Pharmacy" ? "active" : "")" asp-controller="Pharmacy" asp-action="Index"><span class="nav-icon">💊</span> @Localizer["Pharmacy_Title"]</a>
             }
             else

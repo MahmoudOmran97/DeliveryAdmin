@@ -1,0 +1,50 @@
+@model List<DeliveryAdmin.Models.CategoryDto>
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:10px">
+  <div>
+    <h2 style="font-size:18px;font-weight:800">📂 المنيو</h2>
+    <div class="text-muted text-sm">الأقسام والمنتجات بتاعة محلك</div>
+  </div>
+  <a class="btn btn-secondary" asp-action="Index">← رجوع لبيانات المحل</a>
+</div>
+
+@if (!Model.Any())
+{
+  <div class="card">
+    <div class="empty">
+      <div class="empty-icon">📂</div>
+      <div>لسه مفيش أقسام مضافة للمحل</div>
+    </div>
+  </div>
+}
+else
+{
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px">
+    @foreach (var c in Model)
+    {
+      <a href="@Url.Action("MenuProducts", new { categoryId = c.Id })" style="text-decoration:none;color:inherit">
+        <div class="card">
+          <div style="padding:16px">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+              @if (!string.IsNullOrEmpty(c.ImageUrl))
+              {
+                <img src="@c.ImageUrl" style="width:44px;height:44px;border-radius:10px;object-fit:cover" alt="">
+              }
+              else
+              {
+                <div style="width:44px;height:44px;border-radius:10px;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:20px">📂</div>
+              }
+              <div>
+                <div style="font-weight:700;font-size:14px">@c.Name</div>
+              </div>
+            </div>
+            <div style="padding-top:10px;border-top:1px solid var(--border)">
+              <div style="font-size:20px;font-weight:800">@c.ProductCount</div>
+              <div class="text-muted" style="font-size:10px;text-transform:uppercase;font-weight:700">منتج</div>
+            </div>
+          </div>
+        </div>
+      </a>
+    }
+  </div>
+}
