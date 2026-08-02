@@ -296,5 +296,15 @@ namespace DeliveryAdmin.Services
 
         public Task<(bool ok, string? error)> SetPrescriptionPrice(int id, decimal price)
             => Put($"prescriptionrequests/{id}/price", new SetPrescriptionPriceRequest { Price = price });
+
+        // ── بورتال صاحب المحل (MyStore) ───────────────────────────────────────
+        // بيجيب المحل بتاع صاحب الحساب الحالي عن طريق التوكين، من غير ما نعرف الـ Id
+        public Task<RestaurantDto?> GetMyRestaurant() => Get<RestaurantDto>("restaurants/me");
+
+        public Task<PagedResult<OrderDto>?> GetOrdersByRestaurant(int restaurantId, string? status = null, int page = 1, int size = 20)
+        {
+            var qs = string.IsNullOrEmpty(status) ? "" : $"&status={Uri.EscapeDataString(status)}";
+            return Get<PagedResult<OrderDto>>($"orders/restaurant/{restaurantId}?page={page}&pageSize={size}{qs}");
+        }
     }
 }

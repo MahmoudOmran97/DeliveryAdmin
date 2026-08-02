@@ -299,6 +299,12 @@ namespace DeliveryAdmin.Models
         public string Status { get; set; } = "Pending"; // Pending/Priced/Confirmed/Ordered/Cancelled
         public decimal? AgreedPrice { get; set; }
         public DateTime CreatedAt { get; set; }
+
+        // ✅ رابط كامل للصورة يشتغل من دومين الأدمن مهما كان الرابط اللي راجع من الـ API نسبي
+        public string? FullImageUrl =>
+            string.IsNullOrWhiteSpace(ImageUrl) ? null
+            : ImageUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? ImageUrl
+            : "https://deliveryappapi.runasp.net" + (ImageUrl.StartsWith("/") ? ImageUrl : "/" + ImageUrl);
     }
 
     public class PrescriptionMessageDto

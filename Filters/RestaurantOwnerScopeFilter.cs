@@ -4,13 +4,14 @@ using Microsoft.AspNetCore.Mvc.Filters;
 namespace DeliveryAdmin.Filters;
 
 // ─────────────────────────────────────────────────────────────────────────────
-// أي حساب بدوره "Restaurant" (صاحب صيدلية/مطعم) مسموحله بس بـ Pharmacy وAuth.
-// أي محاولة يوصل لأي كنترولر تاني (Dashboard، Orders، Users...) بترجّعه على
-// بورتاله هو، عشان مايشوفش بيانات المنصة كلها.
+// أي حساب بدوره "Restaurant" (صاحب صيدلية/مطعم/محل) مسموحله بس بـ MyStore وAuth.
+// جوه MyStore نفسه كل حاجة متفلترة تلقائي على المحل بتاعه بس (مش ريدايركت
+// على صفحة واحدة تابتة زي ما كان قبل كده).
 // ─────────────────────────────────────────────────────────────────────────────
 public class RestaurantOwnerScopeFilter : IAsyncAuthorizationFilter
 {
-    private static readonly string[] AllowedControllers = { "Pharmacy", "Auth" };
+    // Pharmacy لسه متسيبة عشان شات الروشتة الحالي يفضل شغال زي ما هو
+    private static readonly string[] AllowedControllers = { "MyStore", "Pharmacy", "Auth" };
 
     public Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
@@ -20,7 +21,7 @@ public class RestaurantOwnerScopeFilter : IAsyncAuthorizationFilter
             var controller = context.RouteData.Values["controller"]?.ToString() ?? "";
             if (!AllowedControllers.Contains(controller, StringComparer.OrdinalIgnoreCase))
             {
-                context.Result = new RedirectToActionResult("Index", "Pharmacy", null);
+                context.Result = new RedirectToActionResult("Index", "MyStore", null);
             }
         }
 

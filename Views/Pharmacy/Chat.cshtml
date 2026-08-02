@@ -11,8 +11,8 @@
   <div style="padding:16px;display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start">
     <div>
       <div class="stat-label" style="margin-bottom:6px">@Localizer["Pharmacy_Image"]</div>
-      <a href="@Model.ImageUrl" target="_blank">
-        <img src="@Model.ImageUrl" style="max-width:180px;border-radius:10px;border:1px solid var(--border)" />
+      <a href="@Model.FullImageUrl" target="_blank">
+        <img src="@Model.FullImageUrl" style="max-width:180px;border-radius:10px;border:1px solid var(--border)" />
       </a>
     </div>
     @if (!string.IsNullOrEmpty(Model.Notes))

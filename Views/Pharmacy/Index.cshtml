@@ -45,7 +45,7 @@
           };
           <tr>
             <td>@r.CustomerName</td>
-            <td><a href="@r.ImageUrl" target="_blank">@Localizer["Pharmacy_ViewImage"]</a></td>
+            <td><a href="@r.FullImageUrl" target="_blank">@Localizer["Pharmacy_ViewImage"]</a></td>
             <td>@(string.IsNullOrEmpty(r.Notes) ? "—" : r.Notes)</td>
             <td><span class="badge @sc">@r.Status</span></td>
             <td>@(r.AgreedPrice.HasValue ? r.AgreedPrice.Value.ToString("F0") + " EGP" : "—")</td>

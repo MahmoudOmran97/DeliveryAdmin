@@ -17,7 +17,7 @@ namespace DeliveryAdmin.Controllers
         {
             if (User.Identity?.IsAuthenticated == true)
             {
-                if (User.IsInRole("Restaurant")) return RedirectToAction("Index", "Pharmacy");
+                if (User.IsInRole("Restaurant")) return RedirectToAction("Index", "MyStore");
                 return RedirectToAction("Index", "Dashboard");
             }
             ViewData["Title"] = "Login";
@@ -45,10 +45,11 @@ namespace DeliveryAdmin.Controllers
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
 
-            // ✅ صاحب الصيدلية/المطعم (Role=Restaurant) بيروح على بورتاله المبسط بس،
-            // مش الداشبورد العام اللي فيه بيانات كل المنصة.
+            // ✅ صاحب المحل (صيدلية/مطعم/محل — Role=Restaurant) بيروح على بورتاله
+            // الخاص بيه بس (MyStore)، مش الداشبورد العام اللي فيه بيانات كل المنصة.
+            // وجوه MyStore، لو محله صيدلية بيتوجه لتبويب شات الروشتة (Pharmacy).
             if (string.Equals(data.Role, "Restaurant", StringComparison.OrdinalIgnoreCase))
-                return RedirectToAction("Index", "Pharmacy");
+                return RedirectToAction("Index", "MyStore");
 
             return RedirectToAction("Index", "Dashboard");
         }
