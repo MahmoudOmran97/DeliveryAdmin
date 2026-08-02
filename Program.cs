@@ -13,7 +13,10 @@ var builder = WebApplication.CreateBuilder(args);
 // لو ResourcesPath = "" → يبقى المسار "Resources/SharedResource" ✅
 builder.Services.AddLocalization(options => options.ResourcesPath = "");
 
-builder.Services.AddControllersWithViews()
+builder.Services.AddControllersWithViews(options =>
+    {
+        options.Filters.Add<DeliveryAdmin.Filters.RestaurantOwnerScopeFilter>();
+    })
     .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
     .AddDataAnnotationsLocalization(options =>
     {

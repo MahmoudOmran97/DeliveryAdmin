@@ -232,6 +232,29 @@
 	<data name="Nav_Coupons" xml:space="preserve"><value>الكوبونات</value></data>
 	<data name="Nav_Deals" xml:space="preserve"><value>العروض</value></data>
 	<data name="Nav_Banners" xml:space="preserve"><value>البانرات</value></data>
+	<data name="Pharmacy_Title" xml:space="preserve"><value>روشتات الصيدلية</value></data>
+	<data name="Pharmacy_Chat_Title" xml:space="preserve"><value>شات الروشتة</value></data>
+	<data name="Pharmacy_Total" xml:space="preserve"><value>إجمالي الطلبات</value></data>
+	<data name="Pharmacy_WaitingPrice" xml:space="preserve"><value>محتاجة تسعير</value></data>
+	<data name="Pharmacy_WaitingCustomer" xml:space="preserve"><value>في انتظار موافقة العميل</value></data>
+	<data name="Pharmacy_Requests" xml:space="preserve"><value>طلبات الروشتة</value></data>
+	<data name="Pharmacy_Customer" xml:space="preserve"><value>العميل</value></data>
+	<data name="Pharmacy_Image" xml:space="preserve"><value>صورة الروشتة</value></data>
+	<data name="Pharmacy_Notes" xml:space="preserve"><value>ملاحظات</value></data>
+	<data name="Pharmacy_Price" xml:space="preserve"><value>السعر</value></data>
+	<data name="Pharmacy_Date" xml:space="preserve"><value>التاريخ</value></data>
+	<data name="Pharmacy_NoRequests" xml:space="preserve"><value>مفيش طلبات روشتة لسه</value></data>
+	<data name="Pharmacy_ViewImage" xml:space="preserve"><value>عرض الصورة</value></data>
+	<data name="Pharmacy_OpenChat" xml:space="preserve"><value>الشات</value></data>
+	<data name="Pharmacy_ChatWith" xml:space="preserve"><value>محادثة مع</value></data>
+	<data name="Pharmacy_Back" xml:space="preserve"><value>رجوع</value></data>
+	<data name="Pharmacy_SetPrice" xml:space="preserve"><value>حدد تمن الفاتورة</value></data>
+	<data name="Pharmacy_PricePlaceholder" xml:space="preserve"><value>السعر بالجنيه</value></data>
+	<data name="Pharmacy_SavePrice" xml:space="preserve"><value>حفظ السعر</value></data>
+	<data name="Pharmacy_PriceSaved" xml:space="preserve"><value>تم حفظ السعر وإبلاغ العميل ✅</value></data>
+	<data name="Pharmacy_PriceFailed" xml:space="preserve"><value>حصل خطأ في حفظ السعر</value></data>
+	<data name="Pharmacy_TypeMessage" xml:space="preserve"><value>اكتب رسالتك...</value></data>
+	<data name="Pharmacy_Send" xml:space="preserve"><value>إرسال</value></data>
 	<data name="Description" xml:space="preserve"><value>الوصف</value></data>
 	<data name="SaveChanges" xml:space="preserve"><value>حفظ التغييرات</value></data>
 	<data name="Products_Image" xml:space="preserve"><value>رابط الصورة</value></data>

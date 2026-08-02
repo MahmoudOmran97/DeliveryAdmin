@@ -279,5 +279,22 @@ namespace DeliveryAdmin.Services
             }
             catch (Exception ex) { return (false, ex.Message, 0); }
         }
+
+        // ── Prescription Chat (بورتال صاحب الصيدلية) ─────────────────────────
+        public Task<List<PrescriptionRequestDto>?> GetMyPrescriptionRequests()
+            => Get<List<PrescriptionRequestDto>>("prescriptionrequests/restaurant");
+
+        public Task<List<PrescriptionMessageDto>?> GetPrescriptionMessages(int id)
+            => Get<List<PrescriptionMessageDto>>($"prescriptionrequests/{id}/messages");
+
+        public async Task<(bool ok, string? error)> SendPrescriptionMessage(int id, string message)
+        {
+            var (ok, error, _) = await Post<PrescriptionMessageDto>($"prescriptionrequests/{id}/messages",
+                new SendPrescriptionMessageRequest { Message = message });
+            return (ok, error);
+        }
+
+        public Task<(bool ok, string? error)> SetPrescriptionPrice(int id, decimal price)
+            => Put($"prescriptionrequests/{id}/price", new SetPrescriptionPriceRequest { Price = price });
     }
 }

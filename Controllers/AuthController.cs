@@ -15,7 +15,11 @@ namespace DeliveryAdmin.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            if (User.Identity?.IsAuthenticated == true) return RedirectToAction("Index", "Dashboard");
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                if (User.IsInRole("Restaurant")) return RedirectToAction("Index", "Pharmacy");
+                return RedirectToAction("Index", "Dashboard");
+            }
             ViewData["Title"] = "Login";
             return View();
         }
@@ -40,6 +44,12 @@ namespace DeliveryAdmin.Controllers
             };
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+
+            // ✅ صاحب الصيدلية/المطعم (Role=Restaurant) بيروح على بورتاله المبسط بس،
+            // مش الداشبورد العام اللي فيه بيانات كل المنصة.
+            if (string.Equals(data.Role, "Restaurant", StringComparison.OrdinalIgnoreCase))
+                return RedirectToAction("Index", "Pharmacy");
+
             return RedirectToAction("Index", "Dashboard");
         }
 

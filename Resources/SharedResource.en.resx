@@ -232,6 +232,29 @@
 	<data name="Nav_Coupons" xml:space="preserve"><value>Coupons</value></data>
 	<data name="Nav_Deals" xml:space="preserve"><value>Deals</value></data>
 	<data name="Nav_Banners" xml:space="preserve"><value>Banners</value></data>
+	<data name="Pharmacy_Title" xml:space="preserve"><value>Prescription Requests</value></data>
+	<data name="Pharmacy_Chat_Title" xml:space="preserve"><value>Prescription Chat</value></data>
+	<data name="Pharmacy_Total" xml:space="preserve"><value>Total Requests</value></data>
+	<data name="Pharmacy_WaitingPrice" xml:space="preserve"><value>Needs Pricing</value></data>
+	<data name="Pharmacy_WaitingCustomer" xml:space="preserve"><value>Awaiting Customer</value></data>
+	<data name="Pharmacy_Requests" xml:space="preserve"><value>Prescription Requests</value></data>
+	<data name="Pharmacy_Customer" xml:space="preserve"><value>Customer</value></data>
+	<data name="Pharmacy_Image" xml:space="preserve"><value>Prescription Image</value></data>
+	<data name="Pharmacy_Notes" xml:space="preserve"><value>Notes</value></data>
+	<data name="Pharmacy_Price" xml:space="preserve"><value>Price</value></data>
+	<data name="Pharmacy_Date" xml:space="preserve"><value>Date</value></data>
+	<data name="Pharmacy_NoRequests" xml:space="preserve"><value>No prescription requests yet</value></data>
+	<data name="Pharmacy_ViewImage" xml:space="preserve"><value>View Image</value></data>
+	<data name="Pharmacy_OpenChat" xml:space="preserve"><value>Chat</value></data>
+	<data name="Pharmacy_ChatWith" xml:space="preserve"><value>Chat with</value></data>
+	<data name="Pharmacy_Back" xml:space="preserve"><value>Back</value></data>
+	<data name="Pharmacy_SetPrice" xml:space="preserve"><value>Set Invoice Price</value></data>
+	<data name="Pharmacy_PricePlaceholder" xml:space="preserve"><value>Price in EGP</value></data>
+	<data name="Pharmacy_SavePrice" xml:space="preserve"><value>Save Price</value></data>
+	<data name="Pharmacy_PriceSaved" xml:space="preserve"><value>Price saved and customer notified ✅</value></data>
+	<data name="Pharmacy_PriceFailed" xml:space="preserve"><value>Failed to save price</value></data>
+	<data name="Pharmacy_TypeMessage" xml:space="preserve"><value>Type your message...</value></data>
+	<data name="Pharmacy_Send" xml:space="preserve"><value>Send</value></data>
 	<data name="Description" xml:space="preserve"><value>Description</value></data>
 	<data name="SaveChanges" xml:space="preserve"><value>Save Changes</value></data>
 	<data name="Products_Image" xml:space="preserve"><value>Image URL</value></data>

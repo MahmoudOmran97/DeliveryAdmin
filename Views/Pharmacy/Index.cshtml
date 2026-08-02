@@ -1,0 +1,59 @@
+@model List<DeliveryAdmin.Models.PrescriptionRequestDto>
+@{
+    var pending = Model.Count(r => r.Status == "Pending");
+    var priced = Model.Count(r => r.Status == "Priced");
+}
+
+<div class="stat-row">
+  <div class="stat-box"><div class="stat-label">@Localizer["Pharmacy_Total"]</div><div class="stat-val">@Model.Count</div></div>
+  <div class="stat-box"><div class="stat-label">@Localizer["Pharmacy_WaitingPrice"]</div><div class="stat-val" style="color:var(--amber)">@pending</div></div>
+  <div class="stat-box"><div class="stat-label">@Localizer["Pharmacy_WaitingCustomer"]</div><div class="stat-val" style="color:var(--green)">@priced</div></div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">@Localizer["Pharmacy_Requests"]</div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>@Localizer["Pharmacy_Customer"]</th>
+          <th>@Localizer["Pharmacy_Image"]</th>
+          <th>@Localizer["Pharmacy_Notes"]</th>
+          <th>@Localizer["Status"]</th>
+          <th>@Localizer["Pharmacy_Price"]</th>
+          <th>@Localizer["Pharmacy_Date"]</th>
+          <th>@Localizer["Actions"]</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (!Model.Any())
+        {
+          <tr><td colspan="7"><div class="empty"><div class="empty-icon">💊</div><div>@Localizer["Pharmacy_NoRequests"]</div></div></td></tr>
+        }
+        @foreach (var r in Model)
+        {
+          string sc = r.Status switch
+          {
+              "Pending" => "b-pending",
+              "Priced" => "b-cash",
+              "Confirmed" => "b-active",
+              "Ordered" => "b-active",
+              "Cancelled" => "b-inactive",
+              _ => "b-inactive"
+          };
+          <tr>
+            <td>@r.CustomerName</td>
+            <td><a href="@r.ImageUrl" target="_blank">@Localizer["Pharmacy_ViewImage"]</a></td>
+            <td>@(string.IsNullOrEmpty(r.Notes) ? "—" : r.Notes)</td>
+            <td><span class="badge @sc">@r.Status</span></td>
+            <td>@(r.AgreedPrice.HasValue ? r.AgreedPrice.Value.ToString("F0") + " EGP" : "—")</td>
+            <td>@r.CreatedAt.ToString("MMM dd, HH:mm")</td>
+            <td><a class="btn btn-primary btn-sm" asp-controller="Pharmacy" asp-action="Chat" asp-route-id="@r.Id">💬 @Localizer["Pharmacy_OpenChat"]</a></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

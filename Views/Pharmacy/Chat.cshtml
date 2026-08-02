@@ -1,0 +1,120 @@
+@model DeliveryAdmin.Models.PrescriptionRequestDto
+@{
+    var messages = ViewBag.Messages as List<DeliveryAdmin.Models.PrescriptionMessageDto> ?? new();
+}
+
+<div class="card" style="margin-bottom:16px">
+  <div class="card-header">
+    <div class="card-title">@Localizer["Pharmacy_ChatWith"] @Model.CustomerName</div>
+    <a class="btn btn-secondary btn-sm" asp-controller="Pharmacy" asp-action="Index">← @Localizer["Pharmacy_Back"]</a>
+  </div>
+  <div style="padding:16px;display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start">
+    <div>
+      <div class="stat-label" style="margin-bottom:6px">@Localizer["Pharmacy_Image"]</div>
+      <a href="@Model.ImageUrl" target="_blank">
+        <img src="@Model.ImageUrl" style="max-width:180px;border-radius:10px;border:1px solid var(--border)" />
+      </a>
+    </div>
+    @if (!string.IsNullOrEmpty(Model.Notes))
+    {
+      <div style="max-width:320px">
+        <div class="stat-label" style="margin-bottom:6px">@Localizer["Pharmacy_Notes"]</div>
+        <div>@Model.Notes</div>
+      </div>
+    }
+    <div style="flex:1;min-width:220px">
+      <div class="stat-label" style="margin-bottom:6px">@Localizer["Pharmacy_SetPrice"]</div>
+      @if (Model.Status is "Ordered" or "Cancelled")
+      {
+        <div class="badge b-inactive">@Model.Status</div>
+      }
+      else
+      {
+        <form id="priceForm" style="display:flex;gap:8px">
+          <input class="filter-input" type="number" min="1" step="0.5" id="priceInput"
+                 value="@(Model.AgreedPrice?.ToString("F0"))" placeholder="@Localizer["Pharmacy_PricePlaceholder"]" />
+          <button type="submit" class="btn btn-primary btn-sm">@Localizer["Pharmacy_SavePrice"]</button>
+        </form>
+        <div id="priceMsg" style="margin-top:6px;font-size:12px"></div>
+      }
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header"><div class="card-title">@Localizer["Pharmacy_Chat_Title"]</div></div>
+  <div id="chatBox" style="padding:16px;max-height:420px;overflow-y:auto;display:flex;flex-direction:column;gap:10px"></div>
+  <div style="padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px">
+    <input id="msgInput" class="filter-input" style="flex:1" placeholder="@Localizer["Pharmacy_TypeMessage"]" />
+    <button id="sendBtn" class="btn btn-primary btn-sm">@Localizer["Pharmacy_Send"]</button>
+  </div>
+</div>
+
+@section Scripts {
+<script>
+(function () {
+    const requestId = @Model.Id;
+    const chatBox = document.getElementById('chatBox');
+    const msgInput = document.getElementById('msgInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const priceForm = document.getElementById('priceForm');
+    const priceMsg = document.getElementById('priceMsg');
+
+    function bubble(m) {
+        const mine = m.senderRole === 'Pharmacy';
+        const wrap = document.createElement('div');
+        wrap.style.display = 'flex';
+        wrap.style.justifyContent = mine ? 'flex-end' : 'flex-start';
+        const b = document.createElement('div');
+        b.style.maxWidth = '70%';
+        b.style.padding = '8px 12px';
+        b.style.borderRadius = mine ? '14px 14px 4px 14px' : '14px 14px 14px 4px';
+        b.style.background = mine ? '#1976D2' : 'rgba(255,255,255,.06)';
+        b.style.color = mine ? '#fff' : 'var(--text)';
+        b.style.fontSize = '13px';
+        b.textContent = m.message;
+        wrap.appendChild(b);
+        return wrap;
+    }
+
+    let lastCount = -1;
+    async function loadMessages() {
+        try {
+            const res = await fetch(`/Pharmacy/Messages?id=${requestId}`);
+            if (!res.ok) return;
+            const data = await res.json();
+            if (data.length === lastCount) return;
+            lastCount = data.length;
+            chatBox.innerHTML = '';
+            data.forEach(m => chatBox.appendChild(bubble(m)));
+            chatBox.scrollTop = chatBox.scrollHeight;
+        } catch (e) { console.error(e); }
+    }
+
+    async function send() {
+        const text = msgInput.value.trim();
+        if (!text) return;
+        msgInput.value = '';
+        await fetch(`/Pharmacy/SendMessage?id=${requestId}&message=${encodeURIComponent(text)}`, { method: 'POST' });
+        await loadMessages();
+    }
+
+    sendBtn.addEventListener('click', send);
+    msgInput.addEventListener('keydown', e => { if (e.key === 'Enter') send(); });
+
+    if (priceForm) {
+        priceForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const price = document.getElementById('priceInput').value;
+            if (!price || Number(price) <= 0) return;
+            const res = await fetch(`/Pharmacy/SetPrice?id=${requestId}&price=${price}`, { method: 'POST' });
+            priceMsg.textContent = res.ok ? '@Localizer["Pharmacy_PriceSaved"]' : '@Localizer["Pharmacy_PriceFailed"]';
+            priceMsg.style.color = res.ok ? 'var(--green)' : 'var(--red)';
+        });
+    }
+
+    loadMessages();
+    setInterval(loadMessages, 4000);
+})();
+</script>
+}

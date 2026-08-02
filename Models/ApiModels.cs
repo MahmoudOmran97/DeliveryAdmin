@@ -287,4 +287,35 @@ namespace DeliveryAdmin.Models
         public double FreeRadiusKm { get; set; }
         public decimal ExtraFeePerKm { get; set; }
     }
+
+    // ── Prescription Chat (بورتال صاحب الصيدلية) ─────────────
+    public class PrescriptionRequestDto
+    {
+        public int Id { get; set; }
+        public int CustomerId { get; set; }
+        public string? CustomerName { get; set; }
+        public string ImageUrl { get; set; } = "";
+        public string? Notes { get; set; }
+        public string Status { get; set; } = "Pending"; // Pending/Priced/Confirmed/Ordered/Cancelled
+        public decimal? AgreedPrice { get; set; }
+        public DateTime CreatedAt { get; set; }
+    }
+
+    public class PrescriptionMessageDto
+    {
+        public int Id { get; set; }
+        public string SenderRole { get; set; } = "Customer"; // Customer/Pharmacy
+        public string Message { get; set; } = "";
+        public DateTime CreatedAt { get; set; }
+    }
+
+    public class SetPrescriptionPriceRequest
+    {
+        public decimal Price { get; set; }
+    }
+
+    public class SendPrescriptionMessageRequest
+    {
+        public string Message { get; set; } = "";
+    }
 }
