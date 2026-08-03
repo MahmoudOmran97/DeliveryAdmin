@@ -295,6 +295,39 @@ namespace DeliveryAdmin.Services
 
         // ── Notifications ─────────────────────────────────────────────────
         public async Task<PagedResult<NotificationDto>?> GetNotifications(int page = 1, int size = 20) => await Get<PagedResult<NotificationDto>>($"notifications?page={page}&pageSize={size}");
+
+        public async Task<int> GetUnreadNotificationCount()
+        {
+            try
+            {
+                var res = await Client().GetAsync("notifications/unread-count");
+                if (!res.IsSuccessStatusCode) return 0;
+                var json = await res.Content.ReadAsStringAsync();
+                var doc = JsonSerializer.Deserialize<JsonElement>(json, _opts);
+                return doc.TryGetProperty("count", out var c) ? c.GetInt32() : 0;
+            }
+            catch (Exception) { return 0; }
+        }
+
+        public async Task<bool> MarkNotificationRead(int id)
+        {
+            try
+            {
+                var res = await Client().PostAsync($"notifications/{id}/read", null);
+                return res.IsSuccessStatusCode;
+            }
+            catch (Exception) { return false; }
+        }
+
+        public async Task<bool> MarkAllNotificationsRead()
+        {
+            try
+            {
+                var res = await Client().PostAsync("notifications/read-all", null);
+                return res.IsSuccessStatusCode;
+            }
+            catch (Exception) { return false; }
+        }
         public async Task<(bool ok, string? error, int count)> SendNotification(SendNotificationDto dto)
         {
             try

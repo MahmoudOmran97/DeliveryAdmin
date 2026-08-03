@@ -11,7 +11,10 @@ namespace DeliveryAdmin.Filters;
 public class RestaurantOwnerScopeFilter : IAsyncAuthorizationFilter
 {
     // Pharmacy لسه متسيبة عشان شات الروشتة الحالي يفضل شغال زي ما هو
-    private static readonly string[] AllowedControllers = { "MyStore", "Pharmacy", "Auth" };
+    // Settings و Notifications لازم يبقوا متاحين لصاحب المحل برضو (تغيير اللغة + جرس التنبيهات)،
+    // وإلا الفلتر بيقطع الطلب قبل ما الأكشن يتنفذ ويرجّعه MyStore تلقائي (كان ده سبب إن تغيير
+    // اللغة لصاحب المحل مكنش بيشتغل، كان بس بيرجعه لصفحة المحل من غير ما يغير الكوكي)
+    private static readonly string[] AllowedControllers = { "MyStore", "Pharmacy", "Auth", "Settings", "Notifications" };
 
     public Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {

@@ -13,6 +13,43 @@ public class NotificationsController : LocalizedController
     private readonly ApiService _api;
     public NotificationsController(ApiService api, IStringLocalizer<SharedResource> localizer) : base(localizer) => _api = api;
 
+    // ─────────────────────────────────────────────────────────────
+    // زر الجرس 🔔 — عداد + قائمة، متاحة لأي مستخدم مسجل دخول (أدمن
+    // أو صاحب محل)، كل واحد بياخد تنبيهاته هو بس (الـ API بيفلتر
+    // على الـ userId من التوكن).
+    // ─────────────────────────────────────────────────────────────
+    [HttpGet]
+    public async Task<IActionResult> Feed(int page = 1)
+    {
+        var result = await _api.GetNotifications(page, 15);
+        return Json(result ?? new PagedResult<NotificationDto>());
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> UnreadCount()
+    {
+        var count = await _api.GetUnreadNotificationCount();
+        return Json(new { count });
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> MarkRead(int id)
+    {
+        var ok = await _api.MarkNotificationRead(id);
+        return Json(new { ok });
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> MarkAllRead()
+    {
+        var ok = await _api.MarkAllNotificationsRead();
+        return Json(new { ok });
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // إرسال تنبيه يدوي (بث) — أدمن بس، صاحب المحل ملوش دعوة بيها
+    // ─────────────────────────────────────────────────────────────
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Send()
     {
         SetTitle("Notif_Title");
@@ -20,6 +57,7 @@ public class NotificationsController : LocalizedController
         return View(new SendNotificationDto());
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Send(SendNotificationDto dto, string sendMode)
     {

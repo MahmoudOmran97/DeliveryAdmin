@@ -134,6 +134,21 @@
                             @if (lang == "ar") { <option value="ar" selected>@Localizer["Lang_Arabic"]</option> } else { <option value="ar">@Localizer["Lang_Arabic"]</option> }
                         </select>
                     </form>
+                    <div class="notif-bell-wrap" id="notifBellWrap">
+                        <button type="button" class="toolbar-btn notif-bell-btn" id="notifBellBtn" title="@Localizer["Notif_Bell"]">
+                            🔔
+                            <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
+                        </button>
+                        <div class="notif-dropdown" id="notifDropdown" style="display:none;">
+                            <div class="notif-dropdown-header">
+                                <span>@Localizer["Notif_Bell"]</span>
+                                <button type="button" id="notifMarkAllBtn">@Localizer["Notif_MarkAllRead"]</button>
+                            </div>
+                            <div class="notif-list" id="notifList">
+                                <div class="notif-loading">…</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="live"><div class="live-dot"></div> @Localizer["Live"]</div>
             </div>
@@ -163,11 +178,132 @@
         }
     </script>
 
-    @if (isStoreOwner)
-    {
+    <!-- ─────────────────────────────────────────────────────────────
+         زر الجرس 🔔 — متاح للأدمن وصاحب المحل مع بعض. بيعرض عدد
+         التنبيهات اللي لسه ملقتش (بولينج كل 25 ثانية + تحديث لحظي
+         عن طريق SignalR تحت)، وبيفتح قائمة بآخر التنبيهات المحفوظة.
+    ───────────────────────────────────────────────────────────────── -->
+    <script>
+    (function () {
+        var badge = document.getElementById('notifBadge');
+        var btn = document.getElementById('notifBellBtn');
+        var dropdown = document.getElementById('notifDropdown');
+        var list = document.getElementById('notifList');
+        var markAllBtn = document.getElementById('notifMarkAllBtn');
+        if (!btn || !dropdown) return;
+
+        var isRtl = @Html.Raw(isRtl ? "true" : "false");
+        var emptyText = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Localizer["Notif_Empty"].Value));
+        var isOpen = false;
+        var loadedOnce = false;
+
+        function timeAgo(iso) {
+            var diffSec = Math.max(0, (Date.now() - new Date(iso + 'Z').getTime()) / 1000);
+            if (diffSec < 60) return isRtl ? 'دلوقتي' : 'now';
+            if (diffSec < 3600) return Math.floor(diffSec / 60) + (isRtl ? ' د' : 'm');
+            if (diffSec < 86400) return Math.floor(diffSec / 3600) + (isRtl ? ' س' : 'h');
+            return Math.floor(diffSec / 86400) + (isRtl ? ' يوم' : 'd');
+        }
+
+        function notifUrl(n) {
+            if (n.type === 'PrescriptionRequest') return '/Pharmacy';
+            if (n.orderId) return @Html.Raw(isStoreOwner ? "'/MyStore/Orders'" : "'/Orders/Details/' + n.orderId");
+            return '#';
+        }
+
+        function renderList(items) {
+            if (!items || !items.length) {
+                list.innerHTML = '<div class="notif-empty-state">🔕<br>' + emptyText + '</div>';
+                return;
+            }
+            list.innerHTML = items.map(function (n) {
+                return '<a href="' + notifUrl(n) + '" class="notif-item' + (n.isRead ? '' : ' unread') + '" data-id="' + n.id + '">' +
+                    '<div class="notif-item-title">' + escapeHtml(n.title) + '</div>' +
+                    '<div class="notif-item-body">' + escapeHtml(n.body) + '</div>' +
+                    '<div class="notif-item-time">' + timeAgo(n.createdAt) + '</div>' +
+                    '</a>';
+            }).join('');
+
+            Array.prototype.forEach.call(list.querySelectorAll('.notif-item'), function (el) {
+                el.addEventListener('click', function () {
+                    var id = this.getAttribute('data-id');
+                    fetch('/Notifications/MarkRead?id=' + id, { method: 'POST' }).catch(function () {});
+                });
+            });
+        }
+
+        function escapeHtml(s) {
+            var d = document.createElement('div');
+            d.textContent = s || '';
+            return d.innerHTML;
+        }
+
+        function refreshBadge() {
+            fetch('/Notifications/UnreadCount').then(function (r) { return r.json(); }).then(function (d) {
+                var count = d && d.count ? d.count : 0;
+                if (count > 0) {
+                    badge.textContent = count > 99 ? '99+' : count;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }).catch(function () {});
+        }
+
+        function loadFeed() {
+            list.innerHTML = '<div class="notif-loading">…</div>';
+            fetch('/Notifications/Feed').then(function (r) { return r.json(); }).then(function (d) {
+                renderList(d && d.data ? d.data : []);
+            }).catch(function () {
+                list.innerHTML = '<div class="notif-empty-state">⚠️</div>';
+            });
+        }
+
+        btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            isOpen = !isOpen;
+            dropdown.style.display = isOpen ? 'block' : 'none';
+            if (isOpen) {
+                loadFeed();
+                loadedOnce = true;
+                setTimeout(refreshBadge, 600); // بعد ما نفتح القائمة نفترض إنه هيقرا، نحدث العداد شوية بعدين
+            }
+        });
+
+        document.addEventListener('click', function (e) {
+            if (isOpen && !dropdown.contains(e.target) && e.target !== btn) {
+                isOpen = false;
+                dropdown.style.display = 'none';
+            }
+        });
+
+        if (markAllBtn) {
+            markAllBtn.addEventListener('click', function () {
+                fetch('/Notifications/MarkAllRead', { method: 'POST' }).then(function () {
+                    refreshBadge();
+                    if (loadedOnce) loadFeed();
+                }).catch(function () {});
+            });
+        }
+
+        refreshBadge();
+        setInterval(refreshBadge, 25000);
+
+        // بيتنادى من بلوك الـ SignalR تحت لما يوصل حدث "NewNotification" لحظي
+        window.__onLiveNotification = function () {
+            refreshBadge();
+            if (isOpen) loadFeed();
+        };
+    })();
+    </script>
+
+    @{
         var apiBase = (Configuration["ApiSettings:BaseUrl"] ?? "").TrimEnd('/');
         var hubBaseUrl = apiBase.EndsWith("/api") ? apiBase[..^4] : apiBase;
         var myToken = Api.GetCurrentToken();
+    }
+    @if (isStoreOwner)
+    {
         <!-- ─────────────────────────────────────────────────────────────
              تنبيه لحظي لصاحب المحل/الصيدلية لما يجي طلب جديد (أي صفحة)
              بيتوصل بالـ Hub (نفس اللي التطبيقات بتستخدمه)، السيرفر بيبعت
@@ -181,18 +317,36 @@
              font-weight:600;cursor:pointer;max-width:320px;">
             <div id="newOrderToastText">@Localizer["Orders_NewOrderAlert"]</div>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@@8.0.0/dist/browser/signalr.min.js"></script>
-        <script>
-        (function () {
-            var hubBase = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(hubBaseUrl));
-            var token = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(myToken ?? ""));
-            if (!hubBase || !token) return;
+    }
+    <script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@@8.0.0/dist/browser/signalr.min.js"></script>
+    <script>
+    (function () {
+        var hubBase = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(hubBaseUrl));
+        var token = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(myToken ?? ""));
+        if (!hubBase || !token) return;
 
-            var connection = new signalR.HubConnectionBuilder()
-                .withUrl(hubBase + "/hubs/tracking", { accessTokenFactory: () => token })
-                .withAutomaticReconnect()
-                .build();
+        var isStoreOwner = @Html.Raw(isStoreOwner ? "true" : "false");
 
+        var connection = new signalR.HubConnectionBuilder()
+            .withUrl(hubBase + "/hubs/tracking", { accessTokenFactory: () => token })
+            .withAutomaticReconnect()
+            .build();
+
+        // 🔔 حدث عام بيتبعت لأي مستخدم (أدمن أو صاحب محل) لما يتحفظله تنبيه
+        // جديد في الجرس — سواء أوردر جديد، روشتة جديدة، أو بث يدوي من الأدمن
+        connection.on("NewNotification", function (data) {
+            if (typeof window.__onLiveNotification === 'function') window.__onLiveNotification();
+
+            // تجنب دوبل توست لصاحب المحل: أوردر جديد وروشتة جديدة ليهم توست مخصص تحت
+            var skipToast = isStoreOwner && data && (data.type === 'NewOrder' || data.type === 'PrescriptionRequest');
+            if (skipToast) return;
+
+            if ("Notification" in window && Notification.permission === "granted" && data) {
+                new Notification(data.title || "🔔", { body: data.body || "", icon: "🔔" });
+            }
+        });
+
+        if (isStoreOwner) {
             function showToast(orderId) {
                 var sound = document.getElementById('newOrderSound');
                 if (sound) { sound.currentTime = 0; sound.play().catch(function () {}); }
@@ -230,14 +384,14 @@
                 toast.onclick = function () { window.location.href = '/Pharmacy'; };
                 setTimeout(function () { toast.style.display = 'none'; }, 8000);
             });
+        }
 
-            connection.start().catch(function (err) { console.error('SignalR connection error:', err); });
+        connection.start().catch(function (err) { console.error('SignalR connection error:', err); });
 
-            if ("Notification" in window && Notification.permission === "default") {
-                Notification.requestPermission();
-            }
-        })();
-        </script>
-    }
+        if ("Notification" in window && Notification.permission === "default") {
+            Notification.requestPermission();
+        }
+    })();
+    </script>
 </body>
 </html>

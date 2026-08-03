@@ -58,6 +58,10 @@
 	<data name="Status" xml:space="preserve"><value>الحالة</value></data>
 	<data name="NoUsers" xml:space="preserve"><value>لا يوجد مستخدمين</value></data>
 	<data name="Notif_Title" xml:space="preserve"><value>إرسال إشعار</value></data>
+	<data name="Notif_Bell" xml:space="preserve"><value>التنبيهات</value></data>
+	<data name="Notif_MarkAllRead" xml:space="preserve"><value>تعليم الكل كمقروء</value></data>
+	<data name="Notif_Empty" xml:space="preserve"><value>مفيش تنبيهات لسه</value></data>
+	<data name="Notif_LoadMore" xml:space="preserve"><value>عرض المزيد</value></data>
 	<data name="Notif_TargetUser" xml:space="preserve"><value>مستخدم محدد</value></data>
 	<data name="Notif_TargetRole" xml:space="preserve"><value>حسب الدور (جماعي)</value></data>
 	<data name="Notif_SelectUser" xml:space="preserve"><value>اختر المستخدم</value></data>
