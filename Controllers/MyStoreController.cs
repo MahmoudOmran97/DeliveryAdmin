@@ -17,7 +17,12 @@ namespace DeliveryAdmin.Controllers
     public class MyStoreController : LocalizedController
     {
         private readonly ApiService _api;
-        public MyStoreController(ApiService api, IStringLocalizer<SharedResource> localizer) : base(localizer) => _api = api;
+        private readonly IConfiguration _config;
+        public MyStoreController(ApiService api, IStringLocalizer<SharedResource> localizer, IConfiguration config) : base(localizer)
+        {
+            _api = api;
+            _config = config;
+        }
 
         // بيانات المحل + تعديلها
         public async Task<IActionResult> Index()
@@ -25,7 +30,7 @@ namespace DeliveryAdmin.Controllers
             var store = await _api.GetMyRestaurant();
             if (store == null) return RedirectToAction("Login", "Auth");
 
-            ViewData["Title"] = "محلي";
+            ViewData["Title"] = L["Nav_MyStore"].Value;
             ViewBag.StoreType = store.StoreType;
             return View(store);
         }
@@ -37,7 +42,7 @@ namespace DeliveryAdmin.Controllers
             if (store == null) return Forbid();
 
             var (ok, error) = await _api.UpdateRestaurant(store.Id, dto);
-            TempData[ok ? "Success" : "Error"] = ok ? "تم حفظ بيانات المحل" : (error ?? "فشل الحفظ");
+            TempData[ok ? "Success" : "Error"] = ok ? L["Msg_StoreInfoSaved"].Value : (error ?? L["Msg_SaveFailed"].Value);
             return RedirectToAction(nameof(Index));
         }
 
@@ -57,7 +62,7 @@ namespace DeliveryAdmin.Controllers
             var store = await _api.GetMyRestaurant();
             if (store == null) return RedirectToAction("Login", "Auth");
 
-            ViewData["Title"] = "المنيو";
+            ViewData["Title"] = L["Nav_MyMenu"].Value;
             ViewBag.RestaurantId = store.Id;
             ViewBag.StoreType = store.StoreType;
 
@@ -77,9 +82,173 @@ namespace DeliveryAdmin.Controllers
             ViewData["Title"] = category.Name;
             ViewBag.RestaurantId = store.Id;
             ViewBag.CategoryId = categoryId;
+            ViewBag.CategoryName = category.Name;
 
             var products = await _api.SearchProducts(restaurantId: store.Id, categoryId: categoryId, size: 200);
             return View(products?.Data ?? new());
+        }
+
+        // ── إضافة/تعديل/حذف قسم ────────────────────────────────────────
+        public async Task<IActionResult> CreateCategory()
+        {
+            var store = await _api.GetMyRestaurant();
+            if (store == null) return RedirectToAction("Login", "Auth");
+            ViewData["Title"] = L["Cat_Add"].Value;
+            return View(new CreateCategoryDto { RestaurantId = store.Id });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateCategory(CreateCategoryDto dto)
+        {
+            var store = await _api.GetMyRestaurant();
+            if (store == null) return Forbid();
+            dto.RestaurantId = store.Id; // تجاهل أي قيمة متبعتة من الفورم عشان محدش يضيف قسم لمحل غيره
+
+            var (ok, error) = await _api.CreateCategory(dto);
+            TempData[ok ? "Success" : "Error"] = ok ? L["Msg_CategoryAdded"].Value : (error ?? L["Msg_CategoryAddFailed"].Value);
+            return ok ? RedirectToAction(nameof(Menu)) : RedirectToAction(nameof(CreateCategory));
+        }
+
+        public async Task<IActionResult> EditCategory(int id)
+        {
+            var store = await _api.GetMyRestaurant();
+            if (store == null) return RedirectToAction("Login", "Auth");
+
+            var c = await _api.GetCategory(id);
+            if (c == null || c.RestaurantId != store.Id) return Forbid();
+
+            ViewData["Title"] = L["Cat_Edit"].Value;
+            ViewBag.CategoryId = id;
+            return View(new UpdateCategoryDto { Name = c.Name, ImageUrl = c.ImageUrl, SortOrder = c.SortOrder });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditCategory(int id, UpdateCategoryDto dto)
+        {
+            var store = await _api.GetMyRestaurant();
+            if (store == null) return Forbid();
+
+            var c = await _api.GetCategory(id);
+            if (c == null || c.RestaurantId != store.Id) return Forbid();
+
+            var (ok, error) = await _api.UpdateCategory(id, dto);
+            TempData[ok ? "Success" : "Error"] = ok ? L["Msg_EditSaved"].Value : (error ?? L["Msg_EditSaveFailed"].Value);
+            return ok ? RedirectToAction(nameof(Menu)) : RedirectToAction(nameof(EditCategory), new { id });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteCategory(int id)
+        {
+            var store = await _api.GetMyRestaurant();
+            if (store == null) return Forbid();
+
+            var c = await _api.GetCategory(id);
+            if (c == null || c.RestaurantId != store.Id) return Forbid();
+
+            var (ok, error) = await _api.DeleteCategory(id);
+            TempData[ok ? "Success" : "Error"] = ok ? L["Msg_CategoryDeleted"].Value : (error ?? L["Msg_DeleteFailed"].Value);
+            return RedirectToAction(nameof(Menu));
+        }
+
+        // ── إضافة/تعديل/حذف منتج ───────────────────────────────────────
+        public async Task<IActionResult> CreateProduct(int categoryId)
+        {
+            var store = await _api.GetMyRestaurant();
+            if (store == null) return RedirectToAction("Login", "Auth");
+
+            var category = await _api.GetCategory(categoryId);
+            if (category == null || category.RestaurantId != store.Id) return Forbid();
+
+            ViewData["Title"] = L["Products_Add"].Value;
+            ViewBag.CategoryId = categoryId;
+            ViewBag.CategoryName = category.Name;
+            return View(new CreateProductDto { CategoryId = categoryId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateProduct(CreateProductDto dto)
+        {
+            var store = await _api.GetMyRestaurant();
+            if (store == null) return Forbid();
+
+            var category = await _api.GetCategory(dto.CategoryId);
+            if (category == null || category.RestaurantId != store.Id) return Forbid();
+
+            var (ok, error, _) = await _api.CreateProductWithId(dto);
+            TempData[ok ? "Success" : "Error"] = ok ? L["Msg_ProductAdded"].Value : (error ?? L["Msg_ProductAddFailed"].Value);
+            return ok
+                ? RedirectToAction(nameof(MenuProducts), new { categoryId = dto.CategoryId })
+                : RedirectToAction(nameof(CreateProduct), new { categoryId = dto.CategoryId });
+        }
+
+        public async Task<IActionResult> EditProduct(int id)
+        {
+            var store = await _api.GetMyRestaurant();
+            if (store == null) return RedirectToAction("Login", "Auth");
+
+            var p = await _api.GetProduct(id);
+            if (p == null || p.RestaurantId != store.Id) return Forbid();
+
+            ViewData["Title"] = L["Products_Edit"].Value;
+            ViewBag.ProductId = id;
+            var categoryId = p.Category is System.Text.Json.JsonElement cat && cat.TryGetProperty("id", out var cid) ? cid.GetInt32() : 0;
+            ViewBag.CategoryId = categoryId;
+
+            var dto = new CreateProductDto
+            {
+                CategoryId = categoryId,
+                Name = p.Name,
+                Description = p.Description,
+                Price = p.Price,
+                DiscountedPrice = p.DiscountedPrice,
+                ImageUrl = p.ImageUrl,
+                PreparationTime = p.PreparationTime,
+                Calories = p.Calories
+            };
+            return View(dto);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditProduct(int id, CreateProductDto dto)
+        {
+            var store = await _api.GetMyRestaurant();
+            if (store == null) return Forbid();
+
+            var p = await _api.GetProduct(id);
+            if (p == null || p.RestaurantId != store.Id) return Forbid();
+
+            var (ok, error) = await _api.UpdateProduct(id, dto);
+            TempData[ok ? "Success" : "Error"] = ok ? L["Msg_EditSaved"].Value : (error ?? L["Msg_EditSaveFailed"].Value);
+            return ok
+                ? RedirectToAction(nameof(MenuProducts), new { categoryId = dto.CategoryId })
+                : RedirectToAction(nameof(EditProduct), new { id });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ToggleProduct(int id, int categoryId)
+        {
+            var store = await _api.GetMyRestaurant();
+            if (store == null) return Forbid();
+
+            var p = await _api.GetProduct(id);
+            if (p == null || p.RestaurantId != store.Id) return Forbid();
+
+            await _api.ToggleProduct(id);
+            return RedirectToAction(nameof(MenuProducts), new { categoryId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteProduct(int id, int categoryId)
+        {
+            var store = await _api.GetMyRestaurant();
+            if (store == null) return Forbid();
+
+            var p = await _api.GetProduct(id);
+            if (p == null || p.RestaurantId != store.Id) return Forbid();
+
+            var (ok, error) = await _api.DeleteProduct(id);
+            TempData[ok ? "Success" : "Error"] = ok ? L["Msg_ProductDeleted"].Value : (error ?? L["Msg_DeleteFailed"].Value);
+            return RedirectToAction(nameof(MenuProducts), new { categoryId });
         }
 
         // الطلبات الجاية للمحل بتاعه
@@ -88,12 +257,32 @@ namespace DeliveryAdmin.Controllers
             var store = await _api.GetMyRestaurant();
             if (store == null) return RedirectToAction("Login", "Auth");
 
-            ViewData["Title"] = "طلباتي";
+            ViewData["Title"] = L["Nav_MyOrders"].Value;
             ViewBag.StoreType = store.StoreType;
             ViewBag.Status = status;
+            ViewBag.StoreId = store.Id;
+            // بيتبعتوا لـ JS عشان يوصل الـ SignalR Hub ويستقبل تنبيه لحظي لما يجي أوردر جديد
+            ViewBag.ApiToken = _api.GetCurrentToken();
+            var apiBase = _config["ApiSettings:BaseUrl"]?.TrimEnd('/') ?? "";
+            ViewBag.HubBaseUrl = apiBase.EndsWith("/api") ? apiBase[..^4] : apiBase;
 
             var orders = await _api.GetOrdersByRestaurant(store.Id, status);
             return View(orders?.Data ?? new());
+        }
+
+        // قبول / رفض / تحضير / جاهز — بيتاخد من زرار في صفحة الطلبات
+        [HttpPost]
+        public async Task<IActionResult> UpdateOrderStatus(int id, string status)
+        {
+            var store = await _api.GetMyRestaurant();
+            if (store == null) return Forbid();
+
+            var (ok, error) = await _api.UpdateMyOrderStatus(id, status);
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                return ok ? Ok() : BadRequest(new { message = error ?? L["Msg_OrderUpdateFailed"].Value });
+
+            TempData[ok ? "Success" : "Error"] = ok ? $"{L["Msg_OrderUpdated"].Value} #{id}" : (error ?? L["Msg_OrderUpdateFailed"].Value);
+            return RedirectToAction(nameof(Orders));
         }
 
         // السواقين اللي شغالين/اشتغلوا على طلبات المحل بتاعه
@@ -102,7 +291,7 @@ namespace DeliveryAdmin.Controllers
             var store = await _api.GetMyRestaurant();
             if (store == null) return RedirectToAction("Login", "Auth");
 
-            ViewData["Title"] = "سائقين الدليفري";
+            ViewData["Title"] = L["Nav_MyDrivers"].Value;
             var result = await _api.GetStoreDrivers(store.Id);
             return View(result?.Data ?? new());
         }
@@ -113,7 +302,7 @@ namespace DeliveryAdmin.Controllers
             var store = await _api.GetMyRestaurant();
             if (store == null) return RedirectToAction("Login", "Auth");
 
-            ViewData["Title"] = "تقييمات محلي";
+            ViewData["Title"] = L["Nav_MyRatings"].Value;
             var result = await _api.GetStoreRatings(store.Id, page, 20);
             ViewBag.Page = page;
             ViewBag.TotalPages = (int)Math.Ceiling((result?.Total ?? 0) / 20.0);

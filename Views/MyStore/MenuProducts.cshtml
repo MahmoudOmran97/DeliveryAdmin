@@ -3,28 +3,43 @@
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:10px">
   <div>
     <h2 style="font-size:18px;font-weight:800">🍕 @ViewData["Title"]</h2>
-    <div class="text-muted text-sm">منتجات القسم</div>
+    <div class="text-muted text-sm">@Localizer["MenuProducts_Subtitle"]</div>
   </div>
-  <a class="btn btn-secondary" asp-action="Menu">← رجوع للمنيو</a>
+  <div style="display:flex;gap:8px">
+    <a class="btn btn-primary" asp-action="CreateProduct" asp-route-categoryId="@ViewBag.CategoryId">➕ @Localizer["Products_Add"]</a>
+    <a class="btn btn-secondary" asp-action="Menu">@Localizer["MenuProducts_BackToMenu"]</a>
+  </div>
 </div>
+
+@if (TempData["Success"] != null)
+{
+  <div class="alert alert-success" style="margin-bottom:16px">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+  <div class="alert alert-danger" style="margin-bottom:16px">@TempData["Error"]</div>
+}
 
 <div class="card">
   <div class="table-wrap">
     <table>
       <thead>
         <tr>
-          <th>المنتج</th>
-          <th>السعر</th>
-          <th>سعر بعد الخصم</th>
-          <th>مدة التحضير</th>
-          <th>السعرات</th>
-          <th>الحالة</th>
+          <th>@Localizer["MenuProducts_Product"]</th>
+          <th>@Localizer["MenuProducts_Price"]</th>
+          <th>@Localizer["MenuProducts_DiscountedPrice"]</th>
+          <th>@Localizer["MenuProducts_PrepTime"]</th>
+          <th>@Localizer["MenuProducts_Calories"]</th>
+          <th>@Localizer["MenuProducts_Status"]</th>
+          <th>@Localizer["Orders_Actions"]</th>
         </tr>
       </thead>
       <tbody>
         @if (!Model.Any())
         {
-          <tr><td colspan="6"><div class="empty"><div class="empty-icon">🍕</div><div>مفيش منتجات في القسم ده</div></div></td></tr>
+          <tr><td colspan="7"><div class="empty"><div class="empty-icon">🍕</div><div>@Localizer["MenuProducts_Empty"]</div>
+            <a class="btn btn-primary" asp-action="CreateProduct" asp-route-categoryId="@ViewBag.CategoryId" style="margin-top:12px">➕ @Localizer["Products_Add"]</a>
+          </div></td></tr>
         }
         @foreach (var p in Model)
         {
@@ -47,9 +62,21 @@
             </td>
             <td class="mono" style="font-weight:600">@p.Price.ToString("N2") @Localizer["Currency"]</td>
             <td class="mono" style="color:var(--green)">@(p.DiscountedPrice.HasValue ? p.DiscountedPrice.Value.ToString("N2") + " " + Localizer["Currency"] : "-")</td>
-            <td class="mono text-muted">@p.PreparationTime دقيقة</td>
+            <td class="mono text-muted">@p.PreparationTime @Localizer["MenuProducts_Minutes"]</td>
             <td class="mono text-muted">@(p.Calories.HasValue ? p.Calories.Value + " kcal" : "-")</td>
-            <td><span class="badge @(p.IsAvailable ? "b-active" : "b-inactive")">@(p.IsAvailable ? "متاح" : "غير متاح")</span></td>
+            <td><span class="badge @(p.IsAvailable ? "b-active" : "b-inactive")">@(p.IsAvailable ? Localizer["MenuProducts_Available"] : Localizer["MenuProducts_Unavailable"])</span></td>
+            <td>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <a class="btn btn-secondary btn-sm" asp-action="EditProduct" asp-route-id="@p.Id">✏️ @Localizer["Edit"]</a>
+                <form method="post" asp-action="ToggleProduct" asp-route-id="@p.Id" asp-route-categoryId="@ViewBag.CategoryId" style="display:inline">
+                  <button type="submit" class="btn btn-secondary btn-sm">@(p.IsAvailable ? Localizer["MenuProducts_Disable"] : Localizer["MenuProducts_Enable"])</button>
+                </form>
+                <form method="post" asp-action="DeleteProduct" asp-route-id="@p.Id" asp-route-categoryId="@ViewBag.CategoryId"
+                      onsubmit="return confirm('@Localizer["Products_ConfirmDelete"]')" style="display:inline">
+                  <button type="submit" class="btn btn-danger btn-sm">🗑</button>
+                </form>
+              </div>
+            </td>
           </tr>
         }
       </tbody>

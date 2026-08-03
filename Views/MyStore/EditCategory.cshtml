@@ -1,0 +1,35 @@
+@model DeliveryAdmin.Models.UpdateCategoryDto
+<div style="max-width:500px">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">✏️ @Localizer["Cat_Edit"]</div>
+      <a class="btn btn-secondary btn-sm" asp-action="Menu">← @Localizer["Cancel"]</a>
+    </div>
+    <div class="card-body">
+      @if (TempData["Error"] != null)
+      {
+        <div class="alert alert-danger" style="margin-bottom:14px">@TempData["Error"]</div>
+      }
+      <form method="post">
+        <div class="form-group">
+          <label class="form-label">@Localizer["Cat_Name"] *</label>
+          <input class="form-control" asp-for="Name" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">@Localizer["Cat_ImageUrl"]</label>
+          <input class="form-control" asp-for="ImageUrl" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">@Localizer["Cat_SortOrder"]</label>
+          <input class="form-control" asp-for="SortOrder" type="number" />
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="btn btn-primary" type="submit">@Localizer["Cat_SaveBtn"]</button>
+          <a class="btn btn-secondary" asp-action="Menu">@Localizer["Cancel"]</a>
+          <button type="submit" formaction="@Url.Action("DeleteCategory", new { id = ViewBag.CategoryId })" class="btn btn-danger"
+                  onclick="return confirm('@Localizer["Cat_ConfirmDelete"]')" style="margin-inline-start:auto">🗑 @Localizer["Delete"]</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

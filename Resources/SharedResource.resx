@@ -288,4 +288,127 @@
 	<data name="Banners_SelectStore" xml:space="preserve"><value>Choose a store</value></data>
 	<data name="Banners_SelectCategory" xml:space="preserve"><value>Choose a category</value></data>
 	<data name="Banners_ExternalUrlLabel" xml:space="preserve"><value>Link (https://...)</value></data>
+	<data name="Nav_MyStore" xml:space="preserve"><value>My Store</value></data>
+	<data name="Nav_MyMenu" xml:space="preserve"><value>Menu</value></data>
+	<data name="Nav_MyOrders" xml:space="preserve"><value>My Orders</value></data>
+	<data name="Nav_MyDrivers" xml:space="preserve"><value>Delivery Drivers</value></data>
+	<data name="Nav_MyRatings" xml:space="preserve"><value>Ratings</value></data>
+	<data name="Orders_Accept" xml:space="preserve"><value>Accept Order</value></data>
+	<data name="Orders_Reject" xml:space="preserve"><value>Reject Order</value></data>
+	<data name="Orders_StartPreparing" xml:space="preserve"><value>Start Preparing</value></data>
+	<data name="Orders_MarkReady" xml:space="preserve"><value>Mark as Ready</value></data>
+	<data name="Orders_ConfirmReject" xml:space="preserve"><value>Are you sure you want to reject this order?</value></data>
+	<data name="Orders_StatusUpdated" xml:space="preserve"><value>Order status updated</value></data>
+	<data name="Orders_StatusUpdateFailed" xml:space="preserve"><value>Failed to update status</value></data>
+	<data name="Orders_NewOrderAlert" xml:space="preserve"><value>🔔 New order received!</value></data>
+	<data name="Orders_NewOrderTitle" xml:space="preserve"><value>New Order</value></data>
+	<data name="Pharmacy_ViewFull" xml:space="preserve"><value>View full image</value></data>
+	<data name="Pharmacy_CloseImage" xml:space="preserve"><value>Close</value></data>
+	<data name="Pharmacy_Title" xml:space="preserve"><value>Prescription Requests</value></data>
+	<data name="Pharmacy_Chat_Title" xml:space="preserve"><value>Prescription Chat</value></data>
+	<data name="Pharmacy_Total" xml:space="preserve"><value>Total Requests</value></data>
+	<data name="Pharmacy_WaitingPrice" xml:space="preserve"><value>Needs Pricing</value></data>
+	<data name="Pharmacy_WaitingCustomer" xml:space="preserve"><value>Awaiting Customer</value></data>
+	<data name="Pharmacy_Requests" xml:space="preserve"><value>Prescription Requests</value></data>
+	<data name="Pharmacy_Customer" xml:space="preserve"><value>Customer</value></data>
+	<data name="Pharmacy_Image" xml:space="preserve"><value>Prescription Image</value></data>
+	<data name="Pharmacy_Notes" xml:space="preserve"><value>Notes</value></data>
+	<data name="Pharmacy_Price" xml:space="preserve"><value>Price</value></data>
+	<data name="Pharmacy_Date" xml:space="preserve"><value>Date</value></data>
+	<data name="Pharmacy_NoRequests" xml:space="preserve"><value>No prescription requests yet</value></data>
+	<data name="Pharmacy_ViewImage" xml:space="preserve"><value>View Image</value></data>
+	<data name="Pharmacy_OpenChat" xml:space="preserve"><value>Chat</value></data>
+	<data name="Pharmacy_ChatWith" xml:space="preserve"><value>Chat with</value></data>
+	<data name="Pharmacy_Back" xml:space="preserve"><value>Back</value></data>
+	<data name="Pharmacy_SetPrice" xml:space="preserve"><value>Set Invoice Price</value></data>
+	<data name="Pharmacy_PricePlaceholder" xml:space="preserve"><value>Price in EGP</value></data>
+	<data name="Pharmacy_SavePrice" xml:space="preserve"><value>Save Price</value></data>
+	<data name="Pharmacy_PriceSaved" xml:space="preserve"><value>Price saved and customer notified ✅</value></data>
+	<data name="Pharmacy_PriceFailed" xml:space="preserve"><value>Failed to save price</value></data>
+	<data name="Pharmacy_TypeMessage" xml:space="preserve"><value>Type your message...</value></data>
+	<data name="Pharmacy_Send" xml:space="preserve"><value>Send</value></data>
+	<data name="Delete" xml:space="preserve"><value>Delete</value></data>
+	<data name="Cat_ConfirmDelete" xml:space="preserve"><value>Are you sure you want to delete this category? All its products will be deleted too.</value></data>
+	<data name="Products_Name" xml:space="preserve"><value>Product Name</value></data>
+	<data name="Products_Description" xml:space="preserve"><value>Description</value></data>
+	<data name="Products_DiscountedPrice" xml:space="preserve"><value>Discounted Price</value></data>
+	<data name="Products_ImageUrl" xml:space="preserve"><value>Image URL</value></data>
+	<data name="Products_Edit" xml:space="preserve"><value>Edit Product</value></data>
+	<data name="Products_ConfirmDelete" xml:space="preserve"><value>Are you sure you want to delete this product?</value></data>
+	<data name="MyStore_CloseShop" xml:space="preserve"><value>🔴 Close Shop</value></data>
+	<data name="MyStore_OpenShop" xml:space="preserve"><value>🟢 Open Shop</value></data>
+	<data name="MyStore_Open" xml:space="preserve"><value>Open</value></data>
+	<data name="MyStore_Closed" xml:space="preserve"><value>Closed</value></data>
+	<data name="MyStore_Rating" xml:space="preserve"><value>⭐ Rating</value></data>
+	<data name="MyStore_DeliveryFee" xml:space="preserve"><value>🚚 Delivery Fee</value></data>
+	<data name="MyStore_MinOrder" xml:space="preserve"><value>💰 Min Order</value></data>
+	<data name="MyStore_Info" xml:space="preserve"><value>✏️ Store Info</value></data>
+	<data name="MyStore_Name" xml:space="preserve"><value>Store Name *</value></data>
+	<data name="MyStore_Phone" xml:space="preserve"><value>Phone</value></data>
+	<data name="MyStore_Address" xml:space="preserve"><value>Address *</value></data>
+	<data name="MyStore_Description" xml:space="preserve"><value>Description</value></data>
+	<data name="MyStore_DeliveryFeeLabel" xml:space="preserve"><value>Delivery Fee (first 3 km)</value></data>
+	<data name="MyStore_MinOrderLabel" xml:space="preserve"><value>Minimum Order Amount</value></data>
+	<data name="MyStore_PrepTime" xml:space="preserve"><value>Estimated Preparation Time (min)</value></data>
+	<data name="MyStore_LogoUrl" xml:space="preserve"><value>Logo Image URL</value></data>
+	<data name="MyStore_CoverUrl" xml:space="preserve"><value>Cover Image URL</value></data>
+	<data name="MyStore_SaveChanges" xml:space="preserve"><value>💾 Save Changes</value></data>
+	<data name="MyDrivers_Total" xml:space="preserve"><value>Total Drivers</value></data>
+	<data name="MyDrivers_Online" xml:space="preserve"><value>Online Now</value></data>
+	<data name="MyDrivers_Active" xml:space="preserve"><value>On an Order for My Store</value></data>
+	<data name="MyDrivers_Offline" xml:space="preserve"><value>Offline</value></data>
+	<data name="MyDrivers_Driver" xml:space="preserve"><value>Driver</value></data>
+	<data name="MyDrivers_Vehicle" xml:space="preserve"><value>Vehicle</value></data>
+	<data name="MyDrivers_Phone" xml:space="preserve"><value>Phone</value></data>
+	<data name="MyDrivers_Rating" xml:space="preserve"><value>Rating</value></data>
+	<data name="MyDrivers_DeliveriesCount" xml:space="preserve"><value>Deliveries for My Store</value></data>
+	<data name="MyDrivers_Status" xml:space="preserve"><value>Status</value></data>
+	<data name="MyDrivers_CurrentOrder" xml:space="preserve"><value>Current Order</value></data>
+	<data name="MyDrivers_NoDrivers" xml:space="preserve"><value>No drivers have worked on your store's orders yet</value></data>
+	<data name="MyDrivers_NoActiveOrder" xml:space="preserve"><value>No current order</value></data>
+	<data name="MyDrivers_DriverPrefix" xml:space="preserve"><value>Driver #</value></data>
+	<data name="MyRatings_Total" xml:space="preserve"><value>Total Ratings</value></data>
+	<data name="MyRatings_AvgStore" xml:space="preserve"><value>Average Store Rating</value></data>
+	<data name="MyRatings_AvgFood" xml:space="preserve"><value>Average Product Rating</value></data>
+	<data name="MyRatings_Title" xml:space="preserve"><value>⭐ My Store Ratings</value></data>
+	<data name="MyRatings_Customer" xml:space="preserve"><value>Customer</value></data>
+	<data name="MyRatings_StoreRating" xml:space="preserve"><value>Store Rating</value></data>
+	<data name="MyRatings_FoodRating" xml:space="preserve"><value>Product Rating</value></data>
+	<data name="MyRatings_Driver" xml:space="preserve"><value>Driver</value></data>
+	<data name="MyRatings_Comment" xml:space="preserve"><value>Customer Comment</value></data>
+	<data name="MyRatings_Date" xml:space="preserve"><value>Date</value></data>
+	<data name="MyRatings_NoRatings" xml:space="preserve"><value>No ratings for your store yet</value></data>
+	<data name="Menu_Subtitle" xml:space="preserve"><value>Your store's categories and products</value></data>
+	<data name="Menu_BackToStore" xml:space="preserve"><value>← Back to Store Info</value></data>
+	<data name="Menu_ProductWord" xml:space="preserve"><value>products</value></data>
+	<data name="Menu_NoCategories" xml:space="preserve"><value>No categories added yet</value></data>
+	<data name="MenuProducts_Subtitle" xml:space="preserve"><value>Category products</value></data>
+	<data name="MenuProducts_BackToMenu" xml:space="preserve"><value>← Back to Menu</value></data>
+	<data name="MenuProducts_Product" xml:space="preserve"><value>Product</value></data>
+	<data name="MenuProducts_Price" xml:space="preserve"><value>Price</value></data>
+	<data name="MenuProducts_DiscountedPrice" xml:space="preserve"><value>Discounted Price</value></data>
+	<data name="MenuProducts_PrepTime" xml:space="preserve"><value>Prep Time</value></data>
+	<data name="MenuProducts_Calories" xml:space="preserve"><value>Calories</value></data>
+	<data name="MenuProducts_Status" xml:space="preserve"><value>Status</value></data>
+	<data name="MenuProducts_Available" xml:space="preserve"><value>Available</value></data>
+	<data name="MenuProducts_Unavailable" xml:space="preserve"><value>Unavailable</value></data>
+	<data name="MenuProducts_Minutes" xml:space="preserve"><value>min</value></data>
+	<data name="MenuProducts_Empty" xml:space="preserve"><value>No products in this category</value></data>
+	<data name="MenuProducts_Disable" xml:space="preserve"><value>⏸ Disable</value></data>
+	<data name="MenuProducts_Enable" xml:space="preserve"><value>▶️ Enable</value></data>
+	<data name="Pharmacy_Subtitle" xml:space="preserve"><value>Prescription requests from customers</value></data>
+	<data name="Pharmacy_Status" xml:space="preserve"><value>Status</value></data>
+	<data name="Msg_StoreInfoSaved" xml:space="preserve"><value>Store info saved</value></data>
+	<data name="Msg_SaveFailed" xml:space="preserve"><value>Save failed</value></data>
+	<data name="Msg_CategoryAdded" xml:space="preserve"><value>Category added</value></data>
+	<data name="Msg_CategoryAddFailed" xml:space="preserve"><value>Failed to add category</value></data>
+	<data name="Msg_EditSaved" xml:space="preserve"><value>Changes saved</value></data>
+	<data name="Msg_EditSaveFailed" xml:space="preserve"><value>Failed to save changes</value></data>
+	<data name="Msg_CategoryDeleted" xml:space="preserve"><value>Category deleted</value></data>
+	<data name="Msg_DeleteFailed" xml:space="preserve"><value>Delete failed</value></data>
+	<data name="Msg_ProductAdded" xml:space="preserve"><value>Product added</value></data>
+	<data name="Msg_ProductAddFailed" xml:space="preserve"><value>Failed to add product</value></data>
+	<data name="Msg_ProductDeleted" xml:space="preserve"><value>Product deleted</value></data>
+	<data name="Msg_OrderUpdated" xml:space="preserve"><value>Order updated</value></data>
+	<data name="Msg_OrderUpdateFailed" xml:space="preserve"><value>Failed to update status</value></data>
 </root>

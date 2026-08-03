@@ -234,6 +234,12 @@ namespace DeliveryAdmin.Services
         public async Task<OrderDto?> GetOrder(int id) => await Get<OrderDto>($"orders/{id}");
         public async Task<(bool ok, string? error)> UpdateOrderStatus(int id, string status) => await Put($"orders/{id}/status", new { status });
 
+        // تستخدمها MyStoreController (صاحب المحل/الصيدلية): قبول/رفض/تحضير/جاهز
+        public async Task<(bool ok, string? error)> UpdateMyOrderStatus(int id, string status) => await Put($"orders/{id}/restaurant-status", new { status });
+
+        // الـ JWT بتاع صاحب المحل الحالي — يُستخدم عشان نوصّل SignalR client بالـ Hub من غير endpoint إضافي
+        public string? GetCurrentToken() => _ctx.HttpContext?.Session.GetString("JWT");
+
         public async Task<SettlementReportDto?> GetSettlements(DateTime? from, DateTime? to, int? driverId = null, int? restaurantId = null)
         {
             var q = "orders/admin/settlements?";

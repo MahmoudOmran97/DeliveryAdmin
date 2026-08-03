@@ -7,32 +7,32 @@
 }
 
 <div class="stat-row">
-  <div class="stat-box"><div class="stat-label">إجمالي التقييمات</div><div class="stat-val">@ViewBag.Total</div></div>
-  <div class="stat-box"><div class="stat-label">متوسط تقييم المحل</div><div class="stat-val" style="color:var(--amber)">@avgRestaurant.ToString("F1") ⭐</div></div>
-  <div class="stat-box"><div class="stat-label">متوسط تقييم المنتجات</div><div class="stat-val" style="color:var(--amber)">@avgFood.ToString("F1") ⭐</div></div>
+  <div class="stat-box"><div class="stat-label">@Localizer["MyRatings_Total"]</div><div class="stat-val">@ViewBag.Total</div></div>
+  <div class="stat-box"><div class="stat-label">@Localizer["MyRatings_AvgStore"]</div><div class="stat-val" style="color:var(--amber)">@avgRestaurant.ToString("F1") ⭐</div></div>
+  <div class="stat-box"><div class="stat-label">@Localizer["MyRatings_AvgFood"]</div><div class="stat-val" style="color:var(--amber)">@avgFood.ToString("F1") ⭐</div></div>
 </div>
 
 <div class="card">
   <div class="card-header">
-    <div class="card-title">⭐ تقييمات محلي</div>
+    <div class="card-title">@Localizer["MyRatings_Title"]</div>
   </div>
   <div class="table-wrap">
     <table>
       <thead>
         <tr>
           <th>#ID</th>
-          <th>العميل</th>
-          <th>تقييم المحل</th>
-          <th>تقييم المنتجات</th>
-          <th>السائق</th>
-          <th>تعليق العميل</th>
-          <th>التاريخ</th>
+          <th>@Localizer["MyRatings_Customer"]</th>
+          <th>@Localizer["MyRatings_StoreRating"]</th>
+          <th>@Localizer["MyRatings_FoodRating"]</th>
+          <th>@Localizer["MyRatings_Driver"]</th>
+          <th>@Localizer["MyRatings_Comment"]</th>
+          <th>@Localizer["MyRatings_Date"]</th>
         </tr>
       </thead>
       <tbody>
         @if (!Model.Any())
         {
-          <tr><td colspan="7"><div class="empty"><div class="empty-icon">⭐</div><div>لسه مفيش تقييمات على محلك</div></div></td></tr>
+          <tr><td colspan="7"><div class="empty"><div class="empty-icon">⭐</div><div>@Localizer["MyRatings_NoRatings"]</div></div></td></tr>
         }
         @foreach (var r in Model)
         {

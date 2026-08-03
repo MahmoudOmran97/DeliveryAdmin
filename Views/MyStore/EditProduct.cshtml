@@ -1,0 +1,54 @@
+@model DeliveryAdmin.Models.CreateProductDto
+<div style="max-width:700px">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">✏️ @Localizer["Products_Edit"]</div>
+      <a class="btn btn-secondary btn-sm" asp-action="MenuProducts" asp-route-categoryId="@ViewBag.CategoryId">← @Localizer["Cancel"]</a>
+    </div>
+    <div class="card-body">
+      @if (TempData["Error"] != null)
+      {
+        <div class="alert alert-danger" style="margin-bottom:14px">@TempData["Error"]</div>
+      }
+      <form method="post">
+        <input type="hidden" asp-for="CategoryId" />
+        <div class="form-grid">
+          <div class="form-group form-full">
+            <label class="form-label">@Localizer["Products_Name"] *</label>
+            <input class="form-control" asp-for="Name" required />
+          </div>
+          <div class="form-group form-full">
+            <label class="form-label">@Localizer["Products_Description"]</label>
+            <textarea class="form-control" asp-for="Description"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">@Localizer["Products_Price"] *</label>
+            <input class="form-control" asp-for="Price" type="number" step="0.01" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">@Localizer["Products_DiscountedPrice"]</label>
+            <input class="form-control" asp-for="DiscountedPrice" type="number" step="0.01" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">@Localizer["Products_PrepTime"]</label>
+            <input class="form-control" asp-for="PreparationTime" type="number" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">@Localizer["Products_Calories"]</label>
+            <input class="form-control" asp-for="Calories" type="number" />
+          </div>
+          <div class="form-group form-full">
+            <label class="form-label">@Localizer["Products_ImageUrl"]</label>
+            <input class="form-control" asp-for="ImageUrl" placeholder="https://..." />
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="btn btn-primary" type="submit">💾 @Localizer["Save"]</button>
+          <a class="btn btn-secondary" asp-action="MenuProducts" asp-route-categoryId="@ViewBag.CategoryId">@Localizer["Cancel"]</a>
+          <button type="submit" formaction="@Url.Action("DeleteProduct", new { id = ViewBag.ProductId, categoryId = ViewBag.CategoryId })" class="btn btn-danger"
+                  onclick="return confirm('@Localizer["Products_ConfirmDelete"]')" style="margin-inline-start:auto">🗑 @Localizer["Delete"]</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

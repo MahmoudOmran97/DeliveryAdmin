@@ -2,6 +2,7 @@
 @using System.Globalization
 @using DeliveryAdmin.Services
 @inject ApiService Api
+@inject IConfiguration Configuration
 
 
 @{
@@ -47,14 +48,12 @@
             @if (isStoreOwner)
             {
                 <div class="nav-section">@Localizer["Nav_Main"]</div>
-                <a class="nav-item @(ctrl == "MyStore" && act == "Index" ? "active" : "")" asp-controller="MyStore" asp-action="Index"><span class="nav-icon">🏪</span> محلي</a>
-                @if (!isPharmacyStore)
-                {
-                    <a class="nav-item @(ctrl == "MyStore" && act == "Menu" ? "active" : "")" asp-controller="MyStore" asp-action="Menu"><span class="nav-icon">🍽️</span> المنيو</a>
-                }
-                <a class="nav-item @(ctrl == "MyStore" && act == "Orders" ? "active" : "")" asp-controller="MyStore" asp-action="Orders"><span class="nav-icon">📦</span> طلباتي</a>
-                <a class="nav-item @(ctrl == "MyStore" && act == "Drivers" ? "active" : "")" asp-controller="MyStore" asp-action="Drivers"><span class="nav-icon">🛵</span> سائقين الدليفري</a>
-                <a class="nav-item @(ctrl == "MyStore" && act == "Ratings" ? "active" : "")" asp-controller="MyStore" asp-action="Ratings"><span class="nav-icon">⭐</span> التقييمات</a>
+                <a class="nav-item @(ctrl == "MyStore" && act == "Index" ? "active" : "")" asp-controller="MyStore" asp-action="Index"><span class="nav-icon">🏪</span> @Localizer["Nav_MyStore"]</a>
+                @* المنيو بقى متاح للصيدلية برضو (منتجات OTC/تصنيفات) مش بس للمطاعم *@
+                <a class="nav-item @(ctrl == "MyStore" && act == "Menu" ? "active" : "")" asp-controller="MyStore" asp-action="Menu"><span class="nav-icon">🍽️</span> @Localizer["Nav_MyMenu"]</a>
+                <a class="nav-item @(ctrl == "MyStore" && act == "Orders" ? "active" : "")" asp-controller="MyStore" asp-action="Orders"><span class="nav-icon">📦</span> @Localizer["Nav_MyOrders"]</a>
+                <a class="nav-item @(ctrl == "MyStore" && act == "Drivers" ? "active" : "")" asp-controller="MyStore" asp-action="Drivers"><span class="nav-icon">🛵</span> @Localizer["Nav_MyDrivers"]</a>
+                <a class="nav-item @(ctrl == "MyStore" && act == "Ratings" ? "active" : "")" asp-controller="MyStore" asp-action="Ratings"><span class="nav-icon">⭐</span> @Localizer["Nav_MyRatings"]</a>
                 @if (isPharmacyStore)
                 {
                     <a class="nav-item @(ctrl == "Pharmacy" ? "active" : "")" asp-controller="Pharmacy" asp-action="Index"><span class="nav-icon">💊</span> @Localizer["Pharmacy_Title"]</a>
@@ -130,5 +129,82 @@
     </main>
 
     @RenderSection("Scripts", required: false)
+
+    @if (isStoreOwner)
+    {
+        var apiBase = (Configuration["ApiSettings:BaseUrl"] ?? "").TrimEnd('/');
+        var hubBaseUrl = apiBase.EndsWith("/api") ? apiBase[..^4] : apiBase;
+        var myToken = Api.GetCurrentToken();
+        <!-- ─────────────────────────────────────────────────────────────
+             تنبيه لحظي لصاحب المحل/الصيدلية لما يجي طلب جديد (أي صفحة)
+             بيتوصل بالـ Hub (نفس اللي التطبيقات بتستخدمه)، السيرفر بيبعت
+             حدث "NewOrder" على جروب user_{id} تلقائي عند إنشاء أي أوردر.
+        ───────────────────────────────────────────────────────────────── -->
+        <audio id="newOrderSound" preload="auto">
+            <source src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" type="audio/ogg" />
+        </audio>
+        <div id="newOrderToast" style="display:none;position:fixed;top:20px;@(isRtl ? "left" : "right"):20px;z-index:9999;
+             background:#1976D2;color:#fff;padding:14px 20px;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.3);
+             font-weight:600;cursor:pointer;max-width:320px;">
+            <div id="newOrderToastText">@Localizer["Orders_NewOrderAlert"]</div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@@8.0.0/dist/browser/signalr.min.js"></script>
+        <script>
+        (function () {
+            var hubBase = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(hubBaseUrl));
+            var token = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(myToken ?? ""));
+            if (!hubBase || !token) return;
+
+            var connection = new signalR.HubConnectionBuilder()
+                .withUrl(hubBase + "/hubs/tracking", { accessTokenFactory: () => token })
+                .withAutomaticReconnect()
+                .build();
+
+            function showToast(orderId) {
+                var sound = document.getElementById('newOrderSound');
+                if (sound) { sound.currentTime = 0; sound.play().catch(function () {}); }
+
+                if ("Notification" in window && Notification.permission === "granted") {
+                    new Notification("@Localizer["Orders_NewOrderTitle"]", { body: "#" + orderId, icon: "🔔" });
+                }
+
+                var toast = document.getElementById('newOrderToast');
+                var text = document.getElementById('newOrderToastText');
+                if (!toast) return;
+                text.textContent = "@Localizer["Orders_NewOrderAlert"] #" + orderId;
+                toast.style.display = 'block';
+                toast.onclick = function () { window.location.href = '/MyStore/Orders'; };
+                setTimeout(function () { toast.style.display = 'none'; }, 8000);
+            }
+
+            connection.on("NewOrder", function (orderId) { showToast(orderId); });
+            // بعض نسخ الـ Hub بتبعت object فيه orderId بدل رقم مباشر
+            connection.on("NewOrder", function (data) {
+                if (data && typeof data === 'object' && data.orderId) showToast(data.orderId);
+            });
+            // روشتة جديدة (خاص بالصيدلية)
+            connection.on("PrescriptionRequestReceived", function (data) {
+                var sound = document.getElementById('newOrderSound');
+                if (sound) { sound.currentTime = 0; sound.play().catch(function () {}); }
+                if ("Notification" in window && Notification.permission === "granted") {
+                    new Notification("@Localizer["Pharmacy_Title"]", { body: "💊", icon: "🔔" });
+                }
+                var toast = document.getElementById('newOrderToast');
+                var text = document.getElementById('newOrderToastText');
+                if (!toast) return;
+                text.textContent = "💊 @Localizer["Orders_NewOrderAlert"]";
+                toast.style.display = 'block';
+                toast.onclick = function () { window.location.href = '/Pharmacy'; };
+                setTimeout(function () { toast.style.display = 'none'; }, 8000);
+            });
+
+            connection.start().catch(function (err) { console.error('SignalR connection error:', err); });
+
+            if ("Notification" in window && Notification.permission === "default") {
+                Notification.requestPermission();
+            }
+        })();
+        </script>
+    }
 </body>
 </html>

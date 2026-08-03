@@ -6,11 +6,11 @@
 
 <div class="card">
   <div class="card-header">
-    <div class="card-title">📦 طلباتي <span class="text-muted text-sm">(@Model.Count)</span></div>
+    <div class="card-title">📦 @Localizer["Nav_MyOrders"] <span class="text-muted text-sm">(@Model.Count)</span></div>
     <div class="filters">
       <form method="get" style="display:flex;gap:8px">
         <select class="filter-input" name="status" onchange="this.form.submit()">
-          <option value="">كل الحالات</option>
+          <option value="">@Localizer["Orders_AllStatus"]</option>
           @foreach (var s in statuses)
           {
             string label = s == "ReadyForPickup" ? "Ready" : s;
@@ -38,12 +38,13 @@
           <th>@Localizer["Orders_Payment"]</th>
           <th>@Localizer["Status"]</th>
           <th>@Localizer["Orders_Date"]</th>
+          <th>@Localizer["Orders_Actions"]</th>
         </tr>
       </thead>
       <tbody>
         @if (!Model.Any())
         {
-          <tr><td colspan="7"><div class="empty"><div class="empty-icon">📦</div><div>مفيش طلبات</div></div></td></tr>
+          <tr><td colspan="8"><div class="empty"><div class="empty-icon">📦</div><div>@Localizer["Orders_NoData"]</div></div></td></tr>
         }
         @foreach (var o in Model)
         {
@@ -56,17 +57,76 @@
           else if (o.Status == "Delivered") sc = "b-delivered";
           else if (o.Status == "Cancelled") sc = "b-cancelled";
           else if (o.Status == "Rejected") sc = "b-rejected";
-          <tr>
+          <tr id="order-row-@o.Id">
             <td class="mono" style="color:var(--accent)">#@o.Id</td>
             <td style="font-weight:500">@(o.CustomerName ?? "–")</td>
             <td class="mono">@(o.ItemCount ?? 0)</td>
             <td class="mono" style="font-weight:600">@o.TotalAmount.ToString("N0") @Localizer["Currency"]</td>
             <td><span class="badge @(o.PaymentMethod == "Cash" ? "b-cash" : "b-card")">@o.PaymentMethod</span></td>
-            <td><span class="badge @sc">@(o.Status == "ReadyForPickup" ? "Ready" : o.Status)</span></td>
+            <td><span class="badge @sc" id="status-badge-@o.Id">@(o.Status == "ReadyForPickup" ? "Ready" : o.Status)</span></td>
             <td class="text-muted text-sm">@o.CreatedAt.ToString("dd MMM HH:mm")</td>
+            <td id="order-actions-@o.Id">
+              @if (o.Status == "Pending")
+              {
+                <button class="btn btn-primary btn-sm" onclick="updateOrderStatus(@o.Id, 'Accepted')">✔ @Localizer["Orders_Accept"]</button>
+                <button class="btn btn-secondary btn-sm" onclick="confirmReject(@o.Id)">✖ @Localizer["Orders_Reject"]</button>
+              }
+              else if (o.Status == "Accepted")
+              {
+                <button class="btn btn-primary btn-sm" onclick="updateOrderStatus(@o.Id, 'Preparing')">👨‍🍳 @Localizer["Orders_StartPreparing"]</button>
+              }
+              else if (o.Status == "Preparing")
+              {
+                <button class="btn btn-primary btn-sm" onclick="updateOrderStatus(@o.Id, 'ReadyForPickup')">✅ @Localizer["Orders_MarkReady"]</button>
+              }
+              else
+              {
+                <span class="text-muted text-sm">—</span>
+              }
+            </td>
           </tr>
         }
       </tbody>
     </table>
   </div>
 </div>
+
+@section Scripts {
+<script>
+async function updateOrderStatus(id, status) {
+    try {
+        const res = await fetch('/MyStore/UpdateOrderStatus', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-Requested-With': 'XMLHttpRequest' },
+            body: `id=${id}&status=${status}`
+        });
+        if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            alert(data.message || '@Localizer["Orders_StatusUpdateFailed"]');
+            return;
+        }
+        const badge = document.getElementById('status-badge-' + id);
+        if (badge) { badge.textContent = status === 'ReadyForPickup' ? 'Ready' : status; }
+
+        const actions = document.getElementById('order-actions-' + id);
+        if (actions) {
+            if (status === 'Accepted') {
+                actions.innerHTML = `<button class="btn btn-primary btn-sm" onclick="updateOrderStatus(${id}, 'Preparing')">👨‍🍳 @Localizer["Orders_StartPreparing"]</button>`;
+            } else if (status === 'Preparing') {
+                actions.innerHTML = `<button class="btn btn-primary btn-sm" onclick="updateOrderStatus(${id}, 'ReadyForPickup')">✅ @Localizer["Orders_MarkReady"]</button>`;
+            } else {
+                actions.innerHTML = '<span class="text-muted text-sm">—</span>';
+            }
+        }
+    } catch (e) {
+        alert('@Localizer["Orders_StatusUpdateFailed"]');
+    }
+}
+
+function confirmReject(id) {
+    if (confirm('@Localizer["Orders_ConfirmReject"]')) {
+        updateOrderStatus(id, 'Rejected');
+    }
+}
+</script>
+}
