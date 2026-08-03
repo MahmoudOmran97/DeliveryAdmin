@@ -141,6 +141,11 @@
 	<data name="Restaurants_OpenBtn" xml:space="preserve"><value>فتح</value></data>
 	<data name="Orders_All" xml:space="preserve"><value>كل الطلبات</value></data>
 	<data name="Orders_AllStatus" xml:space="preserve"><value>كل الحالات</value></data>
+	<data name="Orders_SearchPlaceholder" xml:space="preserve"><value>ابحث برقم الطلب أو اسم العميل أو المطعم...</value></data>
+	<data name="Users_SearchPlaceholder" xml:space="preserve"><value>ابحث بالاسم أو الإيميل أو التليفون...</value></data>
+	<data name="Drivers_SearchPlaceholder" xml:space="preserve"><value>ابحث بالاسم أو رقم التليفون...</value></data>
+	<data name="Pay_SearchPlaceholder" xml:space="preserve"><value>ابحث برقم الطلب أو المطعم أو رقم العملية...</value></data>
+	<data name="Ratings_SearchPlaceholder" xml:space="preserve"><value>ابحث بالعميل أو المطعم أو السائق...</value></data>
 	<data name="Orders_Customer" xml:space="preserve"><value>العميل</value></data>
 	<data name="Orders_Items" xml:space="preserve"><value>الأصناف</value></data>
 	<data name="Orders_Payment" xml:space="preserve"><value>الدفع</value></data>

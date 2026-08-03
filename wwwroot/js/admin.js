@@ -41,4 +41,35 @@
   document.querySelectorAll('.nav-item').forEach(function (link) {
     link.addEventListener('click', closeSidebar);
   });
+
+  // Tag every table cell with its column header text (data-label),
+  // so CSS can turn rows into stacked cards on phone screens.
+  document.querySelectorAll('.table-wrap table').forEach(function (table) {
+    var headers = Array.from(table.querySelectorAll('thead th')).map(function (th) {
+      return th.textContent.trim();
+    });
+    if (!headers.length) return;
+    table.querySelectorAll('tbody tr, tfoot tr').forEach(function (row) {
+      var cells = row.querySelectorAll('td');
+      if (cells.length === 1 && cells[0].hasAttribute('colspan')) return; // empty-state row
+      cells.forEach(function (td, i) {
+        if (headers[i]) td.setAttribute('data-label', headers[i]);
+      });
+    });
+  });
+  // Generic live search: any input with .table-search-input filters the
+  // rows of the nearest table in the same .card as you type (no reload).
+  document.querySelectorAll('.table-search-input').forEach(function (input) {
+    input.addEventListener('input', function () {
+      var card = input.closest('.card');
+      var table = card ? card.querySelector('table') : null;
+      if (!table) return;
+      var term = input.value.trim().toLowerCase();
+      table.querySelectorAll('tbody tr').forEach(function (row) {
+        if (row.querySelector('td[colspan]')) return; // leave empty-state row alone
+        var text = row.textContent.toLowerCase();
+        row.style.display = !term || text.indexOf(term) !== -1 ? '' : 'none';
+      });
+    });
+  });
 })();

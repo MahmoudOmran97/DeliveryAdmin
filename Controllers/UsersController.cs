@@ -13,11 +13,12 @@ public class UsersController : LocalizedController
     private readonly ApiService _api;
     public UsersController(ApiService api, IStringLocalizer<SharedResource> localizer) : base(localizer) => _api = api;
 
-    public async Task<IActionResult> Index(string? role, int page = 1)
+    public async Task<IActionResult> Index(string? role, string? search, int page = 1)
     {
         SetTitle("Users_Title");
-        var result = await _api.GetUsers(page, 20, role);
+        var result = await _api.GetUsers(page, 20, role, search);
         ViewBag.Role = role;
+        ViewBag.Search = search;
         ViewBag.Page = page;
         ViewBag.TotalPages = (int)Math.Ceiling((result?.Total ?? 0) / 20.0);
         ViewBag.Total = result?.Total ?? 0;

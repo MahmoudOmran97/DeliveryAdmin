@@ -12,7 +12,7 @@ namespace DeliveryAdmin.Controllers
         private readonly ApiService _api;
         public DriversController(ApiService api, IStringLocalizer<SharedResource> localizer) : base(localizer) => _api = api;
 
-        public async Task<IActionResult> Index(string? filter, int page = 1)
+        public async Task<IActionResult> Index(string? filter, string? search, int page = 1)
         {
             SetTitle("Drivers_Title");
             // Fix: fetch a larger page to get accurate counts, not just first 20
@@ -26,7 +26,18 @@ namespace DeliveryAdmin.Controllers
                 "pending" => all.Where(d => !d.IsVerified).ToList(),
                 _ => all
             };
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var term = search.Trim();
+                filtered = filtered.Where(d =>
+                    (d.FullName?.Contains(term, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (d.UserName?.Contains(term, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (d.Phone?.Contains(term, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (d.LicensePlate?.Contains(term, StringComparison.OrdinalIgnoreCase) ?? false)
+                ).ToList();
+            }
             ViewBag.Filter = filter;
+            ViewBag.Search = search;
             ViewBag.Page = page;
             ViewBag.TotalPages = (int)Math.Ceiling((result?.Total ?? 0) / 100.0);
             ViewBag.Total = result?.Total ?? 0;

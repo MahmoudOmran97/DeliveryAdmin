@@ -7,7 +7,15 @@
 @model List<DeliveryAdmin.Models.RatingDto>
 @{ var page=(int)ViewBag.Page; var totalPages=(int)ViewBag.TotalPages; }
 <div class="card">
-  <div class="card-header"><div class="card-title">@Localizer["Ratings_CustomerRatings"]</div></div>
+  <div class="card-header">
+    <div class="card-title">@Localizer["Ratings_CustomerRatings"]</div>
+    <div class="filters">
+      <form method="get" style="display:flex;gap:8px">
+        <input class="filter-input" type="text" name="search" value="@ViewBag.Search" placeholder="@Localizer["Ratings_SearchPlaceholder"]" />
+        <button class="btn btn-secondary btn-sm" type="submit">@Localizer["Search"]</button>
+      </form>
+    </div>
+  </div>
   <div class="table-wrap">
     <table>
       <thead><tr><th>#ID</th><th>@Localizer["Customer"]</th><th>@Localizer["Restaurant"]</th><th>@Localizer["Drivers_Rating"]</th><th>@Localizer["Ratings_FoodRating"]</th><th>@Localizer["Ratings_DriverRating"]</th><th>@Localizer["Ratings_Comment"]</th><th>@Localizer["Orders_Date"]</th></tr></thead>
@@ -29,5 +37,5 @@
       </tbody>
     </table>
   </div>
-  @if(totalPages>1){<div style="padding:12px 18px;border-top:1px solid var(--border)"><div class="pagination">@for(int i=1;i<=totalPages;i++){<a class="page-btn @(i==page?"active":"")" href="?page=@i">@i</a>}</div></div>}
+  @if(totalPages>1){<div style="padding:12px 18px;border-top:1px solid var(--border)"><div class="pagination">@for(int i=1;i<=totalPages;i++){<a class="page-btn @(i==page?"active":"")" href="?page=@i&search=@ViewBag.Search">@i</a>}</div></div>}
 </div>

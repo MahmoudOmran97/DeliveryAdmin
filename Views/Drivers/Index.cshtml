@@ -40,11 +40,16 @@
   <div class="card-header">
     <div class="card-title">@Localizer["Drivers_AllDrivers"]</div>
     <div class="filters">
-      <a class="btn btn-sm @(ViewBag.Filter==null?"btn-primary":"btn-secondary")" asp-action="Index">@Localizer["Users_All"]</a>
-      <a class="btn btn-sm @(ViewBag.Filter=="online"?"btn-success":"btn-secondary")" asp-action="Index" asp-route-filter="online">@Localizer["Drivers_Online"]</a>
-      <a class="btn btn-sm @(ViewBag.Filter=="offline"?"btn-secondary":"btn-secondary")" asp-action="Index" asp-route-filter="offline">@Localizer["Drivers_Offline"]</a>
-      <a class="btn btn-sm @(ViewBag.Filter=="verified"?"btn-primary":"btn-secondary")" asp-action="Index" asp-route-filter="verified">@Localizer["Drivers_VerifiedCount"]</a>
-      <a class="btn btn-sm @(ViewBag.Filter=="pending"?"btn-warning":"btn-secondary")" asp-action="Index" asp-route-filter="pending">@Localizer["Drivers_Pending"]</a>
+      <a class="btn btn-sm @(ViewBag.Filter==null?"btn-primary":"btn-secondary")" asp-action="Index" asp-route-search="@ViewBag.Search">@Localizer["Users_All"]</a>
+      <a class="btn btn-sm @(ViewBag.Filter=="online"?"btn-success":"btn-secondary")" asp-action="Index" asp-route-filter="online" asp-route-search="@ViewBag.Search">@Localizer["Drivers_Online"]</a>
+      <a class="btn btn-sm @(ViewBag.Filter=="offline"?"btn-secondary":"btn-secondary")" asp-action="Index" asp-route-filter="offline" asp-route-search="@ViewBag.Search">@Localizer["Drivers_Offline"]</a>
+      <a class="btn btn-sm @(ViewBag.Filter=="verified"?"btn-primary":"btn-secondary")" asp-action="Index" asp-route-filter="verified" asp-route-search="@ViewBag.Search">@Localizer["Drivers_VerifiedCount"]</a>
+      <a class="btn btn-sm @(ViewBag.Filter=="pending"?"btn-warning":"btn-secondary")" asp-action="Index" asp-route-filter="pending" asp-route-search="@ViewBag.Search">@Localizer["Drivers_Pending"]</a>
+      <form method="get" style="display:flex;gap:8px">
+        <input type="hidden" name="filter" value="@ViewBag.Filter" />
+        <input class="filter-input" type="text" name="search" value="@ViewBag.Search" placeholder="@Localizer["Drivers_SearchPlaceholder"]" />
+        <button class="btn btn-secondary btn-sm" type="submit">@Localizer["Search"]</button>
+      </form>
     </div>
   </div>
   <div class="table-wrap">

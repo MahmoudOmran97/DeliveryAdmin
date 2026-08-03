@@ -141,6 +141,11 @@
 	<data name="Restaurants_OpenBtn" xml:space="preserve"><value>Open</value></data>
 	<data name="Orders_All" xml:space="preserve"><value>All Orders</value></data>
 	<data name="Orders_AllStatus" xml:space="preserve"><value>All Status</value></data>
+	<data name="Orders_SearchPlaceholder" xml:space="preserve"><value>Search by order #, customer or restaurant...</value></data>
+	<data name="Users_SearchPlaceholder" xml:space="preserve"><value>Search by name, email or phone...</value></data>
+	<data name="Drivers_SearchPlaceholder" xml:space="preserve"><value>Search by name or phone...</value></data>
+	<data name="Pay_SearchPlaceholder" xml:space="preserve"><value>Search by order #, restaurant or transaction ID...</value></data>
+	<data name="Ratings_SearchPlaceholder" xml:space="preserve"><value>Search by customer, restaurant or driver...</value></data>
 	<data name="Orders_Customer" xml:space="preserve"><value>Customer</value></data>
 	<data name="Orders_Items" xml:space="preserve"><value>Items</value></data>
 	<data name="Orders_Payment" xml:space="preserve"><value>Payment</value></data>

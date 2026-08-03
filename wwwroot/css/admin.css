@@ -226,4 +226,16 @@ textarea.form-control{resize:vertical;min-height:80px}
   .filter-input{flex:1;min-width:120px}
   .detail-section{padding:14px}
   #newOrderToast{max-width:calc(100vw - 32px) !important;left:16px !important;right:16px !important}
+
+  /* Tables -> stacked cards (no more broken horizontal scroll) */
+  .table-wrap{overflow-x:visible}
+  .table-wrap table thead{display:none}
+  .table-wrap table,.table-wrap table tbody,.table-wrap table tr,.table-wrap table td{display:block;width:100%}
+  .table-wrap table tr{background:var(--bg2);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden}
+  .table-wrap table tr:hover{background:var(--bg2)}
+  .table-wrap table td{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 12px;border-bottom:1px solid var(--border);font-size:13px}
+  .table-wrap table td:last-child{border-bottom:none}
+  .table-wrap table td::before{content:attr(data-label);font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;flex-shrink:0}
+  .table-wrap table td[colspan]{display:block;text-align:center;padding:24px 12px}
+  .table-wrap table td[colspan]::before{content:none}
 }

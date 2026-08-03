@@ -12,11 +12,12 @@ namespace DeliveryAdmin.Controllers
         private readonly ApiService _api;
         public RatingsController(ApiService api, IStringLocalizer<SharedResource> localizer) : base(localizer) => _api = api;
 
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(string? search, int page = 1)
         {
             SetTitle("Ratings_Title");
-            var result = await _api.GetRatings(page, 20);
+            var result = await _api.GetRatings(page, 20, search);
             ViewBag.Page = page; ViewBag.TotalPages = (int)Math.Ceiling((result?.Total ?? 0) / 20.0);
+            ViewBag.Search = search;
             return View(result?.Data ?? new());
         }
     }

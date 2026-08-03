@@ -12,12 +12,12 @@ namespace DeliveryAdmin.Controllers
         private readonly ApiService _api;
         public OrdersController(ApiService api, IStringLocalizer<SharedResource> localizer) : base(localizer) => _api = api;
 
-        public async Task<IActionResult> Index(string? status, int page = 1)
+        public async Task<IActionResult> Index(string? status, string? search, int page = 1)
         {
             SetTitle("Orders_Title");
-            var result = await _api.GetOrders(page, 20, status);
+            var result = await _api.GetOrders(page, 20, status, search);
             var all = result?.Data ?? new();
-            ViewBag.Status = status; ViewBag.Page = page;
+            ViewBag.Status = status; ViewBag.Search = search; ViewBag.Page = page;
             ViewBag.TotalPages = (int)Math.Ceiling((result?.Total ?? 0) / 20.0);
             ViewBag.Total = result?.Total ?? 0;
             ViewBag.PendingCount = 0; // Would need separate API call

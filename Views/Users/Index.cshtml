@@ -4,11 +4,16 @@
   <div class="card-header">
     <div class="card-title">@Localizer["Users_Title"] <span class="text-muted text-sm">(@ViewBag.Total)</span></div>
     <div class="filters">
-      <a class="btn btn-sm @(ViewBag.Role==null?"btn-primary":"btn-secondary")" asp-action="Index">@Localizer["Users_All"]</a>
-      <a class="btn btn-sm @(ViewBag.Role=="Customer"?"btn-primary":"btn-secondary")" asp-action="Index" asp-route-role="Customer">@Localizer["Users_Customers"]</a>
-      <a class="btn btn-sm @(ViewBag.Role=="Restaurant"?"btn-primary":"btn-secondary")" asp-action="Index" asp-route-role="Restaurant">@Localizer["Users_RestaurantOwners"]</a>
-      <a class="btn btn-sm @(ViewBag.Role=="Driver"?"btn-primary":"btn-secondary")" asp-action="Index" asp-route-role="Driver">@Localizer["Users_Drivers"]</a>
-      <a class="btn btn-sm @(ViewBag.Role=="Admin"?"btn-primary":"btn-secondary")" asp-action="Index" asp-route-role="Admin">@Localizer["Users_Admins"]</a>
+      <a class="btn btn-sm @(ViewBag.Role==null?"btn-primary":"btn-secondary")" asp-action="Index" asp-route-search="@ViewBag.Search">@Localizer["Users_All"]</a>
+      <a class="btn btn-sm @(ViewBag.Role=="Customer"?"btn-primary":"btn-secondary")" asp-action="Index" asp-route-role="Customer" asp-route-search="@ViewBag.Search">@Localizer["Users_Customers"]</a>
+      <a class="btn btn-sm @(ViewBag.Role=="Restaurant"?"btn-primary":"btn-secondary")" asp-action="Index" asp-route-role="Restaurant" asp-route-search="@ViewBag.Search">@Localizer["Users_RestaurantOwners"]</a>
+      <a class="btn btn-sm @(ViewBag.Role=="Driver"?"btn-primary":"btn-secondary")" asp-action="Index" asp-route-role="Driver" asp-route-search="@ViewBag.Search">@Localizer["Users_Drivers"]</a>
+      <a class="btn btn-sm @(ViewBag.Role=="Admin"?"btn-primary":"btn-secondary")" asp-action="Index" asp-route-role="Admin" asp-route-search="@ViewBag.Search">@Localizer["Users_Admins"]</a>
+      <form method="get" style="display:flex;gap:8px">
+        <input type="hidden" name="role" value="@ViewBag.Role" />
+        <input class="filter-input" type="text" name="search" value="@ViewBag.Search" placeholder="@Localizer["Users_SearchPlaceholder"]" />
+        <button class="btn btn-secondary btn-sm" type="submit">@Localizer["Search"]</button>
+      </form>
       <a class="btn btn-primary btn-sm" asp-action="Create">+ @Localizer["Users_Add"]</a>
     </div>
   </div>
@@ -41,5 +46,5 @@
       </tbody>
     </table>
   </div>
-  @if(totalPages>1){<div style="padding:12px 18px;border-top:1px solid var(--border)"><div class="pagination">@for(int i=1;i<=totalPages;i++){<a class="page-btn @(i==page?"active":"")" asp-action="Index" asp-route-page="@i" asp-route-role="@ViewBag.Role">@i</a>}</div></div>}
+  @if(totalPages>1){<div style="padding:12px 18px;border-top:1px solid var(--border)"><div class="pagination">@for(int i=1;i<=totalPages;i++){<a class="page-btn @(i==page?"active":"")" asp-action="Index" asp-route-page="@i" asp-route-role="@ViewBag.Role" asp-route-search="@ViewBag.Search">@i</a>}</div></div>}
 </div>

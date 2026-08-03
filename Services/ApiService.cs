@@ -214,10 +214,11 @@ namespace DeliveryAdmin.Services
         public async Task<(bool ok, string? error)> UpdateDriver(int id, AdminUpdateDriverDto dto) => await Put($"drivers/{id}/admin-update", dto);
 
         // ── Users ─────────────────────────────────────────────────────────
-        public async Task<PagedResult<UserDto>?> GetUsers(int page = 1, int size = 20, string? role = null)
+        public async Task<PagedResult<UserDto>?> GetUsers(int page = 1, int size = 20, string? role = null, string? search = null)
         {
             var q = $"user/all?page={page}&pageSize={size}";
             if (!string.IsNullOrEmpty(role)) q += $"&role={role}";
+            if (!string.IsNullOrEmpty(search)) q += $"&search={Uri.EscapeDataString(search)}";
             return await Get<PagedResult<UserDto>>(q);
         }
         public async Task<UserDto?> GetUser(int id) => await Get<UserDto>($"user/{id}");
@@ -227,10 +228,11 @@ namespace DeliveryAdmin.Services
         public async Task<(bool ok, string? error)> AssignRestaurantOwner(int userId, int restaurantId) => await Put($"user/{userId}/assign-restaurant/{restaurantId}");
 
         // ── Orders ────────────────────────────────────────────────────────
-        public async Task<PagedResult<OrderDto>?> GetOrders(int page = 1, int size = 20, string? status = null)
+        public async Task<PagedResult<OrderDto>?> GetOrders(int page = 1, int size = 20, string? status = null, string? search = null)
         {
             var q = $"orders/admin?page={page}&pageSize={size}";
             if (!string.IsNullOrEmpty(status)) q += $"&status={status}";
+            if (!string.IsNullOrEmpty(search)) q += $"&search={Uri.EscapeDataString(search)}";
             return await Get<PagedResult<OrderDto>>(q);
         }
         public async Task<OrderDto?> GetOrder(int id) => await Get<OrderDto>($"orders/{id}");
@@ -253,10 +255,20 @@ namespace DeliveryAdmin.Services
         }
 
         // ── Payments ──────────────────────────────────────────────────────
-        public async Task<PagedResult<PaymentDto>?> GetPayments(int page = 1, int size = 20) => await Get<PagedResult<PaymentDto>>($"payments/admin?page={page}&pageSize={size}");
+        public async Task<PagedResult<PaymentDto>?> GetPayments(int page = 1, int size = 20, string? search = null)
+        {
+            var q = $"payments/admin?page={page}&pageSize={size}";
+            if (!string.IsNullOrEmpty(search)) q += $"&search={Uri.EscapeDataString(search)}";
+            return await Get<PagedResult<PaymentDto>>(q);
+        }
 
         // ── Ratings ───────────────────────────────────────────────────────
-        public async Task<PagedResult<RatingDto>?> GetRatings(int page = 1, int size = 20) => await Get<PagedResult<RatingDto>>($"ratings/admin?page={page}&pageSize={size}");
+        public async Task<PagedResult<RatingDto>?> GetRatings(int page = 1, int size = 20, string? search = null)
+        {
+            var q = $"ratings/admin?page={page}&pageSize={size}";
+            if (!string.IsNullOrEmpty(search)) q += $"&search={Uri.EscapeDataString(search)}";
+            return await Get<PagedResult<RatingDto>>(q);
+        }
 
         // ── Coupons ───────────────────────────────────────────────────────
         public async Task<List<CouponDto>?> GetCoupons() => await Get<List<CouponDto>>("coupons/admin");

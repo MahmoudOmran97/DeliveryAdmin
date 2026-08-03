@@ -2,7 +2,10 @@
 <div class="card">
     <div class="card-header">
         <div class="card-title">@Localizer["Banners_Title"] <span class="text-muted text-sm">(@Model.Count @Localizer["Total"])</span></div>
-        <a class="btn btn-primary btn-sm" asp-action="Create">+ @Localizer["Banners_Add"]</a>
+        <div class="filters">
+            <input class="filter-input table-search-input" type="text" placeholder="@Localizer["Search"]" />
+            <a class="btn btn-primary btn-sm" asp-action="Create">+ @Localizer["Banners_Add"]</a>
+        </div>
     </div>
 
     <div class="table-wrap">
