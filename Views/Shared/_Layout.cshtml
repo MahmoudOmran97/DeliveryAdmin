@@ -302,30 +302,67 @@
         var hubBaseUrl = apiBase.EndsWith("/api") ? apiBase[..^4] : apiBase;
         var myToken = Api.GetCurrentToken();
     }
-    @if (isStoreOwner)
-    {
-        <!-- ─────────────────────────────────────────────────────────────
-             تنبيه لحظي لصاحب المحل/الصيدلية لما يجي طلب جديد (أي صفحة)
-             بيتوصل بالـ Hub (نفس اللي التطبيقات بتستخدمه)، السيرفر بيبعت
-             حدث "NewOrder" على جروب user_{id} تلقائي عند إنشاء أي أوردر.
-        ───────────────────────────────────────────────────────────────── -->
-        <audio id="newOrderSound" preload="auto">
-            <source src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" type="audio/ogg" />
-        </audio>
-        <div id="newOrderToast" style="display:none;position:fixed;top:20px;@(isRtl ? "left" : "right"):20px;z-index:9999;
-             background:#1976D2;color:#fff;padding:14px 20px;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.3);
-             font-weight:600;cursor:pointer;max-width:320px;">
-            <div id="newOrderToastText">@Localizer["Orders_NewOrderAlert"]</div>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         تنبيه لحظي جامد (صوت + كارت في نص الشاشة) لما يجي طلب جديد
+         أو روشتة جديدة — للأدمن وصاحب المحل مع بعض. الصوت بيفضل
+         يعيد نفسه لحد ما تدوس تفتح/تقفل، عشان محدش يفوّته وهو مشغول.
+    ───────────────────────────────────────────────────────────────── -->
+    <audio id="loudAlertSound" preload="auto" loop>
+        <source src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" type="audio/ogg" />
+    </audio>
+    <div id="notifCenterOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99999;align-items:center;justify-content:center;padding:16px;">
+        <div id="notifCenterCard" style="background:var(--bg2);border:1px solid var(--border2);border-radius:18px;padding:30px 26px;max-width:380px;width:100%;text-align:center;box-shadow:0 24px 70px rgba(0,0,0,.55);">
+            <div style="font-size:46px;line-height:1;">🔔</div>
+            <div id="notifCenterTitle" style="font-size:18px;font-weight:800;color:var(--text);margin-top:12px;"></div>
+            <div id="notifCenterBody" style="font-size:13px;color:var(--text2);margin-top:8px;line-height:1.6;"></div>
+            <div style="display:flex;gap:10px;margin-top:22px;">
+                <button type="button" id="notifCenterViewBtn" class="btn" style="flex:1;">@Localizer["Orders_ViewOrder"]</button>
+                <button type="button" id="notifCenterDismissBtn" class="btn btn-secondary" style="flex:1;">@Localizer["Notif_Dismiss"]</button>
+            </div>
         </div>
-    }
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@@8.0.0/dist/browser/signalr.min.js"></script>
     <script>
     (function () {
+        var isStoreOwner = @Html.Raw(isStoreOwner ? "true" : "false");
+
+        // ── الكارت الجامد في نص الشاشة + الصوت اللي بيفضل شغال ──────────
+        var overlay = document.getElementById('notifCenterOverlay');
+        var sound = document.getElementById('loudAlertSound');
+        var titleEl = document.getElementById('notifCenterTitle');
+        var bodyEl = document.getElementById('notifCenterBody');
+        var viewBtn = document.getElementById('notifCenterViewBtn');
+        var dismissBtn = document.getElementById('notifCenterDismissBtn');
+        var autoStopTimer = null;
+
+        function stopAlert() {
+            overlay.style.display = 'none';
+            if (sound) { sound.pause(); sound.currentTime = 0; }
+            if (autoStopTimer) { clearTimeout(autoStopTimer); autoStopTimer = null; }
+        }
+
+        function showCenterAlert(title, body, url) {
+            titleEl.textContent = title || '🔔';
+            bodyEl.textContent = body || '';
+            overlay.style.display = 'flex';
+            if (sound) { sound.currentTime = 0; sound.play().catch(function () {}); }
+
+            viewBtn.onclick = function () {
+                stopAlert();
+                if (url && url !== '#') window.location.href = url;
+            };
+            dismissBtn.onclick = stopAlert;
+
+            // منوقفش الصوت لوحده - بس بعد دقيقتين نوقفه تلقائي عشان محدش ينسى التاب مفتوح
+            if (autoStopTimer) clearTimeout(autoStopTimer);
+            autoStopTimer = setTimeout(stopAlert, 120000);
+        }
+
         var hubBase = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(hubBaseUrl));
         var token = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(myToken ?? ""));
         if (!hubBase || !token) return;
-
-        var isStoreOwner = @Html.Raw(isStoreOwner ? "true" : "false");
 
         var connection = new signalR.HubConnectionBuilder()
             .withUrl(hubBase + "/hubs/tracking", { accessTokenFactory: () => token })
@@ -336,55 +373,19 @@
         // جديد في الجرس — سواء أوردر جديد، روشتة جديدة، أو بث يدوي من الأدمن
         connection.on("NewNotification", function (data) {
             if (typeof window.__onLiveNotification === 'function') window.__onLiveNotification();
+            if (!data) return;
 
-            // تجنب دوبل توست لصاحب المحل: أوردر جديد وروشتة جديدة ليهم توست مخصص تحت
-            var skipToast = isStoreOwner && data && (data.type === 'NewOrder' || data.type === 'PrescriptionRequest');
-            if (skipToast) return;
-
-            if ("Notification" in window && Notification.permission === "granted" && data) {
+            var isOrderish = data.type === 'NewOrder' || data.type === 'PrescriptionRequest';
+            if (isOrderish) {
+                var url = data.type === 'PrescriptionRequest'
+                    ? '/Pharmacy'
+                    : (isStoreOwner ? '/MyStore/Orders' : (data.orderId ? '/Orders/Details/' + data.orderId : '#'));
+                showCenterAlert(data.title, data.body, url);
+            } else if ("Notification" in window && Notification.permission === "granted") {
+                // تنبيهات تانية (بث يدوي من الأدمن مثلاً) بتاخد إشعار متصفح عادي بس
                 new Notification(data.title || "🔔", { body: data.body || "", icon: "🔔" });
             }
         });
-
-        if (isStoreOwner) {
-            function showToast(orderId) {
-                var sound = document.getElementById('newOrderSound');
-                if (sound) { sound.currentTime = 0; sound.play().catch(function () {}); }
-
-                if ("Notification" in window && Notification.permission === "granted") {
-                    new Notification("@Localizer["Orders_NewOrderTitle"]", { body: "#" + orderId, icon: "🔔" });
-                }
-
-                var toast = document.getElementById('newOrderToast');
-                var text = document.getElementById('newOrderToastText');
-                if (!toast) return;
-                text.textContent = "@Localizer["Orders_NewOrderAlert"] #" + orderId;
-                toast.style.display = 'block';
-                toast.onclick = function () { window.location.href = '/MyStore/Orders'; };
-                setTimeout(function () { toast.style.display = 'none'; }, 8000);
-            }
-
-            connection.on("NewOrder", function (orderId) { showToast(orderId); });
-            // بعض نسخ الـ Hub بتبعت object فيه orderId بدل رقم مباشر
-            connection.on("NewOrder", function (data) {
-                if (data && typeof data === 'object' && data.orderId) showToast(data.orderId);
-            });
-            // روشتة جديدة (خاص بالصيدلية)
-            connection.on("PrescriptionRequestReceived", function (data) {
-                var sound = document.getElementById('newOrderSound');
-                if (sound) { sound.currentTime = 0; sound.play().catch(function () {}); }
-                if ("Notification" in window && Notification.permission === "granted") {
-                    new Notification("@Localizer["Pharmacy_Title"]", { body: "💊", icon: "🔔" });
-                }
-                var toast = document.getElementById('newOrderToast');
-                var text = document.getElementById('newOrderToastText');
-                if (!toast) return;
-                text.textContent = "💊 @Localizer["Orders_NewOrderAlert"]";
-                toast.style.display = 'block';
-                toast.onclick = function () { window.location.href = '/Pharmacy'; };
-                setTimeout(function () { toast.style.display = 'none'; }, 8000);
-            });
-        }
 
         connection.start().catch(function (err) { console.error('SignalR connection error:', err); });
 
@@ -393,5 +394,62 @@
         }
     })();
     </script>
+
+    @{ var hasFirebaseWeb = !string.IsNullOrWhiteSpace(Configuration["FirebaseWeb:ApiKey"]); }
+    @if (hasFirebaseWeb)
+    {
+        <!-- ─────────────────────────────────────────────────────────────
+             تسجيل توكن الـ Web Push — يخلي التنبيهات توصل حتى لو التاب
+             مقفول أو الأدمن بورتال متسطبة كـ PWA وقافلها. لو الإعدادات في
+             FirebaseWeb فاضية في appsettings.json، البلوك ده مش بيترندر خالص.
+        ───────────────────────────────────────────────────────────────── -->
+        <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging-compat.js"></script>
+        <script>
+        (function () {
+            var apiToken = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(myToken ?? ""));
+            var apiBase = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(apiBase));
+            var vapidKey = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:VapidKey"] ?? ""));
+            if (!apiToken || !vapidKey || !('serviceWorker' in navigator)) return;
+
+            navigator.serviceWorker.register('/firebase-messaging-sw.js').then(function (registration) {
+                var app = firebase.initializeApp({
+                    apiKey: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:ApiKey"])),
+                    authDomain: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:AuthDomain"])),
+                    projectId: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:ProjectId"])),
+                    storageBucket: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:StorageBucket"])),
+                    messagingSenderId: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:MessagingSenderId"])),
+                    appId: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:AppId"]))
+                });
+                var messaging = firebase.messaging(app);
+
+                function registerToken() {
+                    if (Notification.permission !== "granted") return;
+                    messaging.getToken({ vapidKey: vapidKey, serviceWorkerRegistration: registration })
+                        .then(function (token) {
+                            if (!token) return;
+                            fetch(apiBase + '/user/fcm-token', {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiToken },
+                                body: JSON.stringify({ token: token })
+                            }).catch(function () {});
+                        }).catch(function (err) { console.error('FCM getToken failed:', err); });
+                }
+
+                if (Notification.permission === "granted") {
+                    registerToken();
+                } else if (Notification.permission === "default") {
+                    Notification.requestPermission().then(function (perm) {
+                        if (perm === "granted") registerToken();
+                    });
+                }
+
+                // التاب مفتوح والمتصفح شايف الإشعار (data-only) — مش هنعرضه تاني
+                // عشان الكارت الجامد بتاع الـ SignalR فوق أصلاً بيغطي الحالة دي
+                messaging.onMessage(function () {});
+            }).catch(function (err) { console.error('SW register failed:', err); });
+        })();
+        </script>
+    }
 </body>
 </html>

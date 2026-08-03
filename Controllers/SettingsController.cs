@@ -7,6 +7,9 @@ namespace DeliveryAdmin.Controllers;
 [Authorize]
 public class SettingsController : Controller
 {
+    private readonly IConfiguration _config;
+    public SettingsController(IConfiguration config) => _config = config;
+
     [HttpPost]
     [IgnoreAntiforgeryToken]
     public IActionResult SetLanguage(string culture, string returnUrl = "/")
@@ -30,5 +33,29 @@ public class SettingsController : Controller
             returnUrl = "/";
 
         return LocalRedirect(returnUrl);
+    }
+
+    // GET /firebase-config.js — بيتقرا من غير أوثنتيكيشن لإن السيرفس ووركر
+    // (firebase-messaging-sw.js) بيعمله import مباشر وممكن يتنفذ من غير
+    // كوكي سيشن. القيم دي عامة/عمومية بطبيعتها في فايربيز، مفيش فيها سر.
+    [AllowAnonymous]
+    [HttpGet("/firebase-config.js")]
+    public IActionResult FirebaseConfig()
+    {
+        var apiKey = _config["FirebaseWeb:ApiKey"];
+        if (string.IsNullOrWhiteSpace(apiKey))
+            return Content("self.firebaseConfig = null;", "text/javascript");
+
+        var json = System.Text.Json.JsonSerializer.Serialize(new
+        {
+            apiKey,
+            authDomain = _config["FirebaseWeb:AuthDomain"],
+            projectId = _config["FirebaseWeb:ProjectId"],
+            storageBucket = _config["FirebaseWeb:StorageBucket"],
+            messagingSenderId = _config["FirebaseWeb:MessagingSenderId"],
+            appId = _config["FirebaseWeb:AppId"]
+        });
+
+        return Content($"self.firebaseConfig = {json};", "text/javascript");
     }
 }

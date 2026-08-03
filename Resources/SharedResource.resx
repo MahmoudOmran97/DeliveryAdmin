@@ -62,6 +62,8 @@
 	<data name="Notif_MarkAllRead" xml:space="preserve"><value>Mark all as read</value></data>
 	<data name="Notif_Empty" xml:space="preserve"><value>No notifications yet</value></data>
 	<data name="Notif_LoadMore" xml:space="preserve"><value>Load more</value></data>
+	<data name="Orders_ViewOrder" xml:space="preserve"><value>View Order</value></data>
+	<data name="Notif_Dismiss" xml:space="preserve"><value>Dismiss</value></data>
 	<data name="Notif_TargetUser" xml:space="preserve"><value>Specific User</value></data>
 	<data name="Notif_TargetRole" xml:space="preserve"><value>By Role (broadcast)</value></data>
 	<data name="Notif_SelectUser" xml:space="preserve"><value>Select User</value></data>
