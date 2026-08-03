@@ -17,4 +17,28 @@
     if (!btn) return;
     btn.textContent = theme === 'light' ? '☀️' : '🌙';
   }
+
+  // Mobile / tablet off-canvas sidebar
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  const openBtn = document.getElementById('sidebarOpen');
+  const closeBtn = document.getElementById('sidebarClose');
+
+  function openSidebar() {
+    sidebar?.classList.add('open');
+    overlay?.classList.add('open');
+  }
+  function closeSidebar() {
+    sidebar?.classList.remove('open');
+    overlay?.classList.remove('open');
+  }
+
+  openBtn?.addEventListener('click', openSidebar);
+  closeBtn?.addEventListener('click', closeSidebar);
+  overlay?.addEventListener('click', closeSidebar);
+
+  // Close the drawer automatically when a nav link is tapped (mobile)
+  document.querySelectorAll('.nav-item').forEach(function (link) {
+    link.addEventListener('click', closeSidebar);
+  });
 })();

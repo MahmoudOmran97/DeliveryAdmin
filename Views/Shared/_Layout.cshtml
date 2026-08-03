@@ -12,8 +12,23 @@
 <html lang="@lang" dir="@(isRtl ? "rtl" : "ltr")" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewData["Title"] — DeliveryApp Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>@ViewData["Title"] — Tawseela Admin</title>
+
+    <!-- PWA: installable as an app on phone/tablet -->
+    <link rel="manifest" href="~/manifest.json">
+    <meta name="theme-color" content="#FF5722">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Tawseela">
+
+    <!-- Icons / favicon (Tawseela logo) -->
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="~/images/icons/icon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="~/images/icons/icon-16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="~/images/icons/apple-touch-icon.png">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     @if (isRtl) { <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"> }
@@ -23,15 +38,18 @@
 </head>
 <body class="@(isRtl ? "rtl-font" : "")">
 
-    <aside class="sidebar">
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <aside class="sidebar" id="sidebar">
         <div class="logo">
             <div class="logo-mark">
-                <div class="logo-icon">🚀</div>
+                <img src="~/images/logo.png" alt="Tawseela" class="logo-icon" />
                 <div>
-                    <div class="logo-text">DeliveryApp</div>
+                    <div class="logo-text">Tawseela</div>
                     <div class="logo-sub">@Localizer["AdminPanel"]</div>
                 </div>
             </div>
+            <button type="button" class="sidebar-close" id="sidebarClose" aria-label="Close menu">✕</button>
         </div>
         <nav class="nav">
             @{
@@ -98,8 +116,13 @@
     <main class="main">
         <header class="header">
             <div class="header-left">
-                <div class="page-title">@ViewData["Title"]</div>
-                <div class="page-bc">dashboard / @ViewData["Title"]?.ToString()?.ToLower()</div>
+                <button type="button" class="hamburger-btn" id="sidebarOpen" aria-label="Open menu">
+                    <span></span><span></span><span></span>
+                </button>
+                <div>
+                    <div class="page-title">@ViewData["Title"]</div>
+                    <div class="page-bc">dashboard / @ViewData["Title"]?.ToString()?.ToLower()</div>
+                </div>
             </div>
             <div class="header-right">
                 <div class="toolbar">
@@ -129,6 +152,16 @@
     </main>
 
     @RenderSection("Scripts", required: false)
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('/service-worker.js').catch(function (err) {
+                    console.error('SW registration failed:', err);
+                });
+            });
+        }
+    </script>
 
     @if (isStoreOwner)
     {
