@@ -1,0 +1,136 @@
+@model DeliveryAdmin.Models.OrderDto
+@{
+  ViewData["Title"] = "#" + Model.Id;
+  string sc = "b-inactive";
+  if (Model.Status == "Pending") sc = "b-pending";
+  else if (Model.Status == "Accepted") sc = "b-accepted";
+  else if (Model.Status == "Preparing") sc = "b-preparing";
+  else if (Model.Status == "ReadyForPickup") sc = "b-ready";
+  else if (Model.Status == "OnTheWay") sc = "b-onway";
+  else if (Model.Status == "Delivered") sc = "b-delivered";
+  else if (Model.Status == "Cancelled") sc = "b-cancelled";
+  else if (Model.Status == "Rejected") sc = "b-rejected";
+}
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:10px">
+  <div style="display:flex;align-items:center;gap:14px">
+    <span style="font-size:28px">📦</span>
+    <div>
+      <h2 style="font-size:20px;font-weight:800">#@Model.Id</h2>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+        <span class="badge @sc" id="status-badge">@(Model.Status == "ReadyForPickup" ? "Ready" : Model.Status)</span>
+        <span class="text-muted text-sm">@Model.CreatedAt.ToString("dd MMM yyyy HH:mm")</span>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap" id="order-actions">
+    @if (Model.Status == "Pending")
+    {
+      <button class="btn btn-primary btn-sm" onclick="updateOrderStatus(@Model.Id, 'Accepted')">✔ @Localizer["Orders_Accept"]</button>
+      <button class="btn btn-secondary btn-sm" onclick="confirmReject(@Model.Id)">✖ @Localizer["Orders_Reject"]</button>
+    }
+    else if (Model.Status == "Accepted")
+    {
+      <button class="btn btn-primary btn-sm" onclick="updateOrderStatus(@Model.Id, 'Preparing')">👨‍🍳 @Localizer["Orders_StartPreparing"]</button>
+    }
+    else if (Model.Status == "Preparing")
+    {
+      <button class="btn btn-primary btn-sm" onclick="updateOrderStatus(@Model.Id, 'ReadyForPickup')">✅ @Localizer["Orders_MarkReady"]</button>
+    }
+    <a class="btn btn-secondary btn-sm" asp-action="Orders">← @Localizer["Cancel"]</a>
+  </div>
+</div>
+
+<div class="detail-grid">
+  <div>
+    <div class="detail-section" style="margin-bottom:16px">
+      <div class="detail-section-title">@Localizer["Orders_Customer"]</div>
+      <div class="detail-row"><span class="detail-key">@Localizer["Orders_Customer"]</span><span class="detail-val">@(Model.CustomerName ?? "–")</span></div>
+      <div class="detail-row"><span class="detail-key">@Localizer["Total"] (@Localizer["MenuProducts_Price"])</span><span class="detail-val mono">@Model.SubTotal.ToString("N2") @Localizer["Currency"]</span></div>
+      <div class="detail-row"><span class="detail-key">@Localizer["MyStore_DeliveryFee"]</span><span class="detail-val mono">@Model.DeliveryFee.ToString("N2") @Localizer["Currency"]</span></div>
+      @if (Model.Discount > 0)
+      {
+        <div class="detail-row"><span class="detail-key">Discount</span><span class="detail-val mono" style="color:var(--green)">-@Model.Discount.ToString("N2") @Localizer["Currency"]</span></div>
+      }
+      <div class="detail-row">
+        <span class="detail-key">@Localizer["Total"]</span>
+        <span class="detail-val mono" style="font-size:16px;color:var(--accent);font-weight:800">@Model.TotalAmount.ToString("N2") @Localizer["Currency"]</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-key">@Localizer["Orders_Payment"]</span>
+        <span>
+          <span class="badge @(Model.PaymentMethod == "Cash" ? "b-cash" : "b-card")">@Model.PaymentMethod</span>
+          &nbsp;
+          <span class="badge @(Model.PaymentStatus == "Paid" ? "b-paid" : "b-pending-pay")">@Model.PaymentStatus</span>
+        </span>
+      </div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">🚚 Delivery</div>
+      <div class="detail-row"><span class="detail-key">Address</span><span class="detail-val text-sm">@Model.DeliveryAddress</span></div>
+      @if (!string.IsNullOrEmpty(Model.DeliveryNotes))
+      {
+        <div class="detail-row"><span class="detail-key">@Localizer["Pharmacy_Notes"]</span><span class="detail-val text-sm">@Model.DeliveryNotes</span></div>
+      }
+      @if (Model.Driver != null)
+      {
+        <div class="detail-row"><span class="detail-key">@Localizer["MyDrivers_Driver"]</span><span class="detail-val">@Model.Driver.Name</span></div>
+        <div class="detail-row"><span class="detail-key">@Localizer["MyDrivers_Phone"]</span><span class="detail-val mono">@(Model.Driver.Phone ?? "-")</span></div>
+        <div class="detail-row"><span class="detail-key">@Localizer["MyDrivers_Rating"]</span><span class="detail-val">⭐ @Model.Driver.Rating.ToString("F1")</span></div>
+      }
+      else
+      {
+        <div class="text-muted text-sm">@Localizer["MyDrivers_NoActiveOrder"]</div>
+      }
+    </div>
+  </div>
+  <div class="detail-section">
+    <div class="detail-section-title">@Localizer["MenuProducts_Product"] (@(Model.Items?.Count ?? 0))</div>
+    @if (Model.Items != null && Model.Items.Any())
+    {
+      @foreach (var item in Model.Items)
+      {
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)">
+          <div>
+            <div style="font-weight:600;font-size:13px">@item.ProductName</div>
+            <div class="text-muted text-sm">x@(item.Quantity) @@ @item.UnitPrice.ToString("N2") @Localizer["Currency"]</div>
+            @if (!string.IsNullOrEmpty(item.Notes))
+            {
+              <div class="text-muted text-sm">@Localizer["Pharmacy_Notes"]: @item.Notes</div>
+            }
+          </div>
+          <div class="mono" style="font-weight:700">@item.TotalPrice.ToString("N2") @Localizer["Currency"]</div>
+        </div>
+      }
+    }
+    else
+    {
+      <div class="text-muted text-sm">@Localizer["MenuProducts_Empty"]</div>
+    }
+  </div>
+</div>
+
+@section Scripts {
+<script>
+async function updateOrderStatus(id, status) {
+    try {
+        const res = await fetch('/MyStore/UpdateOrderStatus', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-Requested-With': 'XMLHttpRequest' },
+            body: `id=${id}&status=${status}`
+        });
+        if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            alert(data.message || '@Localizer["Orders_StatusUpdateFailed"]');
+            return;
+        }
+        location.reload();
+    } catch (e) {
+        alert('@Localizer["Orders_StatusUpdateFailed"]');
+    }
+}
+function confirmReject(id) {
+    if (confirm('@Localizer["Orders_ConfirmReject"]')) updateOrderStatus(id, 'Rejected');
+}
+</script>
+}

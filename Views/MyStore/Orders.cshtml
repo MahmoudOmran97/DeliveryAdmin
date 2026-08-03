@@ -58,7 +58,7 @@
           else if (o.Status == "Cancelled") sc = "b-cancelled";
           else if (o.Status == "Rejected") sc = "b-rejected";
           <tr id="order-row-@o.Id">
-            <td class="mono" style="color:var(--accent)">#@o.Id</td>
+            <td class="mono" style="color:var(--accent)"><a asp-action="OrderDetails" asp-route-id="@o.Id" style="color:inherit;text-decoration:none">#@o.Id 🔎</a></td>
             <td style="font-weight:500">@(o.CustomerName ?? "–")</td>
             <td class="mono">@(o.ItemCount ?? 0)</td>
             <td class="mono" style="font-weight:600">@o.TotalAmount.ToString("N0") @Localizer["Currency"]</td>

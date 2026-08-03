@@ -193,6 +193,8 @@ namespace DeliveryAdmin.Services
             return await Get<PagedResult<ProductDto>>(url);
         }
         public async Task<ProductDto?> GetProduct(int id) => await Get<ProductDto>($"products/{id}");
+        // منتجات قسم معين لصاحب المحل نفسه (بيرجع المتاح وغير المتاح، على عكس /products/search)
+        public async Task<List<ProductDto>?> GetMyStoreProducts(int categoryId) => await Get<List<ProductDto>>($"products/mystore?categoryId={categoryId}");
         public async Task<(bool ok, string? error, int? id)> CreateProductWithId(CreateProductDto dto)
         {
             var r = await Post<CreatedIdResult>("products", dto);

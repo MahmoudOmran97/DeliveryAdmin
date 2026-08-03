@@ -84,8 +84,8 @@ namespace DeliveryAdmin.Controllers
             ViewBag.CategoryId = categoryId;
             ViewBag.CategoryName = category.Name;
 
-            var products = await _api.SearchProducts(restaurantId: store.Id, categoryId: categoryId, size: 200);
-            return View(products?.Data ?? new());
+            var products = await _api.GetMyStoreProducts(categoryId);
+            return View(products ?? new());
         }
 
         // ── إضافة/تعديل/حذف قسم ────────────────────────────────────────
@@ -166,7 +166,7 @@ namespace DeliveryAdmin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProduct(CreateProductDto dto)
+        public async Task<IActionResult> CreateProduct(CreateProductDto dto, string? variantsJson)
         {
             var store = await _api.GetMyRestaurant();
             if (store == null) return Forbid();
@@ -174,11 +174,22 @@ namespace DeliveryAdmin.Controllers
             var category = await _api.GetCategory(dto.CategoryId);
             if (category == null || category.RestaurantId != store.Id) return Forbid();
 
-            var (ok, error, _) = await _api.CreateProductWithId(dto);
-            TempData[ok ? "Success" : "Error"] = ok ? L["Msg_ProductAdded"].Value : (error ?? L["Msg_ProductAddFailed"].Value);
-            return ok
-                ? RedirectToAction(nameof(MenuProducts), new { categoryId = dto.CategoryId })
-                : RedirectToAction(nameof(CreateProduct), new { categoryId = dto.CategoryId });
+            var (ok, error, newId) = await _api.CreateProductWithId(dto);
+            if (!ok || newId == null)
+            {
+                TempData["Error"] = error ?? L["Msg_ProductAddFailed"].Value;
+                return RedirectToAction(nameof(CreateProduct), new { categoryId = dto.CategoryId });
+            }
+
+            var variants = ParseVariants(variantsJson);
+            if (variants.Any())
+            {
+                var (vOk, vErr) = await _api.SetProductVariants(newId.Value, variants);
+                if (!vOk) TempData["Error"] = $"{L["Msg_ProductAdded"].Value}, {vErr}";
+            }
+
+            TempData["Success"] = L["Msg_ProductAdded"].Value;
+            return RedirectToAction(nameof(MenuProducts), new { categoryId = dto.CategoryId });
         }
 
         public async Task<IActionResult> EditProduct(int id)
@@ -209,7 +220,7 @@ namespace DeliveryAdmin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditProduct(int id, CreateProductDto dto)
+        public async Task<IActionResult> EditProduct(int id, CreateProductDto dto, string? variantsJson)
         {
             var store = await _api.GetMyRestaurant();
             if (store == null) return Forbid();
@@ -218,10 +229,31 @@ namespace DeliveryAdmin.Controllers
             if (p == null || p.RestaurantId != store.Id) return Forbid();
 
             var (ok, error) = await _api.UpdateProduct(id, dto);
-            TempData[ok ? "Success" : "Error"] = ok ? L["Msg_EditSaved"].Value : (error ?? L["Msg_EditSaveFailed"].Value);
-            return ok
-                ? RedirectToAction(nameof(MenuProducts), new { categoryId = dto.CategoryId })
-                : RedirectToAction(nameof(EditProduct), new { id });
+            if (!ok)
+            {
+                TempData["Error"] = error ?? L["Msg_EditSaveFailed"].Value;
+                return RedirectToAction(nameof(EditProduct), new { id });
+            }
+
+            var variants = ParseVariants(variantsJson);
+            var (vOk, vErr) = await _api.SetProductVariants(id, variants);
+            TempData[vOk ? "Success" : "Error"] = vOk ? L["Msg_EditSaved"].Value : $"{L["Msg_EditSaved"].Value}, {vErr}";
+            return RedirectToAction(nameof(MenuProducts), new { categoryId = dto.CategoryId });
+        }
+
+        private static List<ProductVariantDto> ParseVariants(string? variantsJson)
+        {
+            if (string.IsNullOrWhiteSpace(variantsJson)) return new();
+            try
+            {
+                var list = System.Text.Json.JsonSerializer.Deserialize<List<ProductVariantDto>>(
+                    variantsJson,
+                    new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                return (list ?? new())
+                    .Where(v => !string.IsNullOrWhiteSpace(v.Name))
+                    .ToList();
+            }
+            catch { return new(); }
         }
 
         [HttpPost]
@@ -249,6 +281,18 @@ namespace DeliveryAdmin.Controllers
             var (ok, error) = await _api.DeleteProduct(id);
             TempData[ok ? "Success" : "Error"] = ok ? L["Msg_ProductDeleted"].Value : (error ?? L["Msg_DeleteFailed"].Value);
             return RedirectToAction(nameof(MenuProducts), new { categoryId });
+        }
+
+        // تفاصيل طلب معين (بيتأكد إن الطلب ده تابع لمحل صاحب الحساب)
+        public async Task<IActionResult> OrderDetails(int id)
+        {
+            var store = await _api.GetMyRestaurant();
+            if (store == null) return RedirectToAction("Login", "Auth");
+
+            var order = await _api.GetOrder(id);
+            if (order == null || order.Restaurant?.Id != store.Id) return Forbid();
+
+            return View(order);
         }
 
         // الطلبات الجاية للمحل بتاعه
