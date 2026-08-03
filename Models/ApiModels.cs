@@ -102,6 +102,19 @@ namespace DeliveryAdmin.Models
         public bool? IsAvailable { get; set; }
     }
 
+    // سواق متصل بمحل معين (بورتال صاحب المحل — MyStore/Drivers)
+    public class StoreDriverDto
+    {
+        public int Id { get; set; } public string? UserName { get; set; } public string? FullName { get; set; }
+        public string? Phone { get; set; } public string VehicleType { get; set; } = ""; public string LicensePlate { get; set; } = "";
+        public double Rating { get; set; } public int TotalDeliveries { get; set; }
+        public bool IsOnline { get; set; } public bool IsAvailable { get; set; }
+        public double? CurrentLatitude { get; set; } public double? CurrentLongitude { get; set; }
+        public int DeliveriesForThisStore { get; set; }
+        public int? CurrentOrderId { get; set; } public string? CurrentOrderStatus { get; set; }
+    }
+    public class StoreDriversResult { public int Total { get; set; } public List<StoreDriverDto> Data { get; set; } = new(); }
+
     // ── User ──────────────────────────────────
     public class UserDto
     {
@@ -167,6 +180,7 @@ namespace DeliveryAdmin.Models
 
     // ── Rating ────────────────────────────────
     public class RatingDto { public int Id { get; set; } public string? CustomerName { get; set; } public string? RestaurantName { get; set; } public string? DriverName { get; set; } public int RestaurantRating { get; set; } public int? FoodRating { get; set; } public double? DriverRating { get; set; } public string? Comment { get; set; } public DateTime CreatedAt { get; set; } }
+    public class StoreRatingsResult { public int Total { get; set; } public int Page { get; set; } public int PageSize { get; set; } public double AvgRestaurant { get; set; } public double AvgFood { get; set; } public List<RatingDto> Data { get; set; } = new(); }
 
     // ── Notification ──────────────────────────
     public class NotificationDto { public int Id { get; set; } public string Title { get; set; } = ""; public string Body { get; set; } = ""; public string Type { get; set; } = ""; public bool IsRead { get; set; } public int? OrderId { get; set; } public DateTime CreatedAt { get; set; } }

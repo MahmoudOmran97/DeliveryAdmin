@@ -1,0 +1,65 @@
+@model List<DeliveryAdmin.Models.StoreDriverDto>
+@{
+  var online = Model.Count(d => d.IsOnline);
+  var withActiveOrder = Model.Count(d => d.CurrentOrderId != null);
+}
+
+<div class="stat-row">
+  <div class="stat-box"><div class="stat-label">إجمالي السواقين</div><div class="stat-val">@Model.Count</div></div>
+  <div class="stat-box"><div class="stat-label">اونلاين دلوقتي</div><div class="stat-val" style="color:var(--green)">@online</div></div>
+  <div class="stat-box"><div class="stat-label">شغالين على طلب لمحلي</div><div class="stat-val" style="color:var(--accent)">@withActiveOrder</div></div>
+  <div class="stat-box"><div class="stat-label">أوفلاين</div><div class="stat-val" style="color:var(--text3)">@(Model.Count - online)</div></div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">🛵 سائقين الدليفري <span class="text-muted text-sm">(@Model.Count)</span></div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>السائق</th>
+          <th>المركبة</th>
+          <th>التليفون</th>
+          <th>تقييمه</th>
+          <th>عدد توصيلاته لمحلي</th>
+          <th>الحالة</th>
+          <th>الطلب الحالي</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (!Model.Any())
+        {
+          <tr><td colspan="7"><div class="empty"><div class="empty-icon">🛵</div><div>لسه مفيش سواقين اشتغلوا على طلبات محلك</div></div></td></tr>
+        }
+        @foreach (var d in Model)
+        {
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:8px">
+                <div style="width:32px;height:32px;border-radius:50%;background:var(--bg4);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--text2)">@((d.UserName ?? d.FullName)?.FirstOrDefault().ToString().ToUpper() ?? "D")</div>
+                <div style="font-weight:600">@(d.UserName ?? d.FullName ?? "سائق #" + d.Id)</div>
+              </div>
+            </td>
+            <td>@d.VehicleType <span class="mono text-muted text-sm">@d.LicensePlate</span></td>
+            <td class="mono">@(d.Phone ?? "–")</td>
+            <td><span class="stars">⭐</span> @d.Rating.ToString("F1")</td>
+            <td class="mono" style="font-weight:600">@d.DeliveriesForThisStore</td>
+            <td><span class="badge @(d.IsOnline ? "b-online" : "b-offline")">@(d.IsOnline ? "أونلاين" : "أوفلاين")</span></td>
+            <td>
+              @if (d.CurrentOrderId != null)
+              {
+                <a class="badge b-onway" asp-controller="MyStore" asp-action="Orders" style="text-decoration:none">طلب #@d.CurrentOrderId · @d.CurrentOrderStatus</a>
+              }
+              else
+              {
+                <span class="text-muted text-sm">مفيش طلب حالي</span>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,63 @@
+@model List<DeliveryAdmin.Models.RatingDto>
+@{
+  var page = (int)ViewBag.Page;
+  var totalPages = (int)ViewBag.TotalPages;
+  double avgRestaurant = ViewBag.AvgRestaurant;
+  double avgFood = ViewBag.AvgFood;
+}
+
+<div class="stat-row">
+  <div class="stat-box"><div class="stat-label">إجمالي التقييمات</div><div class="stat-val">@ViewBag.Total</div></div>
+  <div class="stat-box"><div class="stat-label">متوسط تقييم المحل</div><div class="stat-val" style="color:var(--amber)">@avgRestaurant.ToString("F1") ⭐</div></div>
+  <div class="stat-box"><div class="stat-label">متوسط تقييم المنتجات</div><div class="stat-val" style="color:var(--amber)">@avgFood.ToString("F1") ⭐</div></div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">⭐ تقييمات محلي</div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#ID</th>
+          <th>العميل</th>
+          <th>تقييم المحل</th>
+          <th>تقييم المنتجات</th>
+          <th>السائق</th>
+          <th>تعليق العميل</th>
+          <th>التاريخ</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (!Model.Any())
+        {
+          <tr><td colspan="7"><div class="empty"><div class="empty-icon">⭐</div><div>لسه مفيش تقييمات على محلك</div></div></td></tr>
+        }
+        @foreach (var r in Model)
+        {
+          <tr>
+            <td class="mono">#@r.Id</td>
+            <td style="font-weight:500">@(r.CustomerName ?? "-")</td>
+            <td><span class="stars">@("⭐".PadRight(r.RestaurantRating, '⭐')[..r.RestaurantRating])</span> @r.RestaurantRating/5</td>
+            <td>@(r.FoodRating.HasValue ? r.FoodRating + "/5" : "-")</td>
+            <td>@(r.DriverName ?? "-") @(r.DriverRating.HasValue ? $"({r.DriverRating.Value:F1}/5)" : "")</td>
+            <td class="text-muted text-sm" style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">@(r.Comment ?? "-")</td>
+            <td class="text-muted text-sm">@r.CreatedAt.ToString("dd MMM yyyy")</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  @if (totalPages > 1)
+  {
+    <div style="padding:12px 18px;border-top:1px solid var(--border)">
+      <div class="pagination">
+        @for (int i = 1; i <= totalPages; i++)
+        {
+          <a class="page-btn @(i == page ? "active" : "")" href="?page=@i">@i</a>
+        }
+      </div>
+    </div>
+  }
+</div>

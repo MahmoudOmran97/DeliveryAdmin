@@ -320,5 +320,13 @@ namespace DeliveryAdmin.Services
             var qs = string.IsNullOrEmpty(status) ? "" : $"&status={Uri.EscapeDataString(status)}";
             return Get<PagedResult<OrderDto>>($"orders/restaurant/{restaurantId}?page={page}&pageSize={size}{qs}");
         }
+
+        // السواقين المتصلين بالمحل (اللي شغالين/اشتغلوا على طلباته)
+        public Task<StoreDriversResult?> GetStoreDrivers(int restaurantId)
+            => Get<StoreDriversResult>($"drivers/restaurant/{restaurantId}");
+
+        // تقييمات المحل بتاع صاحب الحساب
+        public Task<StoreRatingsResult?> GetStoreRatings(int restaurantId, int page = 1, int size = 20)
+            => Get<StoreRatingsResult>($"ratings/restaurant/{restaurantId}?page={page}&pageSize={size}");
     }
 }

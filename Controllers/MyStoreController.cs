@@ -95,5 +95,32 @@ namespace DeliveryAdmin.Controllers
             var orders = await _api.GetOrdersByRestaurant(store.Id, status);
             return View(orders?.Data ?? new());
         }
+
+        // السواقين اللي شغالين/اشتغلوا على طلبات المحل بتاعه
+        public async Task<IActionResult> Drivers()
+        {
+            var store = await _api.GetMyRestaurant();
+            if (store == null) return RedirectToAction("Login", "Auth");
+
+            ViewData["Title"] = "سائقين الدليفري";
+            var result = await _api.GetStoreDrivers(store.Id);
+            return View(result?.Data ?? new());
+        }
+
+        // تقييمات المحل بتاعه (من العملاء)
+        public async Task<IActionResult> Ratings(int page = 1)
+        {
+            var store = await _api.GetMyRestaurant();
+            if (store == null) return RedirectToAction("Login", "Auth");
+
+            ViewData["Title"] = "تقييمات محلي";
+            var result = await _api.GetStoreRatings(store.Id, page, 20);
+            ViewBag.Page = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((result?.Total ?? 0) / 20.0);
+            ViewBag.AvgRestaurant = result?.AvgRestaurant ?? 0;
+            ViewBag.AvgFood = result?.AvgFood ?? 0;
+            ViewBag.Total = result?.Total ?? 0;
+            return View(result?.Data ?? new());
+        }
     }
 }

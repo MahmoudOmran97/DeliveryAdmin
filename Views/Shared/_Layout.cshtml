@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 @using System.Globalization
+@using DeliveryAdmin.Services
+@inject ApiService Api
 
 
 @{
@@ -33,13 +35,30 @@
         <nav class="nav">
             @{
                 var ctrl = ViewContext.RouteData.Values["controller"]?.ToString();
-                var isPharmacyOwner = User.IsInRole("Restaurant");
+                var act = ViewContext.RouteData.Values["action"]?.ToString();
+                var isStoreOwner = User.IsInRole("Restaurant");
+                var isPharmacyStore = false;
+                if (isStoreOwner)
+                {
+                    var myStore = await Api.GetMyRestaurant();
+                    isPharmacyStore = string.Equals(myStore?.StoreType, "Pharmacy", StringComparison.OrdinalIgnoreCase);
+                }
             }
-            @if (isPharmacyOwner)
+            @if (isStoreOwner)
             {
                 <div class="nav-section">@Localizer["Nav_Main"]</div>
-                <a class="nav-item @(ctrl == "MyStore" ? "active" : "")" asp-controller="MyStore" asp-action="Index"><span class="nav-icon">🏪</span> محلي</a>
-                <a class="nav-item @(ctrl == "Pharmacy" ? "active" : "")" asp-controller="Pharmacy" asp-action="Index"><span class="nav-icon">💊</span> @Localizer["Pharmacy_Title"]</a>
+                <a class="nav-item @(ctrl == "MyStore" && act == "Index" ? "active" : "")" asp-controller="MyStore" asp-action="Index"><span class="nav-icon">🏪</span> محلي</a>
+                @if (!isPharmacyStore)
+                {
+                    <a class="nav-item @(ctrl == "MyStore" && act == "Menu" ? "active" : "")" asp-controller="MyStore" asp-action="Menu"><span class="nav-icon">🍽️</span> المنيو</a>
+                }
+                <a class="nav-item @(ctrl == "MyStore" && act == "Orders" ? "active" : "")" asp-controller="MyStore" asp-action="Orders"><span class="nav-icon">📦</span> طلباتي</a>
+                <a class="nav-item @(ctrl == "MyStore" && act == "Drivers" ? "active" : "")" asp-controller="MyStore" asp-action="Drivers"><span class="nav-icon">🛵</span> سائقين الدليفري</a>
+                <a class="nav-item @(ctrl == "MyStore" && act == "Ratings" ? "active" : "")" asp-controller="MyStore" asp-action="Ratings"><span class="nav-icon">⭐</span> التقييمات</a>
+                @if (isPharmacyStore)
+                {
+                    <a class="nav-item @(ctrl == "Pharmacy" ? "active" : "")" asp-controller="Pharmacy" asp-action="Index"><span class="nav-icon">💊</span> @Localizer["Pharmacy_Title"]</a>
+                }
             }
             else
             {
