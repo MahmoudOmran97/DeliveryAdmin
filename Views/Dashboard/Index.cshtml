@@ -10,7 +10,7 @@
 }
 
 @* Row 1: الـ KPI الرئيسية *@
-<div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">
+<div class="kpi-grid">
   <a class="kpi-card" asp-controller="Orders" asp-action="Index">
     <div class="kpi-icon">📦</div>
     <div class="kpi-label">@Localizer["Dash_TotalOrders"]</div>
@@ -38,7 +38,7 @@
 </div>
 
 @* Row 2: KPI إضافية *@
-<div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);margin-top:0">
+<div class="kpi-grid cards-grid-3" style="margin-top:0">
   <a class="kpi-card" asp-controller="Users" asp-action="Index">
     <div class="kpi-icon">👥</div>
     <div class="kpi-label">@Localizer["Dash_TotalUsers"]</div>
@@ -68,7 +68,7 @@
 </div>
 
 @* Charts *@
-<div style="display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-bottom:24px">
+<div class="chart-row">
   <div class="card">
     <div class="card-header"><div class="card-title">@Localizer["Dash_OrderStatusDist"]</div></div>
     <div style="padding:18px"><canvas id="statusChart" height="80"></canvas></div>

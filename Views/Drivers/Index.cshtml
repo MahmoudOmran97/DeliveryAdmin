@@ -14,7 +14,7 @@
   <div class="stat-box"><div class="stat-label">@Localizer["Drivers_PendingVerify"]</div><div class="stat-val" style="color:var(--amber)">@ViewBag.TotalPending</div></div>
 </div>
 
-<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px">
+<div class="cards-grid-3">
   @{var colors=new[]{"#f97316","#3b82f6","#22c55e","#a855f7","#f59e0b","#ef4444"};}
   @foreach(var (d,i) in Model.Take(6).Select((d,i)=>(d,i)))
   {
