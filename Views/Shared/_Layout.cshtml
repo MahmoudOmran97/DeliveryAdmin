@@ -365,7 +365,11 @@
         if (!hubBase || !token) return;
 
         var connection = new signalR.HubConnectionBuilder()
-            .withUrl(hubBase + "/hubs/tracking", { accessTokenFactory: () => token })
+            // withCredentials: false — إحنا بنستخدم Bearer token مش كوكيز، ومفيش
+            // داعي للـ credentials mode أصلاً؛ ده كمان بيتفادى مشكلة الـ CORS
+            // اللي بتظهر لإن سياسة الـ API الحالية بترجع wildcard origin "*"
+            // ومتصفحات الويب بترفض ده مع طلبات credentials:include
+            .withUrl(hubBase + "/hubs/tracking", { accessTokenFactory: () => token, withCredentials: false })
             .withAutomaticReconnect()
             .build();
 
