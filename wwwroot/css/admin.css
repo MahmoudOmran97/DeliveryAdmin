@@ -9,7 +9,7 @@
   --blue:#3b82f6;--blue-bg:rgba(59,130,246,0.1);
   --amber:#f59e0b;--amber-bg:rgba(245,158,11,0.1);
   --purple:#a855f7;--purple-bg:rgba(168,85,247,0.1);
-  --sw:240px;--font:'Syne',sans-serif;--mono:'JetBrains Mono',monospace;
+  --sw:240px;--font:'Cairo',sans-serif;--mono:'JetBrains Mono',monospace;
 }
 body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;display:flex;font-size:14px;overflow-x:hidden}
 html{overflow-x:hidden}
@@ -174,7 +174,7 @@ textarea.form-control{resize:vertical;min-height:80px}
 [data-theme="light"] .b-cash{background:rgba(0,0,0,.04)}
 
 /* RTL */
-[dir=rtl] body.rtl-font{font-family:'Cairo',var(--font),sans-serif}
+/* Cairo بقى هو الفونت الأساسي (--font) للعربي والانجليزي مع بعض، فمحتاجين override إضافي هنا */
 [dir=rtl] .sidebar{left:auto;right:0;border-right:none;border-left:1px solid var(--border)}
 [dir=rtl] .main{margin-left:0;margin-right:var(--sw)}
 [dir=rtl] thead th,[dir=rtl] .header-left{text-align:right}

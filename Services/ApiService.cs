@@ -22,7 +22,11 @@ namespace DeliveryAdmin.Services
         private HttpClient Client()
         {
             var client = _factory.CreateClient("DeliveryAPI");
-            var token = _ctx.HttpContext?.Session.GetString("JWT");
+            // ✅ FIX: التوكن بقى بيتقرأ من claim جوا الـ auth cookie نفسها (مش من Session).
+            // كده لو الـ Session اتمسحت (App Pool recycle / restart) التوكن لسه موجود
+            // مادام المستخدم عامل تسجيل دخول والكوكي لسه صالحة، فمفيش logout غير متوقع.
+            var token = _ctx.HttpContext?.User.FindFirst("JWT")?.Value
+                        ?? _ctx.HttpContext?.Session.GetString("JWT"); // fallback لجلسات قديمة قبل التحديث
             if (!string.IsNullOrEmpty(token))
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             return client;
@@ -242,7 +246,9 @@ namespace DeliveryAdmin.Services
         public async Task<(bool ok, string? error)> UpdateMyOrderStatus(int id, string status) => await Put($"orders/{id}/restaurant-status", new { status });
 
         // الـ JWT بتاع صاحب المحل الحالي — يُستخدم عشان نوصّل SignalR client بالـ Hub من غير endpoint إضافي
-        public string? GetCurrentToken() => _ctx.HttpContext?.Session.GetString("JWT");
+        public string? GetCurrentToken() =>
+            _ctx.HttpContext?.User.FindFirst("JWT")?.Value
+            ?? _ctx.HttpContext?.Session.GetString("JWT");
 
         public async Task<SettlementReportDto?> GetSettlements(DateTime? from, DateTime? to, int? driverId = null, int? restaurantId = null)
         {

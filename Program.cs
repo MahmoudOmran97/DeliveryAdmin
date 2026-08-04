@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using System.Globalization;
@@ -22,6 +23,17 @@ builder.Services.AddControllersWithViews(options =>
     {
         options.DataAnnotationLocalizerProvider = (_, factory) => factory.Create(typeof(SharedResource));
     });
+
+// ✅ FIX: من غير الإعداد ده، مفاتيح تشفير الكوكي (Data Protection Keys) بتتخزن
+// بشكل مؤقت افتراضيًا. على أي hosting شير زي runasp.net، أي App Pool recycle أو
+// نشر جديد ممكن يغيّر المفاتيح دي، فكل الكوكيز (حتى لو لسه صالحة لـ 7 أيام)
+// بتبقى غير قابلة لفك التشفير → المستخدم بيتعمله logout فوري من غير أي سبب ظاهر.
+// الحل: نخزّن المفاتيح في مجلد ثابت جوا App_Data عشان تفضل موجودة بين كل الـ recycles.
+var keysFolder = Path.Combine(builder.Environment.ContentRootPath, "App_Data", "Keys");
+Directory.CreateDirectory(keysFolder);
+builder.Services.AddDataProtection()
+    .SetApplicationName("TawseelaAdmin")
+    .PersistKeysToFileSystem(new DirectoryInfo(keysFolder));
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
