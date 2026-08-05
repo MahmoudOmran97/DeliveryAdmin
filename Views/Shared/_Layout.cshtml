@@ -168,15 +168,10 @@
 
     @RenderSection("Scripts", required: false)
 
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function () {
-                navigator.serviceWorker.register('/service-worker.js').catch(function (err) {
-                    console.error('SW registration failed:', err);
-                });
-            });
-        }
-    </script>
+    <!-- ✅ FIX: كان فيه هنا تسجيل تاني منفصل لـ '/service-worker.js'، وده كان
+         بيتصادم مع تسجيل '/firebase-messaging-sw.js' تحت (نفس الـ scope '/')
+         ويلغي استقبال الإشعارات في الخلفية. اتشال من هنا، ودلوقتي فيه تسجيل
+         واحد بس للملف المدمج (caching + push) — شوف تحت. -->
 
     <!-- ─────────────────────────────────────────────────────────────
          زر الجرس 🔔 — متاح للأدمن وصاحب المحل مع بعض. بيعرض عدد
@@ -400,60 +395,66 @@
     </script>
 
     @{ var hasFirebaseWeb = !string.IsNullOrWhiteSpace(Configuration["FirebaseWeb:ApiKey"]); }
+    <!-- ─────────────────────────────────────────────────────────────
+         ✅ FIX: تسجيل SW واحد بس (مدمج فيه الـ caching + استقبال الإشعارات
+         في الخلفية) بدل تسجيلين منفصلين على نفس الـ scope كانوا بيتصادموا
+         ويلغوا بعض. بيتسجل دايمًا (حتى لو FirebaseWeb مش متظبطة) عشان
+         الـ PWA caching يفضل شغال؛ جزء الفايربيز بس هو اللي بيتفعل شرطيًا.
+    ───────────────────────────────────────────────────────────────── -->
     @if (hasFirebaseWeb)
     {
-        <!-- ─────────────────────────────────────────────────────────────
-             تسجيل توكن الـ Web Push — يخلي التنبيهات توصل حتى لو التاب
-             مقفول أو الأدمن بورتال متسطبة كـ PWA وقافلها. لو الإعدادات في
-             FirebaseWeb فاضية في appsettings.json، البلوك ده مش بيترندر خالص.
-        ───────────────────────────────────────────────────────────────── -->
         <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging-compat.js"></script>
-        <script>
-        (function () {
+    }
+    <script>
+    (function () {
+        if (!('serviceWorker' in navigator)) return;
+
+        navigator.serviceWorker.register('/firebase-messaging-sw.js').then(function (registration) {
+            var hasFirebaseWeb = @Html.Raw(hasFirebaseWeb ? "true" : "false");
+            if (!hasFirebaseWeb) return;
+
             var apiToken = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(myToken ?? ""));
             var apiBase = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(apiBase));
             var vapidKey = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:VapidKey"] ?? ""));
-            if (!apiToken || !vapidKey || !('serviceWorker' in navigator)) return;
+            if (!apiToken || !vapidKey) return;
 
-            navigator.serviceWorker.register('/firebase-messaging-sw.js').then(function (registration) {
-                var app = firebase.initializeApp({
-                    apiKey: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:ApiKey"])),
-                    authDomain: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:AuthDomain"])),
-                    projectId: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:ProjectId"])),
-                    storageBucket: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:StorageBucket"])),
-                    messagingSenderId: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:MessagingSenderId"])),
-                    appId: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:AppId"]))
+            var app = firebase.initializeApp({
+                apiKey: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:ApiKey"])),
+                authDomain: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:AuthDomain"])),
+                projectId: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:ProjectId"])),
+                storageBucket: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:StorageBucket"])),
+                messagingSenderId: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:MessagingSenderId"])),
+                appId: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:AppId"]))
+            });
+            var messaging = firebase.messaging(app);
+
+            function registerToken() {
+                if (Notification.permission !== "granted") return;
+                messaging.getToken({ vapidKey: vapidKey, serviceWorkerRegistration: registration })
+                    .then(function (token) {
+                        if (!token) return;
+                        fetch(apiBase + '/user/fcm-token', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiToken },
+                            body: JSON.stringify({ token: token })
+                        }).catch(function () {});
+                    }).catch(function (err) { console.error('FCM getToken failed:', err); });
+            }
+
+            if (Notification.permission === "granted") {
+                registerToken();
+            } else if (Notification.permission === "default") {
+                Notification.requestPermission().then(function (perm) {
+                    if (perm === "granted") registerToken();
                 });
-                var messaging = firebase.messaging(app);
+            }
 
-                function registerToken() {
-                    if (Notification.permission !== "granted") return;
-                    messaging.getToken({ vapidKey: vapidKey, serviceWorkerRegistration: registration })
-                        .then(function (token) {
-                            if (!token) return;
-                            fetch(apiBase + '/user/fcm-token', {
-                                method: 'PUT',
-                                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiToken },
-                                body: JSON.stringify({ token: token })
-                            }).catch(function () {});
-                        }).catch(function (err) { console.error('FCM getToken failed:', err); });
-                }
-
-                if (Notification.permission === "granted") {
-                    registerToken();
-                } else if (Notification.permission === "default") {
-                    Notification.requestPermission().then(function (perm) {
-                        if (perm === "granted") registerToken();
-                    });
-                }
-
-                // التاب مفتوح والمتصفح شايف الإشعار (data-only) — مش هنعرضه تاني
-                // عشان الكارت الجامد بتاع الـ SignalR فوق أصلاً بيغطي الحالة دي
-                messaging.onMessage(function () {});
-            }).catch(function (err) { console.error('SW register failed:', err); });
-        })();
-        </script>
-    }
+            // التاب مفتوح والمتصفح شايف الإشعار (data-only) — مش هنعرضه تاني
+            // عشان الكارت الجامد بتاع الـ SignalR فوق أصلاً بيغطي الحالة دي
+            messaging.onMessage(function () {});
+        }).catch(function (err) { console.error('SW register failed:', err); });
+    })();
+    </script>
 </body>
 </html>
