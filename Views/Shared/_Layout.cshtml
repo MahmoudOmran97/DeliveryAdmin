@@ -57,10 +57,13 @@
                 var act = ViewContext.RouteData.Values["action"]?.ToString();
                 var isStoreOwner = User.IsInRole("Restaurant");
                 var isPharmacyStore = false;
+                SupportContactDto? supportContact = null;
                 if (isStoreOwner)
                 {
                     var myStore = await Api.GetMyRestaurant();
                     isPharmacyStore = string.Equals(myStore?.StoreType, "Pharmacy", StringComparison.OrdinalIgnoreCase);
+                    // زر "تواصل مع الدعم" — بيظهر لصاحب المحل بس، مش للأدمن
+                    supportContact = await Api.GetSupportContact();
                 }
             }
             @if (isStoreOwner)
@@ -165,6 +168,21 @@
             @RenderBody()
         </div>
     </main>
+
+    @* ─────────────────────────────────────────────────────────────
+       زر "تواصل مع الدعم" — عايم فوق الشاشة من تحت، لصاحب المحل بس
+       (متظهرش خالص للأدمن نفسه). بيودي على واتساب رقم الأدمن مباشرة.
+    ───────────────────────────────────────────────────────────── *@
+    @if (isStoreOwner && !string.IsNullOrWhiteSpace(supportContact?.Phone))
+    {
+        var waDigits = new string(supportContact!.Phone!.Where(char.IsDigit).ToArray());
+        if (waDigits.StartsWith("0")) waDigits = "20" + waDigits[1..]; // تحويل الصفر المحلي لكود مصر
+        var waText = Uri.EscapeDataString(Localizer["Support_WhatsAppMessage"].Value);
+        <a href="https://wa.me/@waDigits?text=@waText" target="_blank" rel="noopener" class="support-float-bar" id="supportFloatBar">
+            <span class="support-float-icon">💬</span>
+            <span class="support-float-text">@Localizer["Support_ContactUs"]</span>
+        </a>
+    }
 
     @RenderSection("Scripts", required: false)
 

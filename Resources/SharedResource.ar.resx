@@ -59,6 +59,8 @@
 	<data name="NoUsers" xml:space="preserve"><value>لا يوجد مستخدمين</value></data>
 	<data name="Notif_Title" xml:space="preserve"><value>إرسال إشعار</value></data>
 	<data name="Notif_Bell" xml:space="preserve"><value>التنبيهات</value></data>
+	<data name="Support_ContactUs" xml:space="preserve"><value>تواصل مع الدعم</value></data>
+	<data name="Support_WhatsAppMessage" xml:space="preserve"><value>مرحباً، محتاج مساعدة من دعم تواصيلة</value></data>
 	<data name="Notif_MarkAllRead" xml:space="preserve"><value>تعليم الكل كمقروء</value></data>
 	<data name="Notif_Empty" xml:space="preserve"><value>مفيش تنبيهات لسه</value></data>
 	<data name="Notif_LoadMore" xml:space="preserve"><value>عرض المزيد</value></data>

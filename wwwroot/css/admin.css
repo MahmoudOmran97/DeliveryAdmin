@@ -266,3 +266,19 @@ textarea.form-control{resize:vertical;min-height:80px}
   .table-wrap table td[colspan]{display:block;text-align:center;padding:24px 12px}
   .table-wrap table td[colspan]::before{content:none}
 }
+
+/* ── زر "تواصل مع الدعم" العايم — واتساب لصاحب المحل فقط ────────── */
+.support-float-bar{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+  z-index:9998;display:flex;align-items:center;gap:9px;
+  background:#25D366;color:#fff;padding:12px 22px;border-radius:999px;
+  box-shadow:0 10px 30px rgba(0,0,0,.4);text-decoration:none;
+  font-weight:700;font-size:13.5px;font-family:var(--font);
+  transition:transform .15s,box-shadow .15s;animation:supportFloatIn .4s ease;
+}
+.support-float-bar:hover{transform:translateX(-50%) translateY(-3px);box-shadow:0 14px 38px rgba(0,0,0,.5);color:#fff}
+.support-float-icon{font-size:18px;line-height:1}
+@keyframes supportFloatIn{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+@media (max-width: 600px){
+  .support-float-bar{bottom:14px;padding:11px 18px;font-size:13px}
+}

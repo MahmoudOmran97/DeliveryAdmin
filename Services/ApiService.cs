@@ -230,6 +230,8 @@ namespace DeliveryAdmin.Services
         public async Task<(bool ok, string? error)> UpdateUser(int id, UpdateUserDto dto) => await Put($"user/{id}", dto);
         public async Task<(bool ok, string? error)> ToggleUserActive(int id) => await Put($"user/{id}/toggle-active");
         public async Task<(bool ok, string? error)> AssignRestaurantOwner(int userId, int restaurantId) => await Put($"user/{userId}/assign-restaurant/{restaurantId}");
+        // رقم واتساب الأدمن — بيتعرض لصاحب المحل بس (فيلتر العرض في الـ Layout)
+        public async Task<SupportContactDto?> GetSupportContact() => await Get<SupportContactDto>("user/support-contact");
 
         // ── Orders ────────────────────────────────────────────────────────
         public async Task<PagedResult<OrderDto>?> GetOrders(int page = 1, int size = 20, string? status = null, string? search = null)
