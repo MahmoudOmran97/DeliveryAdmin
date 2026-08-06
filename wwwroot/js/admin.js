@@ -74,6 +74,9 @@
   });
 
   // ── زرار "ارجع لفوق" — بيظهر بعد سكرول معين لتحت وبيرجعك لأول الصفحة ──
+  // ملحوظة: اللي بيعمل سكرول فعليًا هو .main (مش الـ window)، فبنراقب سكرول
+  // .main نفسها مش الصفحة عمومًا.
+  var scrollContainer = document.querySelector('.main');
   var scrollBtn = document.createElement('button');
   scrollBtn.type = 'button';
   scrollBtn.className = 'scroll-top-btn';
@@ -89,16 +92,21 @@
 
   var scrollThreshold = 300;
   function toggleScrollBtn() {
-    if (window.scrollY > scrollThreshold) {
+    var y = scrollContainer ? scrollContainer.scrollTop : window.scrollY;
+    if (y > scrollThreshold) {
       scrollBtn.classList.add('visible');
     } else {
       scrollBtn.classList.remove('visible');
     }
   }
-  window.addEventListener('scroll', toggleScrollBtn, { passive: true });
+  (scrollContainer || window).addEventListener('scroll', toggleScrollBtn, { passive: true });
   toggleScrollBtn();
 
   scrollBtn.addEventListener('click', function () {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (scrollContainer) {
+      scrollContainer.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   });
 })();
