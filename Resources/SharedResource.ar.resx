@@ -341,6 +341,7 @@
 	<data name="Banners_SelectCategory" xml:space="preserve"><value>اختر القسم</value></data>
 	<data name="Banners_ExternalUrlLabel" xml:space="preserve"><value>الرابط (https://...)</value></data>
 	<data name="Nav_MyStore" xml:space="preserve"><value>محلي</value></data>
+	<data name="Nav_ControlPanel" xml:space="preserve"><value>لوحة التحكم</value></data>
 	<data name="Nav_MyMenu" xml:space="preserve"><value>المنيو</value></data>
 	<data name="Nav_MyOrders" xml:space="preserve"><value>طلباتي</value></data>
 	<data name="Nav_MyDrivers" xml:space="preserve"><value>سائقين الدليفري</value></data>
@@ -382,6 +383,14 @@
 	<data name="MyStore_LogoUrl" xml:space="preserve"><value>رابط صورة اللوجو</value></data>
 	<data name="MyStore_CoverUrl" xml:space="preserve"><value>رابط صورة الغلاف</value></data>
 	<data name="MyStore_SaveChanges" xml:space="preserve"><value>💾 حفظ التعديلات</value></data>
+	<data name="MyStore_MapLocation" xml:space="preserve"><value>موقع المحل على الخريطة</value></data>
+	<data name="MyStore_PickOnMap" xml:space="preserve"><value>اختيار الموقع من الخريطة</value></data>
+	<data name="MyStore_NoLocationYet" xml:space="preserve"><value>لسه مفيش موقع متسجل</value></data>
+	<data name="MyStore_SearchAddress" xml:space="preserve"><value>دور على عنوان...</value></data>
+	<data name="MyStore_UseMyLocation" xml:space="preserve"><value>استخدام موقعي الحالي</value></data>
+	<data name="MyStore_MapHint" xml:space="preserve"><value>دوس في أي مكان على الخريطة أو اسحب العلامة لتحديد موقع المحل بالظبط.</value></data>
+	<data name="MyStore_ConfirmLocation" xml:space="preserve"><value>تأكيد الموقع</value></data>
+	<data name="MyStore_AddressNotFound" xml:space="preserve"><value>معرفناش نلاقي العنوان ده، جرب اسم تاني.</value></data>
 	<data name="MyStore_WeeklyOrders" xml:space="preserve"><value>الطلبات آخر 7 أيام</value></data>
 	<data name="MyStore_OrdersCountLabel" xml:space="preserve"><value>عدد الطلبات</value></data>
 	<data name="MyDrivers_Total" xml:space="preserve"><value>إجمالي السواقين</value></data>

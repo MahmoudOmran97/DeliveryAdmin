@@ -71,6 +71,7 @@
             {
                 <div class="nav-section">@Localizer["Nav_Main"]</div>
                 <a class="nav-item @(ctrl == "MyStore" && act == "Index" ? "active" : "")" asp-controller="MyStore" asp-action="Index"><span class="nav-icon">🏪</span> @Localizer["Nav_MyStore"]</a>
+                <a class="nav-item @(ctrl == "MyStore" && act == "Settings" ? "active" : "")" asp-controller="MyStore" asp-action="Settings"><span class="nav-icon">⚙️</span> @Localizer["Nav_ControlPanel"]</a>
                 @* المنيو بقى متاح للصيدلية برضو (منتجات OTC/تصنيفات) مش بس للمطاعم *@
                 <a class="nav-item @(ctrl == "MyStore" && act == "Menu" ? "active" : "")" asp-controller="MyStore" asp-action="Menu"><span class="nav-icon">🍽️</span> @Localizer["Nav_MyMenu"]</a>
                 <a class="nav-item @(ctrl == "MyStore" && act == "Orders" ? "active" : "")" asp-controller="MyStore" asp-action="Orders"><span class="nav-icon">📦</span> @Localizer["Nav_MyOrders"]</a>

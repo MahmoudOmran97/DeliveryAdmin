@@ -59,6 +59,18 @@ namespace DeliveryAdmin.Controllers
             return View(store);
         }
 
+        // لوحة التحكم — بيانات المحل لوحدها (اسم، عنوان، لوكيشن، صور... إلخ)
+        // متفصلة عن الـ Index اللي بقى مخصص للإحصائيات والشارتس بس
+        public async Task<IActionResult> Settings()
+        {
+            var store = await _api.GetMyRestaurant();
+            if (store == null) return RedirectToAction("Login", "Auth");
+
+            ViewData["Title"] = L["Nav_ControlPanel"].Value;
+            ViewBag.StoreType = store.StoreType;
+            return View(store);
+        }
+
         [HttpPost]
         public async Task<IActionResult> UpdateInfo(UpdateRestaurantDto dto)
         {
@@ -67,7 +79,7 @@ namespace DeliveryAdmin.Controllers
 
             var (ok, error) = await _api.UpdateRestaurant(store.Id, dto);
             TempData[ok ? "Success" : "Error"] = ok ? L["Msg_StoreInfoSaved"].Value : (error ?? L["Msg_SaveFailed"].Value);
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Settings));
         }
 
         [HttpPost]
@@ -240,6 +252,10 @@ namespace DeliveryAdmin.Controllers
                 PreparationTime = p.PreparationTime,
                 Calories = p.Calories
             };
+            // ✅ FIX: من غير السطر ده الأوبشنز (Variants) بتاعة المنتج كانت مش بترجع للفورم
+            // خالص لما تفتح تعديل منتج — الـ View بيقرا من ViewBag.Variants عشان يعمل
+            // pre-fill لصفوف الأوبشن، بس الأكشن مكنش بيبعتها أصلاً فكانت دايمًا فاضية
+            ViewBag.Variants = p.Variants ?? new List<ProductVariantDto>();
             return View(dto);
         }
 

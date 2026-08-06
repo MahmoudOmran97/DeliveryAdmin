@@ -341,6 +341,7 @@
 	<data name="Banners_SelectCategory" xml:space="preserve"><value>Choose a category</value></data>
 	<data name="Banners_ExternalUrlLabel" xml:space="preserve"><value>Link (https://...)</value></data>
 	<data name="Nav_MyStore" xml:space="preserve"><value>My Store</value></data>
+	<data name="Nav_ControlPanel" xml:space="preserve"><value>Control Panel</value></data>
 	<data name="Nav_MyMenu" xml:space="preserve"><value>Menu</value></data>
 	<data name="Nav_MyOrders" xml:space="preserve"><value>My Orders</value></data>
 	<data name="Nav_MyDrivers" xml:space="preserve"><value>Delivery Drivers</value></data>
@@ -382,6 +383,14 @@
 	<data name="MyStore_LogoUrl" xml:space="preserve"><value>Logo Image URL</value></data>
 	<data name="MyStore_CoverUrl" xml:space="preserve"><value>Cover Image URL</value></data>
 	<data name="MyStore_SaveChanges" xml:space="preserve"><value>💾 Save Changes</value></data>
+	<data name="MyStore_MapLocation" xml:space="preserve"><value>Store Location on Map</value></data>
+	<data name="MyStore_PickOnMap" xml:space="preserve"><value>Pick Location on Map</value></data>
+	<data name="MyStore_NoLocationYet" xml:space="preserve"><value>No location set yet</value></data>
+	<data name="MyStore_SearchAddress" xml:space="preserve"><value>Search for an address...</value></data>
+	<data name="MyStore_UseMyLocation" xml:space="preserve"><value>Use my current location</value></data>
+	<data name="MyStore_MapHint" xml:space="preserve"><value>Click anywhere on the map or drag the pin to set your store's exact location.</value></data>
+	<data name="MyStore_ConfirmLocation" xml:space="preserve"><value>Confirm Location</value></data>
+	<data name="MyStore_AddressNotFound" xml:space="preserve"><value>Couldn't find that address, try a different search.</value></data>
 	<data name="MyStore_WeeklyOrders" xml:space="preserve"><value>Orders — Last 7 Days</value></data>
 	<data name="MyStore_OrdersCountLabel" xml:space="preserve"><value>Order Count</value></data>
 	<data name="MyDrivers_Total" xml:space="preserve"><value>Total Drivers</value></data>

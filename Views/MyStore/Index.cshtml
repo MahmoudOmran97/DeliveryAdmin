@@ -13,16 +13,19 @@
         <h2 style="font-size:18px;font-weight:800">@typeInfo.Emoji @Model.Name</h2>
         <div class="text-muted text-sm">@Localizer["Nav_Orders"]: <a asp-action="Orders">@Localizer["Nav_Orders"]</a> — @Localizer["Nav_Products"]: <a asp-action="Menu">@Localizer["Nav_Products"]</a></div>
     </div>
-    <form method="post" asp-action="ToggleOpen">
-        @if (Model.IsOpen)
-        {
-            <button class="btn btn-warning" type="submit">@Localizer["MyStore_CloseShop"]</button>
-        }
-        else
-        {
-            <button class="btn btn-success" type="submit">@Localizer["MyStore_OpenShop"]</button>
-        }
-    </form>
+    <div style="display:flex;gap:8px;align-items:center">
+        <a class="btn btn-secondary" asp-action="Settings">⚙️ @Localizer["Nav_ControlPanel"]</a>
+        <form method="post" asp-action="ToggleOpen">
+            @if (Model.IsOpen)
+            {
+                <button class="btn btn-warning" type="submit">@Localizer["MyStore_CloseShop"]</button>
+            }
+            else
+            {
+                <button class="btn btn-success" type="submit">@Localizer["MyStore_OpenShop"]</button>
+            }
+        </form>
+    </div>
 </div>
 
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:18px">
@@ -119,32 +122,6 @@
                 }
             </tbody>
         </table>
-    </div>
-</div>
-
-<div class="card">
-    <div class="card-header"><div class="card-title">@Localizer["MyStore_Info"]</div></div>
-    <div class="card-body">
-        <form method="post" asp-action="UpdateInfo">
-            <div class="form-grid">
-                <div class="form-group"><label class="form-label">@Localizer["MyStore_Name"]</label><input class="form-control" name="Name" value="@Model.Name" required></div>
-                <div class="form-group"><label class="form-label">@Localizer["MyStore_Phone"]</label><input class="form-control" name="Phone" value="@Model.Phone"></div>
-                <div class="form-group form-full"><label class="form-label">@Localizer["MyStore_Address"]</label><input class="form-control" name="Address" value="@Model.Address" required></div>
-                <div class="form-group form-full"><label class="form-label">@Localizer["MyStore_Description"]</label><textarea class="form-control" name="Description">@Model.Description</textarea></div>
-                <div class="form-group"><label class="form-label">@Localizer["MyStore_DeliveryFeeLabel"]</label><input class="form-control" name="DeliveryFee" type="number" step="0.01" value="@Model.DeliveryFee"></div>
-                <div class="form-group"><label class="form-label">@Localizer["MyStore_MinOrderLabel"]</label><input class="form-control" name="MinOrderAmount" type="number" step="0.01" value="@Model.MinOrderAmount"></div>
-                <div class="form-group"><label class="form-label">@Localizer["MyStore_PrepTime"]</label><input class="form-control" name="EstimatedTime" type="number" value="@Model.EstimatedTime"></div>
-                <input type="hidden" name="StoreType" value="@Model.StoreType" />
-                <input type="hidden" name="IsOpen" value="@Model.IsOpen.ToString().ToLower()" />
-                <div class="form-group"><label class="form-label">Latitude</label><input class="form-control" name="Latitude" type="number" step="any" value="@Model.Latitude"></div>
-                <div class="form-group"><label class="form-label">Longitude</label><input class="form-control" name="Longitude" type="number" step="any" value="@Model.Longitude"></div>
-                <div class="form-group form-full"><label class="form-label">@Localizer["MyStore_LogoUrl"]</label><input class="form-control" name="ImageUrl" value="@Model.ImageUrl"></div>
-                <div class="form-group form-full"><label class="form-label">@Localizer["MyStore_CoverUrl"]</label><input class="form-control" name="CoverImageUrl" value="@Model.CoverImageUrl"></div>
-            </div>
-            <div style="display:flex;gap:8px;margin-top:14px">
-                <button class="btn btn-primary" type="submit">@Localizer["MyStore_SaveChanges"]</button>
-            </div>
-        </form>
     </div>
 </div>
 

@@ -1,0 +1,205 @@
+@model DeliveryAdmin.Models.RestaurantDto
+@using System.Globalization
+@{
+    var storeType = (string)(ViewBag.StoreType ?? "Restaurant");
+    var typeInfo = DeliveryAdmin.Models.StoreTypes.All.FirstOrDefault(t => t.Value == storeType);
+}
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:10px">
+    <div>
+        <h2 style="font-size:18px;font-weight:800">⚙️ @Localizer["Nav_ControlPanel"]</h2>
+        <div class="text-muted text-sm">@typeInfo.Emoji @Model.Name</div>
+    </div>
+    <a class="btn btn-secondary" asp-action="Index">← @Localizer["Nav_MyStore"]</a>
+</div>
+
+<div class="card">
+    <div class="card-header"><div class="card-title">@Localizer["MyStore_Info"]</div></div>
+    <div class="card-body">
+        <form method="post" asp-action="UpdateInfo">
+            <div class="form-grid">
+                <div class="form-group"><label class="form-label">@Localizer["MyStore_Name"]</label><input class="form-control" name="Name" value="@Model.Name" required></div>
+                <div class="form-group"><label class="form-label">@Localizer["MyStore_Phone"]</label><input class="form-control" name="Phone" value="@Model.Phone"></div>
+                <div class="form-group form-full"><label class="form-label">@Localizer["MyStore_Address"]</label><input class="form-control" id="addressInput" name="Address" value="@Model.Address" required></div>
+                <div class="form-group form-full"><label class="form-label">@Localizer["MyStore_Description"]</label><textarea class="form-control" name="Description">@Model.Description</textarea></div>
+                <div class="form-group"><label class="form-label">@Localizer["MyStore_DeliveryFeeLabel"]</label><input class="form-control" name="DeliveryFee" type="number" step="0.01" value="@Model.DeliveryFee.ToString(CultureInfo.InvariantCulture)"></div>
+                <div class="form-group"><label class="form-label">@Localizer["MyStore_MinOrderLabel"]</label><input class="form-control" name="MinOrderAmount" type="number" step="0.01" value="@Model.MinOrderAmount.ToString(CultureInfo.InvariantCulture)"></div>
+                <div class="form-group"><label class="form-label">@Localizer["MyStore_PrepTime"]</label><input class="form-control" name="EstimatedTime" type="number" value="@Model.EstimatedTime.ToString(CultureInfo.InvariantCulture)"></div>
+                <input type="hidden" name="StoreType" value="@Model.StoreType" />
+                <input type="hidden" name="IsOpen" value="@Model.IsOpen.ToString().ToLower()" />
+
+                @* ── الموقع على الخريطة ───────────────────────────────── *@
+                <div class="form-group form-full">
+                    <label class="form-label">@Localizer["MyStore_MapLocation"]</label>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                        <button type="button" class="btn btn-secondary" id="openMapBtn">📍 @Localizer["MyStore_PickOnMap"]</button>
+                        <span class="text-muted text-sm" id="coordsPreview">
+                            @(Model.Latitude != 0 || Model.Longitude != 0
+                                ? $"{Model.Latitude.ToString("0.000000", CultureInfo.InvariantCulture)}, {Model.Longitude.ToString("0.000000", CultureInfo.InvariantCulture)}"
+                                : Localizer["MyStore_NoLocationYet"].Value)
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group"><label class="form-label">Latitude</label><input class="form-control" id="latInput" name="Latitude" type="number" step="any" value="@Model.Latitude.ToString(CultureInfo.InvariantCulture)"></div>
+                <div class="form-group"><label class="form-label">Longitude</label><input class="form-control" id="lngInput" name="Longitude" type="number" step="any" value="@Model.Longitude.ToString(CultureInfo.InvariantCulture)"></div>
+
+                <div class="form-group form-full"><label class="form-label">@Localizer["MyStore_LogoUrl"]</label><input class="form-control" name="ImageUrl" value="@Model.ImageUrl"></div>
+                <div class="form-group form-full"><label class="form-label">@Localizer["MyStore_CoverUrl"]</label><input class="form-control" name="CoverImageUrl" value="@Model.CoverImageUrl"></div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:14px">
+                <button class="btn btn-primary" type="submit">@Localizer["MyStore_SaveChanges"]</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@* ── مودال اختيار الموقع من الخريطة (OpenStreetMap عبر Leaflet — مجاني وبدون API key) ── *@
+<div id="mapModalOverlay" class="map-modal-overlay" style="display:none">
+    <div class="map-modal">
+        <div class="map-modal-header">
+            <div class="card-title">📍 @Localizer["MyStore_PickOnMap"]</div>
+            <button type="button" class="map-modal-close" id="closeMapBtn">✕</button>
+        </div>
+        <div class="map-modal-body">
+            <div style="display:flex;gap:8px;margin-bottom:10px">
+                <input class="form-control" id="mapSearchInput" placeholder="@Localizer["MyStore_SearchAddress"]" />
+                <button type="button" class="btn btn-secondary" id="mapSearchBtn">🔎</button>
+                <button type="button" class="btn btn-secondary" id="mapMyLocationBtn" title="@Localizer["MyStore_UseMyLocation"]">🎯</button>
+            </div>
+            <div id="pickerMap" style="width:100%;height:380px;border-radius:10px;overflow:hidden"></div>
+            <div class="text-muted text-sm" style="margin-top:8px">@Localizer["MyStore_MapHint"]</div>
+        </div>
+        <div class="map-modal-footer">
+            <button type="button" class="btn btn-secondary" id="cancelMapBtn">@Localizer["Cancel"]</button>
+            <button type="button" class="btn btn-primary" id="confirmMapBtn">@Localizer["MyStore_ConfirmLocation"]</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .map-modal-overlay {
+        position: fixed; inset: 0; background: rgba(0,0,0,.6);
+        display: flex; align-items: center; justify-content: center;
+        z-index: 1000; padding: 16px;
+    }
+    .map-modal {
+        background: var(--bg2); border: 1px solid var(--border);
+        border-radius: 14px; width: 100%; max-width: 640px;
+        max-height: 90vh; display: flex; flex-direction: column; overflow: hidden;
+    }
+    .map-modal-header, .map-modal-footer {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 14px 18px; border-bottom: 1px solid var(--border);
+    }
+    .map-modal-footer { border-bottom: none; border-top: 1px solid var(--border); justify-content: flex-end; gap: 8px; }
+    .map-modal-body { padding: 16px 18px; overflow-y: auto; }
+    .map-modal-close {
+        background: none; border: none; color: var(--text2); font-size: 18px; cursor: pointer;
+    }
+    .leaflet-pane, .leaflet-control { z-index: 1; }
+</style>
+
+@section Scripts {
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        (function () {
+            const latInput = document.getElementById('latInput');
+            const lngInput = document.getElementById('lngInput');
+            const coordsPreview = document.getElementById('coordsPreview');
+            const overlay = document.getElementById('mapModalOverlay');
+            const openBtn = document.getElementById('openMapBtn');
+            const closeBtn = document.getElementById('closeMapBtn');
+            const cancelBtn = document.getElementById('cancelMapBtn');
+            const confirmBtn = document.getElementById('confirmMapBtn');
+            const searchInput = document.getElementById('mapSearchInput');
+            const searchBtn = document.getElementById('mapSearchBtn');
+            const myLocationBtn = document.getElementById('mapMyLocationBtn');
+
+            const DEFAULT_LAT = 30.0444; // القاهرة كنقطة افتراضية لو مفيش لوكيشن متسجلة
+            const DEFAULT_LNG = 31.2357;
+
+            let map, marker, mapReady = false;
+            let pickedLat = parseFloat(latInput.value) || DEFAULT_LAT;
+            let pickedLng = parseFloat(lngInput.value) || DEFAULT_LNG;
+
+            function ensureMap() {
+                if (mapReady) return;
+                map = L.map('pickerMap').setView([pickedLat, pickedLng], 14);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
+                marker = L.marker([pickedLat, pickedLng], { draggable: true }).addTo(map);
+
+                marker.on('dragend', function () {
+                    const p = marker.getLatLng();
+                    pickedLat = p.lat; pickedLng = p.lng;
+                });
+                map.on('click', function (e) {
+                    pickedLat = e.latlng.lat; pickedLng = e.latlng.lng;
+                    marker.setLatLng(e.latlng);
+                });
+                mapReady = true;
+            }
+
+            function openModal() {
+                overlay.style.display = 'flex';
+                ensureMap();
+                setTimeout(function () {
+                    map.invalidateSize();
+                    map.setView([pickedLat, pickedLng], marker ? map.getZoom() : 14);
+                    if (marker) marker.setLatLng([pickedLat, pickedLng]);
+                }, 50);
+            }
+            function closeModal() { overlay.style.display = 'none'; }
+
+            openBtn.addEventListener('click', openModal);
+            closeBtn.addEventListener('click', closeModal);
+            cancelBtn.addEventListener('click', closeModal);
+            overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModal(); });
+
+            confirmBtn.addEventListener('click', function () {
+                latInput.value = pickedLat.toFixed(6);
+                lngInput.value = pickedLng.toFixed(6);
+                coordsPreview.textContent = pickedLat.toFixed(6) + ', ' + pickedLng.toFixed(6);
+                closeModal();
+            });
+
+            // البحث عن عنوان عن طريق Nominatim (خدمة الجيوكودينج المجانية بتاعة OpenStreetMap)
+            function searchAddress() {
+                const q = searchInput.value.trim();
+                if (!q) return;
+                searchBtn.disabled = true;
+                fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(q))
+                    .then(function (r) { return r.json(); })
+                    .then(function (results) {
+                        if (results && results.length) {
+                            pickedLat = parseFloat(results[0].lat);
+                            pickedLng = parseFloat(results[0].lon);
+                            map.setView([pickedLat, pickedLng], 16);
+                            marker.setLatLng([pickedLat, pickedLng]);
+                        } else {
+                            alert('@Localizer["MyStore_AddressNotFound"]');
+                        }
+                    })
+                    .catch(function () { alert('@Localizer["MyStore_AddressNotFound"]'); })
+                    .finally(function () { searchBtn.disabled = false; });
+            }
+            searchBtn.addEventListener('click', searchAddress);
+            searchInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); searchAddress(); } });
+
+            // موقعي الحالي (GPS المتصفح)
+            myLocationBtn.addEventListener('click', function () {
+                if (!navigator.geolocation) return;
+                navigator.geolocation.getCurrentPosition(function (pos) {
+                    pickedLat = pos.coords.latitude;
+                    pickedLng = pos.coords.longitude;
+                    map.setView([pickedLat, pickedLng], 16);
+                    marker.setLatLng([pickedLat, pickedLng]);
+                });
+            });
+        })();
+    </script>
+}
