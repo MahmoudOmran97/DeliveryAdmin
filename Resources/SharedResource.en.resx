@@ -102,10 +102,22 @@
 	<data name="Dashboard_Title" xml:space="preserve"><value>Dashboard</value></data>
 	<data name="Total" xml:space="preserve"><value>total</value></data>
 	<data name="Search" xml:space="preserve"><value>Search</value></data>
+	<data name="Previous" xml:space="preserve"><value>Previous</value></data>
+	<data name="Next" xml:space="preserve"><value>Next</value></data>
 	<data name="Back" xml:space="preserve"><value>Back</value></data>
 	<data name="Details" xml:space="preserve"><value>Details</value></data>
 	<data name="NoData" xml:space="preserve"><value>No data found</value></data>
 	<data name="Nav_Settlements" xml:space="preserve"><value>Settlements</value></data>
+	<data name="Nav_DeliveryFee" xml:space="preserve"><value>Delivery Fee</value></data>
+	<data name="DeliveryFee_Title" xml:space="preserve"><value>Delivery Fee Settings</value></data>
+	<data name="DeliveryFee_Description" xml:space="preserve"><value>Each store has a base delivery price set from the store page, which is charged as-is as long as the customer's distance from the store is less than or equal to the "free radius" you set here. Any distance beyond that adds the "extra fee per km" for every additional km (or part of it).</value></data>
+	<data name="DeliveryFee_Example" xml:space="preserve"><value>Example: if the free radius is 3 km and the extra fee per km is 10 EGP, and the store's base price is 20 EGP: a customer 3.5 km away pays 30 EGP delivery.</value></data>
+	<data name="DeliveryFee_FreeRadius" xml:space="preserve"><value>Free radius (km)</value></data>
+	<data name="DeliveryFee_ExtraFeePerKm" xml:space="preserve"><value>Extra fee per km (EGP)</value></data>
+	<data name="DeliveryFee_LastUpdated" xml:space="preserve"><value>Last updated:</value></data>
+	<data name="DeliveryFee_SaveBtn" xml:space="preserve"><value>Save Changes</value></data>
+	<data name="DeliveryFee_ValidationError" xml:space="preserve"><value>Values must be zero or greater</value></data>
+	<data name="DeliveryFee_SaveSuccess" xml:space="preserve"><value>Delivery fee settings updated successfully</value></data>
 	<data name="Settlements_Title" xml:space="preserve"><value>Settlements</value></data>
 	<data name="Settlements_TotalOrders" xml:space="preserve"><value>Delivered Orders</value></data>
 	<data name="Settlements_TotalRevenue" xml:space="preserve"><value>Total Revenue</value></data>

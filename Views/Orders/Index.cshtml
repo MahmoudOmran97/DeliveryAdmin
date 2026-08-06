@@ -6,88 +6,123 @@
 }
 @model List<DeliveryAdmin.Models.OrderDto>
 @{
-  var page=(int)ViewBag.Page;
-  var totalPages=(int)ViewBag.TotalPages;
-  string currentStatus = ViewBag.Status as string ?? "";
-  var statuses = new[]{"Pending","Accepted","Preparing","ReadyForPickup","OnTheWay","Delivered","Cancelled","Rejected"};
+    var page = (int)ViewBag.Page;
+    var totalPages = (int)ViewBag.TotalPages;
+    string currentStatus = ViewBag.Status as string ?? "";
+    var statuses = new[] { "Pending", "Accepted", "Preparing", "ReadyForPickup", "OnTheWay", "Delivered", "Cancelled", "Rejected" };
 }
 
 <div class="pipeline">
-  @{
-    var pipeItems = new[]{
-      ("Pending","var(--amber)"),("Accepted","var(--blue)"),("Preparing","var(--purple)"),
-      ("Ready","var(--accent)"),("OnTheWay","#60a5fa"),("Delivered","var(--green)")
-    };
-  }
-  @foreach(var s in pipeItems)
-  {
-    var cnt = Model.Count(o => o.Status==s.Item1 || (o.Status=="ReadyForPickup" && s.Item1=="Ready"));
-    <div class="pipe @(s.Item1=="Pending"?"active-pipe":"")">
-      <div class="pipe-label">@s.Item1</div>
-      <div class="pipe-count" style="color:@s.Item2">@cnt</div>
-    </div>
-  }
+    @{
+        var pipeItems = new[]{
+        ("Pending","var(--amber)"),("Accepted","var(--blue)"),("Preparing","var(--purple)"),
+        ("Ready","var(--accent)"),("OnTheWay","#60a5fa"),("Delivered","var(--green)")
+        };
+    }
+    @foreach (var s in pipeItems)
+    {
+        var cnt = Model.Count(o => o.Status == s.Item1 || (o.Status == "ReadyForPickup" && s.Item1 == "Ready"));
+        <div class="pipe @(s.Item1 == "Pending" ? "active-pipe" : "")">
+            <div class="pipe-label">@s.Item1</div>
+            <div class="pipe-count" style="color:@s.Item2">@cnt</div>
+        </div>
+    }
 </div>
 
 <div class="card">
-  <div class="card-header">
-    <div class="card-title">@Localizer["Orders_All"] <span class="text-muted text-sm">(@ViewBag.Total @Localizer["Total"])</span></div>
-    <div class="filters">
-      <form method="get" style="display:flex;gap:8px;flex-wrap:wrap">
-        <input class="filter-input" type="text" name="search" value="@ViewBag.Search" placeholder="@Localizer["Orders_SearchPlaceholder"]" />
-        <select class="filter-input" name="status" onchange="this.form.submit()">
-          <option value="">@Localizer["Orders_AllStatus"]</option>
-          @foreach(var s in statuses)
-          {
-            string label = s=="ReadyForPickup"?"Ready":s;
-            if(currentStatus==s){<option value="@s" selected>@label</option>}
-            else{<option value="@s">@label</option>}
-          }
-        </select>
-        <button class="btn btn-secondary btn-sm" type="submit">@Localizer["Search"]</button>
-      </form>
+    <div class="card-header">
+        <div class="card-title">@Localizer["Orders_All"] <span class="text-muted text-sm">(@ViewBag.Total @Localizer["Total"])</span></div>
+        <div class="filters">
+            <form method="get" style="display:flex;gap:8px;flex-wrap:wrap">
+                <input class="filter-input" type="text" name="search" value="@ViewBag.Search" placeholder="@Localizer["Orders_SearchPlaceholder"]" />
+                <select class="filter-input" name="status" onchange="this.form.submit()">
+                    <option value="">@Localizer["Orders_AllStatus"]</option>
+                    @foreach (var s in statuses)
+                    {
+                        string label = s == "ReadyForPickup" ? "Ready" : s;
+                        if (currentStatus == s)
+                        {
+                            <option value="@s" selected>@label</option>
+                        }
+                        else
+                        {
+                            <option value="@s">@label</option>
+                        }
+                    }
+                </select>
+                <button class="btn btn-secondary btn-sm" type="submit">@Localizer["Search"]</button>
+            </form>
+        </div>
     </div>
-  </div>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>#ID</th><th>@Localizer["Orders_Customer"]</th><th>@Localizer["Restaurant"]</th><th>@Localizer["Orders_Items"]</th><th>@Localizer["Total"]</th><th>@Localizer["Orders_Payment"]</th><th>@Localizer["Status"]</th><th>@Localizer["Orders_Date"]</th><th>@Localizer["Orders_Actions"]</th></tr></thead>
-      <tbody>
-        @if(!Model.Any())
-        {
-          <tr><td colspan="9"><div class="empty"><div class="empty-icon">📦</div><div>@Localizer["Orders_NoData"]</div></div></td></tr>
-        }
-        @foreach(var o in Model)
-        {
-          string sc = "b-inactive";
-          if(o.Status=="Pending") sc="b-pending";
-          else if(o.Status=="Accepted") sc="b-accepted";
-          else if(o.Status=="Preparing") sc="b-preparing";
-          else if(o.Status=="ReadyForPickup") sc="b-ready";
-          else if(o.Status=="OnTheWay") sc="b-onway";
-          else if(o.Status=="Delivered") sc="b-delivered";
-          else if(o.Status=="Cancelled") sc="b-cancelled";
-          else if(o.Status=="Rejected") sc="b-rejected";
-          <tr>
-            <td class="mono" style="color:var(--accent)">#@o.Id</td>
-            <td style="font-weight:500">@(o.CustomerName??"–")</td>
-            <td>@(o.RestaurantName??"–")</td>
-            <td class="mono">@(o.ItemCount??0)</td>
-            <td class="mono" style="font-weight:600">@o.TotalAmount.ToString("N0") @Localizer["Currency"]</td>
-            <td><span class="badge @(o.PaymentMethod=="Cash"?"b-cash":"b-card")">@o.PaymentMethod</span></td>
-            <td><span class="badge @sc">@(o.Status=="ReadyForPickup"?"Ready":o.Status)</span></td>
-            <td class="text-muted text-sm">@o.CreatedAt.ToString("dd MMM HH:mm")</td>
-            <td><a class="btn btn-secondary btn-sm" asp-action="Details" asp-route-id="@o.Id">@Localizer["Details"]</a></td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
-  @if(totalPages>1)
-  {
-    <div style="padding:12px 18px;border-top:1px solid var(--border)">
-      <div class="pagination">
-        @for(int i=1;i<=totalPages;i++){<a class="page-btn @(i==page?"active":"")" href="?page=@i&status=@currentStatus&search=@ViewBag.Search">@i</a>}
-      </div>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>#ID</th><th>@Localizer["Orders_Customer"]</th><th>@Localizer["Restaurant"]</th><th>@Localizer["Orders_Items"]</th><th>@Localizer["Total"]</th><th>@Localizer["Orders_Payment"]</th><th>@Localizer["Status"]</th><th>@Localizer["Orders_Date"]</th><th>@Localizer["Orders_Actions"]</th></tr></thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="9"><div class="empty"><div class="empty-icon">📦</div><div>@Localizer["Orders_NoData"]</div></div></td></tr>
+                }
+                @foreach (var o in Model)
+                {
+                    string sc = "b-inactive";
+                    if (o.Status == "Pending") sc = "b-pending";
+                    else if (o.Status == "Accepted") sc = "b-accepted";
+                    else if (o.Status == "Preparing") sc = "b-preparing";
+                    else if (o.Status == "ReadyForPickup") sc = "b-ready";
+                    else if (o.Status == "OnTheWay") sc = "b-onway";
+                    else if (o.Status == "Delivered") sc = "b-delivered";
+                    else if (o.Status == "Cancelled") sc = "b-cancelled";
+                    else if (o.Status == "Rejected") sc = "b-rejected";
+                    <tr>
+                        <td class="mono" style="color:var(--accent)">#@o.Id</td>
+                        <td style="font-weight:500">@(o.CustomerName ?? "–")</td>
+                        <td>@(o.RestaurantName ?? "–")</td>
+                        <td class="mono">@(o.ItemCount ?? 0)</td>
+                        <td class="mono" style="font-weight:600">@o.TotalAmount.ToString("N0") @Localizer["Currency"]</td>
+                        <td><span class="badge @(o.PaymentMethod == "Cash" ? "b-cash" : "b-card")">@o.PaymentMethod</span></td>
+                        <td><span class="badge @sc">@(o.Status == "ReadyForPickup" ? "Ready" : o.Status)</span></td>
+                        <td class="text-muted text-sm">@o.CreatedAt.ToString("dd MMM HH:mm")</td>
+                        <td><a class="btn btn-secondary btn-sm" asp-action="Details" asp-route-id="@o.Id">@Localizer["Details"]</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
-  }
+    @if (totalPages > 1)
+    {
+        <div style="padding:12px 18px;border-top:1px solid var(--border)">
+            <div class="pagination" style="flex-wrap:wrap">
+                @{
+                    // بنبني قايمة أرقام الصفحات المعروضة: أول صفحة + آخر صفحة + شوية صفحات حوالين الحالية + "..." بدل الباقي
+                    int windowSize = 1;
+                    var pagesToShow = new List<int?> { 1 };
+                    int start = Math.Max(2, page - windowSize);
+                    int end = Math.Min(totalPages - 1, page + windowSize);
+                    if (start > 2) pagesToShow.Add(null);
+                    for (int i = start; i <= end; i++) pagesToShow.Add(i);
+                    if (end < totalPages - 1) pagesToShow.Add(null);
+                    if (totalPages > 1) pagesToShow.Add(totalPages);
+                }
+                @if (page > 1)
+                {
+                    <a class="page-btn" href="?page=@(page - 1)&status=@currentStatus&search=@ViewBag.Search" title="@Localizer["Previous"]" aria-label="Previous">‹</a>
+                }
+                @foreach (var p in pagesToShow)
+                {
+                    if (p == null)
+                    {
+                        <span class="page-btn" style="cursor:default;pointer-events:none;background:transparent;border-color:transparent">…</span>
+                    }
+                    else
+                    {
+                        <a class="page-btn @(p == page ? "active" : "")" href="?page=@p&status=@currentStatus&search=@ViewBag.Search">@p</a>
+                    }
+                }
+                @if (page < totalPages)
+                {
+                    <a class="page-btn" href="?page=@(page + 1)&status=@currentStatus&search=@ViewBag.Search" title="@Localizer["Next"]" aria-label="Next">›</a>
+                }
+            </div>
+        </div>
+    }
 </div>

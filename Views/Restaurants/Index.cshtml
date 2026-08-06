@@ -6,90 +6,146 @@
 }
 @model List<DeliveryAdmin.Models.RestaurantDto>
 @{
-  var totalPages = (int)ViewBag.TotalPages;
-  var page = (int)ViewBag.Page;
-  bool? isOpenFilter = ViewBag.IsOpen as bool?;
+    var totalPages = (int)ViewBag.TotalPages;
+    var page = (int)ViewBag.Page;
+    bool? isOpenFilter = ViewBag.IsOpen as bool?;
 }
 
 <div class="stat-row">
-  <div class="stat-box"><div class="stat-label">@Localizer["Restaurants_Total"]</div><div class="stat-val">@ViewBag.Total</div></div>
-  <div class="stat-box"><div class="stat-label">@Localizer["Restaurants_OpenNow"]</div><div class="stat-val" style="color:var(--green)">@Model.Count(r=>r.IsOpen)</div></div>
-  <div class="stat-box"><div class="stat-label">@Localizer["Restaurants_Closed"]</div><div class="stat-val" style="color:var(--red)">@Model.Count(r=>!r.IsOpen)</div></div>
-  <div class="stat-box"><div class="stat-label">@Localizer["Restaurants_AvgRating"]</div><div class="stat-val" style="color:var(--amber)">@(Model.Any()?Model.Average(r=>r.Rating).ToString("F1"):"–") ⭐</div></div>
+    <div class="stat-box"><div class="stat-label">@Localizer["Restaurants_Total"]</div><div class="stat-val">@ViewBag.Total</div></div>
+    <div class="stat-box"><div class="stat-label">@Localizer["Restaurants_OpenNow"]</div><div class="stat-val" style="color:var(--green)">@Model.Count(r => r.IsOpen)</div></div>
+    <div class="stat-box"><div class="stat-label">@Localizer["Restaurants_Closed"]</div><div class="stat-val" style="color:var(--red)">@Model.Count(r => !r.IsOpen)</div></div>
+    <div class="stat-box"><div class="stat-label">@Localizer["Restaurants_AvgRating"]</div><div class="stat-val" style="color:var(--amber)">@(Model.Any() ? Model.Average(r => r.Rating).ToString("F1") : "–") ⭐</div></div>
 </div>
 
 <div class="card">
-  <div class="card-header">
-    <div class="card-title">@Localizer["Restaurants_All"]</div>
-    <div class="filters">
-      <form method="get" style="display:flex;gap:8px;flex-wrap:wrap">
-        <input class="filter-input" name="search" value="@ViewBag.Search" placeholder="@Localizer["Search"]">
-        <select class="filter-input" name="isOpen" onchange="this.form.submit()">
-          <option value="">@Localizer["Restaurants_AllStatus"]</option>
-          @if(isOpenFilter==true){<option value="true" selected>@Localizer["Restaurants_Open"]</option>}else{<option value="true">@Localizer["Restaurants_Open"]</option>}
-          @if(isOpenFilter==false){<option value="false" selected>@Localizer["Restaurants_Close"]</option>}else{<option value="false">@Localizer["Restaurants_Close"]</option>}
-        </select>
-        <button class="btn btn-secondary btn-sm" type="submit">@Localizer["Restaurants_Filter"]</button>
-      </form>
-      <a class="btn btn-primary btn-sm" asp-controller="Restaurants" asp-action="Create">+ @Localizer["Restaurants_Add"]</a>
+    <div class="card-header">
+        <div class="card-title">@Localizer["Restaurants_All"]</div>
+        <div class="filters">
+            <form method="get" style="display:flex;gap:8px;flex-wrap:wrap">
+                <input class="filter-input" name="search" value="@ViewBag.Search" placeholder="@Localizer["Search"]">
+                <select class="filter-input" name="isOpen" onchange="this.form.submit()">
+                    <option value="">@Localizer["Restaurants_AllStatus"]</option>
+                    @if (isOpenFilter == true)
+                    {
+                        <option value="true" selected>@Localizer["Restaurants_Open"]</option>
+                    }
+                    else
+                    {
+                        <option value="true">@Localizer["Restaurants_Open"]</option>
+                    }
+                    @if (isOpenFilter == false)
+                    {
+                        <option value="false" selected>@Localizer["Restaurants_Close"]</option>
+                    }
+                    else
+                    {
+                        <option value="false">@Localizer["Restaurants_Close"]</option>
+                    }
+                </select>
+                <button class="btn btn-secondary btn-sm" type="submit">@Localizer["Restaurants_Filter"]</button>
+            </form>
+            <a class="btn btn-primary btn-sm" asp-controller="Restaurants" asp-action="Create">+ @Localizer["Restaurants_Add"]</a>
+        </div>
     </div>
-  </div>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>@Localizer["Restaurants_Name"]</th><th>Type</th><th>@Localizer["Address"]</th><th>@Localizer["Drivers_Rating"]</th><th>@Localizer["Restaurants_DeliveryFee"]</th><th>@Localizer["Restaurants_MinOrder"]</th><th>@Localizer["Restaurants_Time"]</th><th>@Localizer["Status"]</th><th>@Localizer["Actions"]</th></tr></thead>
-      <tbody>
-        @if(!Model.Any())
-        {
-          <tr><td colspan="9"><div class="empty"><div class="empty-icon">🍽️</div><div>@Localizer["Restaurants_NoData"]</div></div></td></tr>
-        }
-        @foreach(var r in Model)
-        {
-          <tr>
-            <td>
-              <div style="display:flex;align-items:center;gap:10px">
-                @if(!string.IsNullOrEmpty(r.ImageUrl))
-                {<img src="@r.ImageUrl" class="img-preview" alt="">}
-                else
-                {<div class="img-preview" style="display:flex;align-items:center;justify-content:center;font-size:18px">🍽️</div>}
-                <div>
-                  <div style="font-weight:600">@r.Name</div>
-                  <div class="text-muted text-sm">@r.Phone</div>
-                </div>
-              </div>
-            </td>
-            <td>
-              @{ var st = DeliveryAdmin.Models.StoreTypes.All.FirstOrDefault(x => x.Value == r.StoreType); }
-              <span class="badge" style="background:var(--bg4)">@(st.Emoji ?? "🍽️") @(st.LabelAr ?? r.StoreType)</span>
-            </td>
-            <td class="text-muted text-sm" style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">@r.Address</td>
-            <td>⭐ @r.Rating.ToString("F1") <span class="text-muted text-sm">(@r.TotalRatings)</span></td>
-            <td class="mono">@r.DeliveryFee @Localizer["Currency"]</td>
-            <td class="mono">@r.MinOrderAmount @Localizer["Currency"]</td>
-            <td class="mono">@r.EstimatedTime @Localizer["Min"]</td>
-            <td><span class="badge @(r.IsOpen?"b-open":"b-closed")">@(r.IsOpen?Localizer["Restaurants_Open"].Value:Localizer["Restaurants_Close"].Value)</span></td>
-            <td>
-              <div style="display:flex;gap:4px;flex-wrap:wrap">
-                <a class="btn btn-secondary btn-sm" asp-action="Details" asp-route-id="@r.Id">@Localizer["Restaurants_View"]</a>
-                <a class="btn btn-secondary btn-sm" asp-action="Edit" asp-route-id="@r.Id">@Localizer["Edit"]</a>
-                <form method="post" asp-action="Toggle" asp-route-id="@r.Id" style="display:inline">
-                  @if(r.IsOpen){<button class="btn btn-warning btn-sm" type="submit">@Localizer["Restaurants_CloseBtn"]</button>}
-                  else{<button class="btn btn-success btn-sm" type="submit">@Localizer["Restaurants_OpenBtn"]</button>}
-                </form>
-                <a class="btn btn-secondary btn-sm" asp-controller="Categories" asp-action="Index" asp-route-restaurantId="@r.Id">@Localizer["Restaurants_Menu"]</a>
-              </div>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
-  @if(totalPages > 1)
-  {
-    <div style="padding:14px 18px;border-top:1px solid var(--border)">
-      <div class="pagination">
-        @for(int i=1;i<=totalPages;i++)
-        {<a class="page-btn @(i==page?"active":"")" href="?page=@i&search=@ViewBag.Search">@i</a>}
-      </div>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>@Localizer["Restaurants_Name"]</th><th>Type</th><th>@Localizer["Address"]</th><th>@Localizer["Drivers_Rating"]</th><th>@Localizer["Restaurants_DeliveryFee"]</th><th>@Localizer["Restaurants_MinOrder"]</th><th>@Localizer["Restaurants_Time"]</th><th>@Localizer["Status"]</th><th>@Localizer["Actions"]</th></tr></thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="9"><div class="empty"><div class="empty-icon">🍽️</div><div>@Localizer["Restaurants_NoData"]</div></div></td></tr>
+                }
+                @foreach (var r in Model)
+                {
+                    <tr>
+                        <td>
+                            <div style="display:flex;align-items:center;gap:10px">
+                                @if (!string.IsNullOrEmpty(r.ImageUrl))
+                                {
+                                    <img src="@r.ImageUrl" class="img-preview" alt="">
+                                }
+                                else
+                                {
+
+                                    <div class="img-preview" style="display:flex;align-items:center;justify-content:center;font-size:18px">🍽️</div>
+                                }
+                                <div>
+                                    <div style="font-weight:600">@r.Name</div>
+                                    <div class="text-muted text-sm">@r.Phone</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            @{
+                                var st = DeliveryAdmin.Models.StoreTypes.All.FirstOrDefault(x => x.Value == r.StoreType);
+                            }
+                            <span class="badge" style="background:var(--bg4)">@(st.Emoji ?? "🍽️") @(st.LabelAr ?? r.StoreType)</span>
+                        </td>
+                        <td class="text-muted text-sm" style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">@r.Address</td>
+                        <td>⭐ @r.Rating.ToString("F1") <span class="text-muted text-sm">(@r.TotalRatings)</span></td>
+                        <td class="mono">@r.DeliveryFee @Localizer["Currency"]</td>
+                        <td class="mono">@r.MinOrderAmount @Localizer["Currency"]</td>
+                        <td class="mono">@r.EstimatedTime @Localizer["Min"]</td>
+                        <td><span class="badge @(r.IsOpen ? "b-open" : "b-closed")">@(r.IsOpen? Localizer["Restaurants_Open"].Value:Localizer["Restaurants_Close"].Value)</span></td>
+                        <td>
+                            <div style="display:flex;gap:4px;flex-wrap:wrap">
+                                <a class="btn btn-secondary btn-sm" asp-action="Details" asp-route-id="@r.Id">@Localizer["Restaurants_View"]</a>
+                                <a class="btn btn-secondary btn-sm" asp-action="Edit" asp-route-id="@r.Id">@Localizer["Edit"]</a>
+                                <form method="post" asp-action="Toggle" asp-route-id="@r.Id" style="display:inline">
+                                    @if (r.IsOpen)
+                                    {
+                                        <button class="btn btn-warning btn-sm" type="submit">@Localizer["Restaurants_CloseBtn"]</button>
+                                    }
+                                    else
+                                    {
+
+                                        <button class="btn btn-success btn-sm" type="submit">@Localizer["Restaurants_OpenBtn"]</button>
+                                    }
+                                </form>
+                                <a class="btn btn-secondary btn-sm" asp-controller="Categories" asp-action="Index" asp-route-restaurantId="@r.Id">@Localizer["Restaurants_Menu"]</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
-  }
+    @if (totalPages > 1)
+    {
+        <div style="padding:14px 18px;border-top:1px solid var(--border)">
+            <div class="pagination" style="flex-wrap:wrap">
+                @{
+                    int windowSize = 1;
+                    var pagesToShow = new List<int?> { 1 };
+                    int start = Math.Max(2, page - windowSize);
+                    int end = Math.Min(totalPages - 1, page + windowSize);
+                    if (start > 2) pagesToShow.Add(null);
+                    for (int i = start; i <= end; i++) pagesToShow.Add(i);
+                    if (end < totalPages - 1) pagesToShow.Add(null);
+                    if (totalPages > 1) pagesToShow.Add(totalPages);
+                }
+                @if (page > 1)
+                {
+                    <a class="page-btn" href="?page=@(page - 1)&search=@ViewBag.Search" title="@Localizer["Previous"]" aria-label="Previous">‹</a>
+                }
+                @foreach (var p in pagesToShow)
+                {
+                    if (p == null)
+                    {
+                        <span class="page-btn" style="cursor:default;pointer-events:none;background:transparent;border-color:transparent">…</span>
+                    }
+                    else
+                    {
+
+                        <a class="page-btn @(p == page ? "active" : "")" href="?page=@p&search=@ViewBag.Search">@p</a>
+                    }
+                }
+                @if (page < totalPages)
+                {
+                    <a class="page-btn" href="?page=@(page + 1)&search=@ViewBag.Search" title="@Localizer["Next"]" aria-label="Next">›</a>
+                }
+            </div>
+        </div>
+    }
 </div>

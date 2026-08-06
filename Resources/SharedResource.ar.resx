@@ -102,10 +102,22 @@
 	<data name="Dashboard_Title" xml:space="preserve"><value>لوحة التحكم</value></data>
 	<data name="Total" xml:space="preserve"><value>الإجمالي</value></data>
 	<data name="Search" xml:space="preserve"><value>بحث</value></data>
+	<data name="Previous" xml:space="preserve"><value>السابق</value></data>
+	<data name="Next" xml:space="preserve"><value>التالي</value></data>
 	<data name="Back" xml:space="preserve"><value>رجوع</value></data>
 	<data name="Details" xml:space="preserve"><value>التفاصيل</value></data>
 	<data name="NoData" xml:space="preserve"><value>لا توجد بيانات</value></data>
 	<data name="Nav_Settlements" xml:space="preserve"><value>التسويات</value></data>
+	<data name="Nav_DeliveryFee" xml:space="preserve"><value>سعر التوصيل</value></data>
+	<data name="DeliveryFee_Title" xml:space="preserve"><value>إعدادات سعر التوصيل</value></data>
+	<data name="DeliveryFee_Description" xml:space="preserve"><value>كل محل ليه سعر توصيل أساسي بيتحدد من صفحة المحل، وبيتحصّل زي ما هو طول ما مسافة العميل عن المحل أقل من أو تساوي "المسافة المجانية" اللي تحددها هنا. أي مسافة زيادة عن كده، بيتضاف عليها "سعر الكيلومتر الإضافي" عن كل كيلومتر (أو جزء منه).</value></data>
+	<data name="DeliveryFee_Example" xml:space="preserve"><value>مثال: لو المسافة المجانية 3 كم وسعر الكيلومتر الإضافي 10 جنيه، وسعر المحل الأساسي 20 جنيه: عميل على بعد 3.5 كم هيدفع 30 جنيه توصيل.</value></data>
+	<data name="DeliveryFee_FreeRadius" xml:space="preserve"><value>المسافة المجانية (كم)</value></data>
+	<data name="DeliveryFee_ExtraFeePerKm" xml:space="preserve"><value>سعر الكيلومتر الإضافي (جنيه)</value></data>
+	<data name="DeliveryFee_LastUpdated" xml:space="preserve"><value>آخر تحديث:</value></data>
+	<data name="DeliveryFee_SaveBtn" xml:space="preserve"><value>حفظ التعديلات</value></data>
+	<data name="DeliveryFee_ValidationError" xml:space="preserve"><value>القيم لازم تكون صفر أو أكبر</value></data>
+	<data name="DeliveryFee_SaveSuccess" xml:space="preserve"><value>تم تحديث إعدادات سعر التوصيل بنجاح</value></data>
 	<data name="Settlements_Title" xml:space="preserve"><value>التسويات المالية</value></data>
 	<data name="Settlements_TotalOrders" xml:space="preserve"><value>الطلبات المُسلّمة</value></data>
 	<data name="Settlements_TotalRevenue" xml:space="preserve"><value>إجمالي الإيراد</value></data>

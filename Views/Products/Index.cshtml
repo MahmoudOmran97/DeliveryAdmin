@@ -167,16 +167,35 @@
     @if (totalPages > 1)
     {
         <div style="padding:12px 18px;border-top:1px solid var(--border)">
-            <div class="pagination">
-                @for (int i = 1; i <= totalPages; i++)
+            <div class="pagination" style="flex-wrap:wrap">
+                @{
+                    int windowSize = 1;
+                    var pagesToShow = new List<int?> { 1 };
+                    int start = Math.Max(2, page - windowSize);
+                    int end = Math.Min(totalPages - 1, page + windowSize);
+                    if (start > 2) pagesToShow.Add(null);
+                    for (int i = start; i <= end; i++) pagesToShow.Add(i);
+                    if (end < totalPages - 1) pagesToShow.Add(null);
+                    if (totalPages > 1) pagesToShow.Add(totalPages);
+                }
+                @if (page > 1)
                 {
-                    <a class="page-btn @(i == page ? "active" : "")"
-                       asp-action="Index"
-                       asp-route-page="@i"
-                       asp-route-restaurantId="@currentRestId"
-                       asp-route-categoryId="@currentCatId"
-                       asp-route-isAvailable="@currentAvail"
-                       asp-route-q="@ViewBag.Q">@i</a>
+                    <a class="page-btn" asp-action="Index" asp-route-page="@(page - 1)" asp-route-restaurantId="@currentRestId" asp-route-categoryId="@currentCatId" asp-route-isAvailable="@currentAvail" asp-route-q="@ViewBag.Q" title="@Localizer["Previous"]" aria-label="Previous">‹</a>
+                }
+                @foreach (var p in pagesToShow)
+                {
+                    if (p == null)
+                    {
+                        <span class="page-btn" style="cursor:default;pointer-events:none;background:transparent;border-color:transparent">…</span>
+                    }
+                    else
+                    {
+                        <a class="page-btn @(p == page ? "active" : "")" asp-action="Index" asp-route-page="@p" asp-route-restaurantId="@currentRestId" asp-route-categoryId="@currentCatId" asp-route-isAvailable="@currentAvail" asp-route-q="@ViewBag.Q">@p</a>
+                    }
+                }
+                @if (page < totalPages)
+                {
+                    <a class="page-btn" asp-action="Index" asp-route-page="@(page + 1)" asp-route-restaurantId="@currentRestId" asp-route-categoryId="@currentCatId" asp-route-isAvailable="@currentAvail" asp-route-q="@ViewBag.Q" title="@Localizer["Next"]" aria-label="Next">›</a>
                 }
             </div>
         </div>

@@ -5,37 +5,78 @@
     var isRtl = lang == "ar";
 }
 @model List<DeliveryAdmin.Models.RatingDto>
-@{ var page=(int)ViewBag.Page; var totalPages=(int)ViewBag.TotalPages; }
+@{
+    var page = (int)ViewBag.Page; var totalPages = (int)ViewBag.TotalPages;
+}
 <div class="card">
-  <div class="card-header">
-    <div class="card-title">@Localizer["Ratings_CustomerRatings"]</div>
-    <div class="filters">
-      <form method="get" style="display:flex;gap:8px">
-        <input class="filter-input" type="text" name="search" value="@ViewBag.Search" placeholder="@Localizer["Ratings_SearchPlaceholder"]" />
-        <button class="btn btn-secondary btn-sm" type="submit">@Localizer["Search"]</button>
-      </form>
+    <div class="card-header">
+        <div class="card-title">@Localizer["Ratings_CustomerRatings"]</div>
+        <div class="filters">
+            <form method="get" style="display:flex;gap:8px">
+                <input class="filter-input" type="text" name="search" value="@ViewBag.Search" placeholder="@Localizer["Ratings_SearchPlaceholder"]" />
+                <button class="btn btn-secondary btn-sm" type="submit">@Localizer["Search"]</button>
+            </form>
+        </div>
     </div>
-  </div>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>#ID</th><th>@Localizer["Customer"]</th><th>@Localizer["Restaurant"]</th><th>@Localizer["Drivers_Rating"]</th><th>@Localizer["Ratings_FoodRating"]</th><th>@Localizer["Ratings_DriverRating"]</th><th>@Localizer["Ratings_Comment"]</th><th>@Localizer["Orders_Date"]</th></tr></thead>
-      <tbody>
-        @if(!Model.Any()){<tr><td colspan="8"><div class="empty"><div class="empty-icon">⭐</div><div>@Localizer["Ratings_NoData"]</div></div></td></tr>}
-        @foreach(var r in Model)
-        {
-          <tr>
-            <td class="mono">#@r.Id</td>
-            <td style="font-weight:500">@(r.CustomerName??"-")</td>
-            <td>@(r.RestaurantName??"-")</td>
-            <td><span class="stars">@("⭐".PadRight(r.RestaurantRating,'⭐')[..r.RestaurantRating])</span> @r.RestaurantRating/5</td>
-            <td>@(r.FoodRating.HasValue?r.FoodRating+"/5":"-")</td>
-            <td>@(r.DriverRating.HasValue?r.DriverRating.Value.ToString("F1")+"/5":"-")</td>
-            <td class="text-muted text-sm" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white:nowrap">@(r.Comment??"-")</td>
-            <td class="text-muted text-sm">@r.CreatedAt.ToString("dd MMM yyyy")</td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
-  @if(totalPages>1){<div style="padding:12px 18px;border-top:1px solid var(--border)"><div class="pagination">@for(int i=1;i<=totalPages;i++){<a class="page-btn @(i==page?"active":"")" href="?page=@i&search=@ViewBag.Search">@i</a>}</div></div>}
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>#ID</th><th>@Localizer["Customer"]</th><th>@Localizer["Restaurant"]</th><th>@Localizer["Drivers_Rating"]</th><th>@Localizer["Ratings_FoodRating"]</th><th>@Localizer["Ratings_DriverRating"]</th><th>@Localizer["Ratings_Comment"]</th><th>@Localizer["Orders_Date"]</th></tr></thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="8"><div class="empty"><div class="empty-icon">⭐</div><div>@Localizer["Ratings_NoData"]</div></div></td></tr>
+                }
+                @foreach (var r in Model)
+                {
+                    <tr>
+                        <td class="mono">#@r.Id</td>
+                        <td style="font-weight:500">@(r.CustomerName ?? "-")</td>
+                        <td>@(r.RestaurantName ?? "-")</td>
+                        <td><span class="stars">@("⭐".PadRight(r.RestaurantRating, '⭐')[..r.RestaurantRating])</span> @r.RestaurantRating/5</td>
+                        <td>@(r.FoodRating.HasValue? r.FoodRating + "/5":"-")</td>
+                        <td>@(r.DriverRating.HasValue? r.DriverRating.Value.ToString("F1") + "/5":"-")</td>
+                        <td class="text-muted text-sm" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white:nowrap">@(r.Comment ?? "-")</td>
+                        <td class="text-muted text-sm">@r.CreatedAt.ToString("dd MMM yyyy")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @if (totalPages > 1)
+    {
+        <div style="padding:12px 18px;border-top:1px solid var(--border)">
+            <div class="pagination" style="flex-wrap:wrap">
+                @{
+                    int windowSize = 1;
+                    var pagesToShow = new List<int?> { 1 };
+                    int start = Math.Max(2, page - windowSize);
+                    int end = Math.Min(totalPages - 1, page + windowSize);
+                    if (start > 2) pagesToShow.Add(null);
+                    for (int i = start; i <= end; i++) pagesToShow.Add(i);
+                    if (end < totalPages - 1) pagesToShow.Add(null);
+                    if (totalPages > 1) pagesToShow.Add(totalPages);
+                }
+                @if (page > 1)
+                {
+                    <a class="page-btn" href="?page=@(page - 1)&search=@ViewBag.Search" title="@Localizer["Previous"]" aria-label="Previous">‹</a>
+                }
+                @foreach (var p in pagesToShow)
+                {
+                    if (p == null)
+                    {
+                        <span class="page-btn" style="cursor:default;pointer-events:none;background:transparent;border-color:transparent">…</span>
+                    }
+                    else
+                    {
+
+                        <a class="page-btn @(p == page ? "active" : "")" href="?page=@p&search=@ViewBag.Search">@p</a>
+                    }
+                }
+                @if (page < totalPages)
+                {
+                    <a class="page-btn" href="?page=@(page + 1)&search=@ViewBag.Search" title="@Localizer["Next"]" aria-label="Next">›</a>
+                }
+            </div>
+        </div>
+    }
 </div>

@@ -10,6 +10,7 @@ public class SettingsController : Controller
     private readonly IConfiguration _config;
     public SettingsController(IConfiguration config) => _config = config;
 
+    [AllowAnonymous]
     [HttpPost]
     [IgnoreAntiforgeryToken]
     public IActionResult SetLanguage(string culture, string returnUrl = "/")

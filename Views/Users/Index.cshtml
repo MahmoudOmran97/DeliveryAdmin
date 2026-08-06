@@ -1,50 +1,91 @@
 @model List<DeliveryAdmin.Models.UserDto>
-@{ var page=(int)ViewBag.Page; var totalPages=(int)ViewBag.TotalPages; }
+@{
+    var page = (int)ViewBag.Page; var totalPages = (int)ViewBag.TotalPages;
+}
 <div class="card">
-  <div class="card-header">
-    <div class="card-title">@Localizer["Users_Title"] <span class="text-muted text-sm">(@ViewBag.Total)</span></div>
-    <div class="filters">
-      <a class="btn btn-sm @(ViewBag.Role==null?"btn-primary":"btn-secondary")" asp-action="Index" asp-route-search="@ViewBag.Search">@Localizer["Users_All"]</a>
-      <a class="btn btn-sm @(ViewBag.Role=="Customer"?"btn-primary":"btn-secondary")" asp-action="Index" asp-route-role="Customer" asp-route-search="@ViewBag.Search">@Localizer["Users_Customers"]</a>
-      <a class="btn btn-sm @(ViewBag.Role=="Restaurant"?"btn-primary":"btn-secondary")" asp-action="Index" asp-route-role="Restaurant" asp-route-search="@ViewBag.Search">@Localizer["Users_RestaurantOwners"]</a>
-      <a class="btn btn-sm @(ViewBag.Role=="Driver"?"btn-primary":"btn-secondary")" asp-action="Index" asp-route-role="Driver" asp-route-search="@ViewBag.Search">@Localizer["Users_Drivers"]</a>
-      <a class="btn btn-sm @(ViewBag.Role=="Admin"?"btn-primary":"btn-secondary")" asp-action="Index" asp-route-role="Admin" asp-route-search="@ViewBag.Search">@Localizer["Users_Admins"]</a>
-      <form method="get" style="display:flex;gap:8px">
-        <input type="hidden" name="role" value="@ViewBag.Role" />
-        <input class="filter-input" type="text" name="search" value="@ViewBag.Search" placeholder="@Localizer["Users_SearchPlaceholder"]" />
-        <button class="btn btn-secondary btn-sm" type="submit">@Localizer["Search"]</button>
-      </form>
-      <a class="btn btn-primary btn-sm" asp-action="Create">+ @Localizer["Users_Add"]</a>
-    </div>
-  </div>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>@Localizer["FullName"]</th><th>@Localizer["Email"]</th><th>@Localizer["Phone"]</th><th>@Localizer["Role"]</th><th>@Localizer["Restaurant"]</th><th>@Localizer["Joined"]</th><th>@Localizer["Status"]</th><th></th></tr></thead>
-      <tbody>
-        @if(!Model.Any()){<tr><td colspan="8"><div class="empty"><div class="empty-icon">👥</div><div>@Localizer["NoUsers"]</div></div></td></tr>}
-        @foreach(var u in Model)
-        {
-          var rc = u.Role switch{"Admin"=>"b-admin","Driver"=>"b-driver","Restaurant"=>"b-restaurant",_=>"b-customer"};
-          <tr>
-            <td><span style="font-weight:600">@u.FullName</span></td>
-            <td class="text-sm">@u.Email</td>
-            <td class="mono">@u.Phone</td>
-            <td><span class="badge @rc">@(u.Role=="Restaurant"?Localizer["Users_RestaurantOwner"].Value:u.Role)</span></td>
-            <td class="text-sm">@(u.RestaurantName ?? "—")</td>
-            <td class="text-muted text-sm">@u.CreatedAt.ToString("dd MMM yyyy")</td>
-            <td><span class="badge @(u.IsActive?"b-active":"b-inactive")">@(u.IsActive?Localizer["Active"].Value:Localizer["Inactive"].Value)</span></td>
-            <td>
-              <a class="btn btn-secondary btn-sm" asp-action="Edit" asp-route-id="@u.Id">@Localizer["Edit"]</a>
-              <form asp-action="ToggleActive" method="post" style="display:inline">
-                <input type="hidden" name="id" value="@u.Id" />
+    <div class="card-header">
+        <div class="card-title">@Localizer["Users_Title"] <span class="text-muted text-sm">(@ViewBag.Total)</span></div>
+        <div class="filters">
+            <a class="btn btn-sm @(ViewBag.Role == null ? "btn-primary" : "btn-secondary")" asp-action="Index" asp-route-search="@ViewBag.Search">@Localizer["Users_All"]</a>
+            <a class="btn btn-sm @(ViewBag.Role == "Customer" ? "btn-primary" : "btn-secondary")" asp-action="Index" asp-route-role="Customer" asp-route-search="@ViewBag.Search">@Localizer["Users_Customers"]</a>
+            <a class="btn btn-sm @(ViewBag.Role == "Restaurant" ? "btn-primary" : "btn-secondary")" asp-action="Index" asp-route-role="Restaurant" asp-route-search="@ViewBag.Search">@Localizer["Users_RestaurantOwners"]</a>
+            <a class="btn btn-sm @(ViewBag.Role == "Driver" ? "btn-primary" : "btn-secondary")" asp-action="Index" asp-route-role="Driver" asp-route-search="@ViewBag.Search">@Localizer["Users_Drivers"]</a>
+            <a class="btn btn-sm @(ViewBag.Role == "Admin" ? "btn-primary" : "btn-secondary")" asp-action="Index" asp-route-role="Admin" asp-route-search="@ViewBag.Search">@Localizer["Users_Admins"]</a>
+            <form method="get" style="display:flex;gap:8px">
                 <input type="hidden" name="role" value="@ViewBag.Role" />
-                <button type="submit" class="btn btn-warning btn-sm">@Localizer["ToggleStatus"]</button>
-              </form>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
-  @if(totalPages>1){<div style="padding:12px 18px;border-top:1px solid var(--border)"><div class="pagination">@for(int i=1;i<=totalPages;i++){<a class="page-btn @(i==page?"active":"")" asp-action="Index" asp-route-page="@i" asp-route-role="@ViewBag.Role" asp-route-search="@ViewBag.Search">@i</a>}</div></div>}
+                <input class="filter-input" type="text" name="search" value="@ViewBag.Search" placeholder="@Localizer["Users_SearchPlaceholder"]" />
+                <button class="btn btn-secondary btn-sm" type="submit">@Localizer["Search"]</button>
+            </form>
+            <a class="btn btn-primary btn-sm" asp-action="Create">+ @Localizer["Users_Add"]</a>
+        </div>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>@Localizer["FullName"]</th><th>@Localizer["Email"]</th><th>@Localizer["Phone"]</th><th>@Localizer["Role"]</th><th>@Localizer["Restaurant"]</th><th>@Localizer["Joined"]</th><th>@Localizer["Status"]</th><th></th></tr></thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="8"><div class="empty"><div class="empty-icon">👥</div><div>@Localizer["NoUsers"]</div></div></td></tr>
+                }
+                @foreach (var u in Model)
+                {
+                    var rc = u.Role switch { "Admin" => "b-admin", "Driver" => "b-driver", "Restaurant" => "b-restaurant", _ => "b-customer" };
+                    <tr>
+                        <td><span style="font-weight:600">@u.FullName</span></td>
+                        <td class="text-sm">@u.Email</td>
+                        <td class="mono">@u.Phone</td>
+                        <td><span class="badge @rc">@(u.Role == "Restaurant" ? Localizer["Users_RestaurantOwner"].Value : u.Role)</span></td>
+                        <td class="text-sm">@(u.RestaurantName ?? "—")</td>
+                        <td class="text-muted text-sm">@u.CreatedAt.ToString("dd MMM yyyy")</td>
+                        <td><span class="badge @(u.IsActive ? "b-active" : "b-inactive")">@(u.IsActive? Localizer["Active"].Value:Localizer["Inactive"].Value)</span></td>
+                        <td>
+                            <a class="btn btn-secondary btn-sm" asp-action="Edit" asp-route-id="@u.Id">@Localizer["Edit"]</a>
+                            <form asp-action="ToggleActive" method="post" style="display:inline">
+                                <input type="hidden" name="id" value="@u.Id" />
+                                <input type="hidden" name="role" value="@ViewBag.Role" />
+                                <button type="submit" class="btn btn-warning btn-sm">@Localizer["ToggleStatus"]</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @if (totalPages > 1)
+    {
+        <div style="padding:12px 18px;border-top:1px solid var(--border)">
+            <div class="pagination" style="flex-wrap:wrap">
+                @{
+                    int windowSize = 1;
+                    var pagesToShow = new List<int?> { 1 };
+                    int start = Math.Max(2, page - windowSize);
+                    int end = Math.Min(totalPages - 1, page + windowSize);
+                    if (start > 2) pagesToShow.Add(null);
+                    for (int i = start; i <= end; i++) pagesToShow.Add(i);
+                    if (end < totalPages - 1) pagesToShow.Add(null);
+                    if (totalPages > 1) pagesToShow.Add(totalPages);
+                }
+                @if (page > 1)
+                {
+                    <a class="page-btn" asp-action="Index" asp-route-page="@(page - 1)" asp-route-role="@ViewBag.Role" asp-route-search="@ViewBag.Search" title="@Localizer["Previous"]" aria-label="Previous">‹</a>
+                }
+                @foreach (var p in pagesToShow)
+                {
+                    if (p == null)
+                    {
+                        <span class="page-btn" style="cursor:default;pointer-events:none;background:transparent;border-color:transparent">…</span>
+                    }
+                    else
+                    {
+
+                        <a class="page-btn @(p == page ? "active" : "")" asp-action="Index" asp-route-page="@p" asp-route-role="@ViewBag.Role" asp-route-search="@ViewBag.Search">@p</a>
+                    }
+                }
+                @if (page < totalPages)
+                {
+                    <a class="page-btn" asp-action="Index" asp-route-page="@(page + 1)" asp-route-role="@ViewBag.Role" asp-route-search="@ViewBag.Search" title="@Localizer["Next"]" aria-label="Next">›</a>
+                }
+            </div>
+        </div>
+    }
 </div>

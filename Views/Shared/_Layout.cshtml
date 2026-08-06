@@ -91,7 +91,7 @@
                 <a class="nav-item @(ctrl == "Users" ? "active" : "")" asp-controller="Users" asp-action="Index"><span class="nav-icon">👥</span> @Localizer["Nav_Users"]</a>
                 <div class="nav-section">@Localizer["Nav_Finance"]</div>
                 <a class="nav-item @(ctrl == "Settlements" ? "active" : "")" asp-controller="Settlements" asp-action="Index"><span class="nav-icon">📋</span> @Localizer["Nav_Settlements"]</a>
-                <a class="nav-item @(ctrl == "DeliverySettings" ? "active" : "")" asp-controller="DeliverySettings" asp-action="Index"><span class="nav-icon">🚚</span> Delivery Fee</a>
+                <a class="nav-item @(ctrl == "DeliverySettings" ? "active" : "")" asp-controller="DeliverySettings" asp-action="Index"><span class="nav-icon">🚚</span> @Localizer["Nav_DeliveryFee"]</a>
                 <a class="nav-item @(ctrl == "Payments" ? "active" : "")" asp-controller="Payments" asp-action="Index"><span class="nav-icon">💳</span> @Localizer["Nav_Payments"]</a>
                 <a class="nav-item @(ctrl == "Ratings" ? "active" : "")" asp-controller="Ratings" asp-action="Index"><span class="nav-icon">⭐</span> @Localizer["Nav_Ratings"]</a>
                 <div class="nav-section">@Localizer["Nav_Catalog"]</div>
