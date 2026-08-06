@@ -43,6 +43,12 @@
   </div>
 </div>
 
+<div class="tabs-nav">
+  <button type="button" class="tab-btn active" data-tab="info">📋 @Localizer["OrderChat_InfoTab"]</button>
+  <button type="button" class="tab-btn" data-tab="chat">💬 @Localizer["OrderChat_Tab"]</button>
+</div>
+
+<div class="tab-pane" id="tab-info">
 <div class="detail-grid">
   <div>
     <div class="detail-section" style="margin-bottom:16px">
@@ -111,3 +117,91 @@
     }
   </div>
 </div>
+</div>
+
+<div class="tab-pane" id="tab-chat" style="display:none">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">@Localizer["OrderChat_Title"]</div>
+      <span class="badge b-inactive">@Localizer["PharmacyChats_ReadOnly"]</span>
+    </div>
+    @if (Model.Driver == null)
+    {
+      <div class="empty" style="padding:30px"><div class="empty-icon">🛵</div><div>@Localizer["OrderChat_NoDriver"]</div></div>
+    }
+    else
+    {
+      <div id="orderChatBox" style="padding:16px;max-height:480px;overflow-y:auto;display:flex;flex-direction:column;gap:10px"></div>
+    }
+  </div>
+</div>
+
+@section Scripts {
+<script>
+(function () {
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const panes = { info: document.getElementById('tab-info'), chat: document.getElementById('tab-chat') };
+    let chatLoaded = false;
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            tabBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const target = btn.dataset.tab;
+            Object.keys(panes).forEach(k => panes[k].style.display = k === target ? '' : 'none');
+            if (target === 'chat' && !chatLoaded) {
+                chatLoaded = true;
+                loadOrderChat();
+                setInterval(loadOrderChat, 5000);
+            }
+        });
+    });
+
+    function bubble(m) {
+        const fromDriver = m.senderRole === 'Driver';
+        const wrap = document.createElement('div');
+        wrap.style.display = 'flex';
+        wrap.style.justifyContent = fromDriver ? 'flex-end' : 'flex-start';
+        const col = document.createElement('div');
+        col.style.maxWidth = '70%';
+        const label = document.createElement('div');
+        label.style.fontSize = '10px';
+        label.style.color = 'var(--text3)';
+        label.style.margin = fromDriver ? '0 2px 3px 0' : '0 0 3px 2px';
+        label.style.textAlign = fromDriver ? 'right' : 'left';
+        label.textContent = fromDriver ? '@Localizer["OrderChat_Driver"]' : '@Localizer["OrderChat_Customer"]';
+        const b = document.createElement('div');
+        b.style.padding = '8px 12px';
+        b.style.borderRadius = fromDriver ? '14px 14px 4px 14px' : '14px 14px 14px 4px';
+        b.style.background = fromDriver ? '#1976D2' : 'rgba(255,255,255,.06)';
+        b.style.color = fromDriver ? '#fff' : 'var(--text)';
+        b.style.fontSize = '13px';
+        b.textContent = m.message;
+        col.appendChild(label);
+        col.appendChild(b);
+        wrap.appendChild(col);
+        return wrap;
+    }
+
+    let lastCount = -1;
+    async function loadOrderChat() {
+        const box = document.getElementById('orderChatBox');
+        if (!box) return;
+        try {
+            const res = await fetch(`/Orders/ChatMessages/@Model.Id`);
+            if (!res.ok) return;
+            const data = await res.json();
+            if (data.length === lastCount) return;
+            lastCount = data.length;
+            box.innerHTML = '';
+            if (data.length === 0) {
+                box.innerHTML = '<div class="empty"><div class="empty-icon">💬</div><div>@Localizer["OrderChat_NoMessages"]</div></div>';
+                return;
+            }
+            data.forEach(m => box.appendChild(bubble(m)));
+            box.scrollTop = box.scrollHeight;
+        } catch (e) { console.error(e); }
+    }
+})();
+</script>
+}

@@ -311,6 +311,90 @@ a {
     font-size: 12px
 }
 
+/* ── Tabs (order details: info / chat) ─────────────────────────── */
+.tabs-nav {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--text2);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 16px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all .15s
+}
+
+    .tab-btn:hover {
+        color: var(--text)
+    }
+
+    .tab-btn.active {
+        color: var(--accent);
+        border-bottom-color: var(--accent)
+    }
+
+/* ── Scroll-to-top floating button ──────────────────────────────── */
+.scroll-top-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    /* لو زرار "تواصل مع الدعم" ظاهر (صاحب المحل) بيبقى في نفس الركن تحت،
+       فبنرفع زرار الرجوع لفوق شوية عشان ميتلخبطش عليه */
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(249,115,22,0.35);
+    z-index: 200;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(12px);
+    transition: opacity .2s, transform .2s, visibility .2s, background .15s
+}
+
+    .scroll-top-btn.visible {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0)
+    }
+
+    .scroll-top-btn:hover {
+        background: var(--accent2)
+    }
+
+[dir=rtl] .scroll-top-btn {
+    right: auto;
+    left: 24px
+}
+
+@media (max-width: 600px) {
+    .scroll-top-btn {
+        bottom: 16px;
+        right: 16px;
+        width: 40px;
+        height: 40px
+    }
+
+    [dir=rtl] .scroll-top-btn {
+        left: 16px
+    }
+}
+
 .card {
     background: var(--bg2);
     border: 1px solid var(--border);

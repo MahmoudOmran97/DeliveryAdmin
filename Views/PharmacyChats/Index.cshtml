@@ -1,0 +1,94 @@
+@model List<DeliveryAdmin.Models.PrescriptionRequestDto>
+@{
+    var pending = Model.Count(r => r.Status == "Pending");
+    var priced = Model.Count(r => r.Status == "Priced");
+}
+
+<div class="stat-row">
+  <div class="stat-box"><div class="stat-label">@Localizer["Pharmacy_Total"]</div><div class="stat-val">@ViewBag.Total</div></div>
+  <div class="stat-box"><div class="stat-label">@Localizer["Pharmacy_WaitingPrice"]</div><div class="stat-val" style="color:var(--amber)">@pending</div></div>
+  <div class="stat-box"><div class="stat-label">@Localizer["Pharmacy_WaitingCustomer"]</div><div class="stat-val" style="color:var(--green)">@priced</div></div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">@Localizer["PharmacyChats_Title"]</div>
+    <form method="get" class="filters" style="margin:0">
+      <select name="status" class="filter-input" onchange="this.form.submit()">
+        <option value="">@Localizer["Status"]</option>
+        @foreach (var s in new[] { "Pending", "Priced", "Confirmed", "Ordered", "Cancelled" })
+        {
+          <option value="@s" selected="@(ViewBag.Status == s)">@s</option>
+        }
+      </select>
+    </form>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>@Localizer["Pharmacy_Customer"]</th>
+          <th>@Localizer["Nav_Restaurants"]</th>
+          <th>@Localizer["Pharmacy_Image"]</th>
+          <th>@Localizer["Status"]</th>
+          <th>@Localizer["Pharmacy_Price"]</th>
+          <th>@Localizer["Pharmacy_Date"]</th>
+          <th>@Localizer["Actions"]</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (!Model.Any())
+        {
+          <tr><td colspan="7"><div class="empty"><div class="empty-icon">💊</div><div>@Localizer["Pharmacy_NoRequests"]</div></div></td></tr>
+        }
+        @foreach (var r in Model)
+        {
+          string sc = r.Status switch
+          {
+              "Pending" => "b-pending",
+              "Priced" => "b-cash",
+              "Confirmed" => "b-active",
+              "Ordered" => "b-active",
+              "Cancelled" => "b-inactive",
+              _ => "b-inactive"
+          };
+          <tr>
+            <td>@r.CustomerName</td>
+            <td>@(r.RestaurantName ?? "—")</td>
+            <td><img src="@r.FullImageUrl" alt="rx" style="width:40px;height:40px;object-fit:cover;border-radius:6px;cursor:pointer;border:1px solid var(--border)" onclick="openImgModal('@r.FullImageUrl')" /></td>
+            <td><span class="badge @sc">@r.Status</span></td>
+            <td>@(r.AgreedPrice.HasValue ? r.AgreedPrice.Value.ToString("F0") + " EGP" : "—")</td>
+            <td>@r.CreatedAt.ToString("MMM dd, HH:mm")</td>
+            <td><a class="btn btn-primary btn-sm" asp-controller="PharmacyChats" asp-action="Chat" asp-route-id="@r.Id">💬 @Localizer["Pharmacy_OpenChat"]</a></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  @if ((int)ViewBag.TotalPages > 1)
+  {
+    <div style="padding:12px 18px;border-top:1px solid var(--border)">
+      <div class="pagination" style="flex-wrap:wrap">
+        @for (int p = 1; p <= (int)ViewBag.TotalPages; p++)
+        {
+          <a class="page-btn @(p == (int)ViewBag.Page ? "active" : "")" href="?status=@ViewBag.Status&amp;page=@p">@p</a>
+        }
+      </div>
+    </div>
+  }
+</div>
+
+<div id="imgModal" onclick="closeImgModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);
+     z-index:9999;align-items:center;justify-content:center;cursor:zoom-out;">
+  <img id="imgModalPic" src="" style="max-width:90%;max-height:90%;border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,.5)" />
+  <div style="position:absolute;top:20px;right:24px;color:#fff;font-size:28px;cursor:pointer" onclick="closeImgModal()">✕</div>
+</div>
+<script>
+function openImgModal(src) {
+    document.getElementById('imgModalPic').src = src;
+    document.getElementById('imgModal').style.display = 'flex';
+}
+function closeImgModal() {
+    document.getElementById('imgModal').style.display = 'none';
+}
+</script>

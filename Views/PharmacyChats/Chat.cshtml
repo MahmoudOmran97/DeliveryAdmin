@@ -1,0 +1,112 @@
+@model DeliveryAdmin.Models.PrescriptionRequestDto
+@{
+    var messages = ViewBag.Messages as List<DeliveryAdmin.Models.PrescriptionMessageDto> ?? new();
+}
+
+<div class="card" style="margin-bottom:16px">
+  <div class="card-header">
+    <div class="card-title">@Localizer["Pharmacy_ChatWith"] @Model.CustomerName — @Model.RestaurantName</div>
+    <a class="btn btn-secondary btn-sm" asp-controller="PharmacyChats" asp-action="Index">← @Localizer["Pharmacy_Back"]</a>
+  </div>
+  <div style="padding:16px;display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start">
+    <div>
+      <div class="stat-label" style="margin-bottom:6px">@Localizer["Pharmacy_Image"]</div>
+      <a href="javascript:void(0)" onclick="openImgModal('@Model.FullImageUrl')">
+        <img src="@Model.FullImageUrl" style="max-width:180px;border-radius:10px;border:1px solid var(--border)" />
+      </a>
+    </div>
+    @if (!string.IsNullOrEmpty(Model.Notes))
+    {
+      <div style="max-width:320px">
+        <div class="stat-label" style="margin-bottom:6px">@Localizer["Pharmacy_Notes"]</div>
+        <div>@Model.Notes</div>
+      </div>
+    }
+    <div style="min-width:160px">
+      <div class="stat-label" style="margin-bottom:6px">@Localizer["Status"]</div>
+      <span class="badge b-active">@Model.Status</span>
+      @if (Model.AgreedPrice.HasValue)
+      {
+        <div style="margin-top:8px" class="text-sm">@Localizer["Pharmacy_Price"]: <b>@Model.AgreedPrice.Value.ToString("F0") EGP</b></div>
+      }
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">@Localizer["PharmacyChats_ChatTitle"]</div>
+    <span class="badge b-inactive">@Localizer["PharmacyChats_ReadOnly"]</span>
+  </div>
+  <div id="chatBox" style="padding:16px;max-height:480px;overflow-y:auto;display:flex;flex-direction:column;gap:10px"></div>
+</div>
+
+<div id="imgModal" onclick="closeImgModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);
+     z-index:9999;align-items:center;justify-content:center;cursor:zoom-out;">
+  <img id="imgModalPic" src="" style="max-width:90%;max-height:90%;border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,.5)" />
+  <div style="position:absolute;top:20px;right:24px;color:#fff;font-size:28px;cursor:pointer" onclick="closeImgModal()">✕</div>
+</div>
+
+@section Scripts {
+<script>
+function openImgModal(src) {
+    document.getElementById('imgModalPic').src = src;
+    document.getElementById('imgModal').style.display = 'flex';
+}
+function closeImgModal() {
+    document.getElementById('imgModal').style.display = 'none';
+}
+
+(function () {
+    const requestId = @Model.Id;
+    const chatBox = document.getElementById('chatBox');
+
+    function bubble(m) {
+        const fromPharmacy = m.senderRole === 'Pharmacy';
+        const wrap = document.createElement('div');
+        wrap.style.display = 'flex';
+        wrap.style.justifyContent = fromPharmacy ? 'flex-end' : 'flex-start';
+        const col = document.createElement('div');
+        col.style.maxWidth = '70%';
+        const label = document.createElement('div');
+        label.style.fontSize = '10px';
+        label.style.color = 'var(--text3)';
+        label.style.margin = fromPharmacy ? '0 2px 3px 0' : '0 0 3px 2px';
+        label.style.textAlign = fromPharmacy ? 'right' : 'left';
+        label.textContent = fromPharmacy ? '@Localizer["PharmacyChats_Pharmacy"]' : '@Localizer["Pharmacy_Customer"]';
+        const b = document.createElement('div');
+        b.style.padding = '8px 12px';
+        b.style.borderRadius = fromPharmacy ? '14px 14px 4px 14px' : '14px 14px 14px 4px';
+        b.style.background = fromPharmacy ? '#1976D2' : 'rgba(255,255,255,.06)';
+        b.style.color = fromPharmacy ? '#fff' : 'var(--text)';
+        b.style.fontSize = '13px';
+        b.textContent = m.message;
+        col.appendChild(label);
+        col.appendChild(b);
+        wrap.appendChild(col);
+        return wrap;
+    }
+
+    let lastCount = -1;
+    async function loadMessages() {
+        try {
+            const res = await fetch(`/PharmacyChats/Messages?id=${requestId}`);
+            if (!res.ok) return;
+            const data = await res.json();
+            if (data.length === lastCount) return;
+            lastCount = data.length;
+            chatBox.innerHTML = '';
+            if (data.length === 0) {
+                chatBox.innerHTML = '<div class="empty"><div class="empty-icon">💬</div><div>@Localizer["PharmacyChats_NoMessages"]</div></div>';
+                return;
+            }
+            data.forEach(m => chatBox.appendChild(bubble(m)));
+            chatBox.scrollTop = chatBox.scrollHeight;
+        } catch (e) { console.error(e); }
+    }
+
+    loadMessages();
+    setInterval(loadMessages, 5000);
+})();
+</script>
+}

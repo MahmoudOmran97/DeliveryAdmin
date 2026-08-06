@@ -374,6 +374,20 @@ namespace DeliveryAdmin.Services
         public Task<(bool ok, string? error)> SetPrescriptionPrice(int id, decimal price)
             => Put($"prescriptionrequests/{id}/price", new SetPrescriptionPriceRequest { Price = price });
 
+        // ── Prescription Chat (لوحة الأدمن العام — كل روشتات المنصة، read-only) ──
+        public Task<PrescriptionAdminResult?> GetAllPrescriptionRequestsAdmin(string? status = null, int page = 1, int size = 20)
+        {
+            var qs = string.IsNullOrEmpty(status) ? "" : $"&status={Uri.EscapeDataString(status)}";
+            return Get<PrescriptionAdminResult>($"prescriptionrequests/admin?page={page}&pageSize={size}{qs}");
+        }
+
+        public Task<PrescriptionRequestDto?> GetPrescriptionRequestById(int id)
+            => Get<PrescriptionRequestDto>($"prescriptionrequests/{id}");
+
+        // ── شات الطلب بين العميل والدليفري (الأدمن بيراجعها بس، مفيش إرسال) ──
+        public Task<List<OrderChatMessageDto>?> GetOrderChatMessages(int orderId)
+            => Get<List<OrderChatMessageDto>>($"chatmessages/{orderId}");
+
         // ── بورتال صاحب المحل (MyStore) ───────────────────────────────────────
         // بيجيب المحل بتاع صاحب الحساب الحالي عن طريق التوكين، من غير ما نعرف الـ Id
         public Task<RestaurantDto?> GetMyRestaurant() => Get<RestaurantDto>("restaurants/me");

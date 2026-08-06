@@ -72,4 +72,33 @@
       });
     });
   });
+
+  // ── زرار "ارجع لفوق" — بيظهر بعد سكرول معين لتحت وبيرجعك لأول الصفحة ──
+  var scrollBtn = document.createElement('button');
+  scrollBtn.type = 'button';
+  scrollBtn.className = 'scroll-top-btn';
+  scrollBtn.setAttribute('aria-label', 'Scroll to top');
+  scrollBtn.innerHTML = '↑';
+  document.body.appendChild(scrollBtn);
+
+  // لو زرار "تواصل مع الدعم" ظاهر (صاحب المحل)، بنرفع زرار الرجوع لفوق شوية
+  // عشان الاتنين ميتلخبطوش على بعض في نفس الركن
+  if (document.getElementById('supportFloatBtn')) {
+    scrollBtn.style.bottom = '92px';
+  }
+
+  var scrollThreshold = 300;
+  function toggleScrollBtn() {
+    if (window.scrollY > scrollThreshold) {
+      scrollBtn.classList.add('visible');
+    } else {
+      scrollBtn.classList.remove('visible');
+    }
+  }
+  window.addEventListener('scroll', toggleScrollBtn, { passive: true });
+  toggleScrollBtn();
+
+  scrollBtn.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
 })();

@@ -20,6 +20,7 @@
 	<data name="Nav_Drivers" xml:space="preserve"><value>الطيارين</value></data>
 	<data name="Nav_Restaurants" xml:space="preserve"><value>المطاعم</value></data>
 	<data name="Nav_Users" xml:space="preserve"><value>المستخدمين</value></data>
+	<data name="Nav_PharmacyChats" xml:space="preserve"><value>شاتات الصيدليات</value></data>
 	<data name="Nav_Payments" xml:space="preserve"><value>المدفوعات</value></data>
 	<data name="Nav_Ratings" xml:space="preserve"><value>التقييمات</value></data>
 	<data name="Nav_Products" xml:space="preserve"><value>المنتجات</value></data>
@@ -281,6 +282,18 @@
 	<data name="Pharmacy_PriceFailed" xml:space="preserve"><value>حصل خطأ في حفظ السعر</value></data>
 	<data name="Pharmacy_TypeMessage" xml:space="preserve"><value>اكتب رسالتك...</value></data>
 	<data name="Pharmacy_Send" xml:space="preserve"><value>إرسال</value></data>
+	<data name="PharmacyChats_Title" xml:space="preserve"><value>شاتات الصيدليات</value></data>
+	<data name="PharmacyChats_ChatTitle" xml:space="preserve"><value>شات الروشتة</value></data>
+	<data name="PharmacyChats_ReadOnly" xml:space="preserve"><value>عرض فقط</value></data>
+	<data name="PharmacyChats_Pharmacy" xml:space="preserve"><value>الصيدلية</value></data>
+	<data name="PharmacyChats_NoMessages" xml:space="preserve"><value>مفيش رسائل لسه</value></data>
+	<data name="OrderChat_Title" xml:space="preserve"><value>شات العميل والدليفري</value></data>
+	<data name="OrderChat_Tab" xml:space="preserve"><value>الشات</value></data>
+	<data name="OrderChat_InfoTab" xml:space="preserve"><value>تفاصيل الطلب</value></data>
+	<data name="OrderChat_NoDriver" xml:space="preserve"><value>لسه مفيش دليفري متعين على الطلب ده</value></data>
+	<data name="OrderChat_NoMessages" xml:space="preserve"><value>مفيش رسائل بين العميل والدليفري لسه</value></data>
+	<data name="OrderChat_Customer" xml:space="preserve"><value>العميل</value></data>
+	<data name="OrderChat_Driver" xml:space="preserve"><value>الدليفري</value></data>
 	<data name="Description" xml:space="preserve"><value>الوصف</value></data>
 	<data name="SaveChanges" xml:space="preserve"><value>حفظ التغييرات</value></data>
 	<data name="Products_Image" xml:space="preserve"><value>رابط الصورة</value></data>

@@ -311,10 +311,13 @@ namespace DeliveryAdmin.Models
         public int Id { get; set; }
         public int CustomerId { get; set; }
         public string? CustomerName { get; set; }
+        public int RestaurantId { get; set; }
+        public string? RestaurantName { get; set; } // بيرجع بس من إندبوينت الأدمن /prescriptionrequests/admin
         public string ImageUrl { get; set; } = "";
         public string? Notes { get; set; }
         public string Status { get; set; } = "Pending"; // Pending/Priced/Confirmed/Ordered/Cancelled
         public decimal? AgreedPrice { get; set; }
+        public int? OrderId { get; set; }
         public DateTime CreatedAt { get; set; }
 
         // ✅ رابط كامل للصورة يشتغل من دومين الأدمن مهما كان الرابط اللي راجع من الـ API نسبي
@@ -324,12 +327,32 @@ namespace DeliveryAdmin.Models
             : "https://deliveryappapi.runasp.net" + (ImageUrl.StartsWith("/") ? ImageUrl : "/" + ImageUrl);
     }
 
+    // نتيجة إندبوينت /prescriptionrequests/admin (باجينيشن + items)
+    public class PrescriptionAdminResult
+    {
+        public int Total { get; set; }
+        public int Page { get; set; }
+        public int PageSize { get; set; }
+        public List<PrescriptionRequestDto> Items { get; set; } = new();
+    }
+
     public class PrescriptionMessageDto
     {
         public int Id { get; set; }
         public string SenderRole { get; set; } = "Customer"; // Customer/Pharmacy
         public string Message { get; set; } = "";
         public DateTime CreatedAt { get; set; }
+    }
+
+    // ── شات الطلب بين العميل والدليفري (للعرض من الأدمن فقط، read-only) ──
+    public class OrderChatMessageDto
+    {
+        public int Id { get; set; }
+        public int OrderId { get; set; }
+        public int SenderId { get; set; }
+        public string Message { get; set; } = "";
+        public DateTime Timestamp { get; set; }
+        public string SenderRole { get; set; } = "Unknown"; // Customer/Driver/Unknown
     }
 
     public class SetPrescriptionPriceRequest

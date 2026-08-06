@@ -39,5 +39,13 @@ namespace DeliveryAdmin.Controllers
             TempData[ok ? "Success" : "Error"] = ok ? $"Order #{id} → {status}" : error;
             return RedirectToAction("Details", new { id });
         }
+
+        // ── AJAX: بولينج لشات العميل والدليفري بتاع الطلب (عرض فقط، الأدمن مش طرف فيه) ──
+        [HttpGet]
+        public async Task<IActionResult> ChatMessages(int id)
+        {
+            var messages = await _api.GetOrderChatMessages(id) ?? new();
+            return Json(messages);
+        }
     }
 }
