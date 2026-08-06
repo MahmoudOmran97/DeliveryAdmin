@@ -13,7 +13,7 @@ namespace DeliveryAdmin.Models
     public class AuthResponse { public string? Token { get; set; } public int Id { get; set; } public string? FullName { get; set; } public string? Email { get; set; } public string? Role { get; set; } }
 
     // رقم واتساب الأدمن اللي بيظهر لصاحب المحل في زر "تواصل مع الدعم"
-    public class SupportContactDto { public string? Phone { get; set; } public string? Name { get; set; } }
+    public class SupportContactDto { public int Id { get; set; } public string? Phone { get; set; } public string? FullName { get; set; } public string? ProfileImageUrl { get; set; } }
 
     // ── Restaurant ────────────────────────────
     public class RestaurantDto

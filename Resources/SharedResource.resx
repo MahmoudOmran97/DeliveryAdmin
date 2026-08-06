@@ -61,6 +61,7 @@
 	<data name="Notif_Bell" xml:space="preserve"><value>Notifications</value></data>
 	<data name="Support_ContactUs" xml:space="preserve"><value>Contact Support</value></data>
 	<data name="Support_WhatsAppMessage" xml:space="preserve"><value>Hello, I need help from Tawseela support.</value></data>
+	<data name="Support_ChooseAdmin" xml:space="preserve"><value>Choose who to contact</value></data>
 	<data name="Notif_MarkAllRead" xml:space="preserve"><value>Mark all as read</value></data>
 	<data name="Notif_Empty" xml:space="preserve"><value>No notifications yet</value></data>
 	<data name="Notif_LoadMore" xml:space="preserve"><value>Load more</value></data>

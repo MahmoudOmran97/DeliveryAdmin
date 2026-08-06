@@ -57,13 +57,14 @@
                 var act = ViewContext.RouteData.Values["action"]?.ToString();
                 var isStoreOwner = User.IsInRole("Restaurant");
                 var isPharmacyStore = false;
-                SupportContactDto? supportContact = null;
+                List<SupportContactDto> supportContacts = new();
                 if (isStoreOwner)
                 {
                     var myStore = await Api.GetMyRestaurant();
                     isPharmacyStore = string.Equals(myStore?.StoreType, "Pharmacy", StringComparison.OrdinalIgnoreCase);
                     // زر "تواصل مع الدعم" — بيظهر لصاحب المحل بس، مش للأدمن
-                    supportContact = await Api.GetSupportContact();
+                    supportContacts = (await Api.GetSupportContacts() ?? new())
+                        .Where(c => !string.IsNullOrWhiteSpace(c.Phone)).ToList();
                 }
             }
             @if (isStoreOwner)
@@ -171,17 +172,70 @@
 
     @* ─────────────────────────────────────────────────────────────
        زر "تواصل مع الدعم" — عايم فوق الشاشة من تحت، لصاحب المحل بس
-       (متظهرش خالص للأدمن نفسه). بيودي على واتساب رقم الأدمن مباشرة.
+       (متظهرش خالص للأدمن نفسه). مكانه بيتغيّر حسب اللغة (شمال لو
+       عربي، يمين لو إنجليزي — بيتحكم فيه CSS بره على html[dir]).
+       بالضغط عليه بتفتح تابة في نص الشاشة بأسماء كل الأدمنز المتاحين،
+       واختيار واحد منهم بيوديه على واتساب رقمه مباشرة.
     ───────────────────────────────────────────────────────────── *@
-    @if (isStoreOwner && !string.IsNullOrWhiteSpace(supportContact?.Phone))
+    @if (isStoreOwner && supportContacts.Any())
     {
-        var waDigits = new string(supportContact!.Phone!.Where(char.IsDigit).ToArray());
-        if (waDigits.StartsWith("0")) waDigits = "20" + waDigits[1..]; // تحويل الصفر المحلي لكود مصر
-        var waText = Uri.EscapeDataString(Localizer["Support_WhatsAppMessage"].Value);
-        <a href="https://wa.me/@waDigits?text=@waText" target="_blank" rel="noopener" class="support-float-bar" id="supportFloatBar">
-            <span class="support-float-icon">💬</span>
+        <button type="button" class="support-float-bar" id="supportFloatBtn" aria-haspopup="dialog" aria-controls="supportSheetOverlay">
+            <span class="support-float-icon" aria-hidden="true">
+                <svg viewBox="0 0 48 48" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="24" cy="17" r="8" fill="currentColor"/>
+                    <path d="M9 40c0-8.3 6.7-14 15-14s15 5.7 15 14" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none"/>
+                    <path d="M11 21a13 13 0 0 1 26 0" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
+                    <rect x="8" y="20" width="5" height="9" rx="2.5" fill="currentColor"/>
+                    <rect x="35" y="20" width="5" height="9" rx="2.5" fill="currentColor"/>
+                    <path d="M40 29v2a5 5 0 0 1-5 5h-2.5" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
+                </svg>
+            </span>
             <span class="support-float-text">@Localizer["Support_ContactUs"]</span>
-        </a>
+        </button>
+
+        <div class="support-sheet-overlay" id="supportSheetOverlay">
+            <div class="support-sheet" role="dialog" aria-modal="true" aria-labelledby="supportSheetTitle">
+                <div class="support-sheet-header">
+                    <span id="supportSheetTitle">@Localizer["Support_ChooseAdmin"]</span>
+                    <button type="button" class="support-sheet-close" id="supportSheetClose" aria-label="Close">✕</button>
+                </div>
+                <div class="support-sheet-list">
+                    @foreach (var c in supportContacts)
+                    {
+                        var waDigits = new string(c.Phone!.Where(char.IsDigit).ToArray());
+                        if (waDigits.StartsWith("0")) waDigits = "20" + waDigits[1..]; // تحويل الصفر المحلي لكود مصر
+                        var waText = Uri.EscapeDataString(Localizer["Support_WhatsAppMessage"].Value);
+                        <a href="https://wa.me/@waDigits?text=@waText" target="_blank" rel="noopener" class="support-sheet-item">
+                            <span class="support-sheet-avatar">
+                                @if (!string.IsNullOrWhiteSpace(c.ProfileImageUrl))
+                                {
+                                    <img src="@c.ProfileImageUrl" alt="" />
+                                }
+                                else
+                                {
+                                    @((string.IsNullOrWhiteSpace(c.FullName) ? "A" : c.FullName[0].ToString().ToUpper()))
+                                }
+                            </span>
+                            <span class="support-sheet-name">@c.FullName</span>
+                            <span class="support-sheet-wa" aria-hidden="true">💬</span>
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <script>
+        (function () {
+            var btn = document.getElementById('supportFloatBtn');
+            var overlay = document.getElementById('supportSheetOverlay');
+            var closeBtn = document.getElementById('supportSheetClose');
+            if (!btn || !overlay) return;
+            btn.addEventListener('click', function () { overlay.classList.add('open'); });
+            closeBtn.addEventListener('click', function () { overlay.classList.remove('open'); });
+            overlay.addEventListener('click', function (e) { if (e.target === overlay) overlay.classList.remove('open'); });
+            document.addEventListener('keydown', function (e) { if (e.key === 'Escape') overlay.classList.remove('open'); });
+        })();
+        </script>
     }
 
     @RenderSection("Scripts", required: false)
