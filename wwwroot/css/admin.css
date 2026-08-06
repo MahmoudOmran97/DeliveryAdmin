@@ -225,7 +225,8 @@ a {
     justify-content: space-between;
     position: sticky;
     top: 0;
-    z-index: 50
+    z-index: 50;
+    flex-shrink: 0
 }
 
 .header-left {
@@ -1255,6 +1256,11 @@ textarea.form-control {
 
 /* Tablet and phone (<= 1024px): sidebar becomes an off-canvas drawer */
 @media (max-width: 1024px) {
+    body, html {
+        height: auto;
+        overflow: auto
+    }
+
     .sidebar {
         transform: translateX(-100%);
         transition: transform .2s ease;
@@ -1270,7 +1276,11 @@ textarea.form-control {
     }
 
     .main {
-        margin-left: 0
+        margin-left: 0;
+        height: auto;
+        overflow: visible;
+        min-height: 100vh;
+        min-height: 100dvh
     }
 
     [dir=rtl] .main {
@@ -1554,6 +1564,7 @@ textarea.form-control {
     user-select: none;
     -webkit-user-select: none;
 }
+
 html[dir="rtl"] .support-float-bar {
     left: 0
 }
