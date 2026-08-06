@@ -15,9 +15,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddLocalization(options => options.ResourcesPath = "");
 
 builder.Services.AddControllersWithViews(options =>
-    {
-        options.Filters.Add<DeliveryAdmin.Filters.RestaurantOwnerScopeFilter>();
-    })
+{
+    options.Filters.Add<DeliveryAdmin.Filters.RestaurantOwnerScopeFilter>();
+})
     .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
     .AddDataAnnotationsLocalization(options =>
     {
@@ -90,6 +90,23 @@ app.UseSession();
 
 var locOptions = app.Services.GetRequiredService<Microsoft.Extensions.Options.IOptions<RequestLocalizationOptions>>().Value;
 app.UseRequestLocalization(locOptions);
+
+// ✅ FIX: لغة الواجهة (UICulture) لازم تفضل منفصلة عن نسق الأرقام (Culture).
+// UseRequestLocalization بيحط الاتنين على نفس القيمة (مثلاً "ar" لو المستخدم مبدّل
+// اللغة عربي). المشكلة إن ثقافة "ar" بتغيّر نسق تحويل الأرقام (الفاصلة العشرية/الأرقام
+// الهندية)، فلما الفورم بيتبعت (POST) وفيه حقول زي DeliveryFee أو MinOrderAmount أو
+// Latitude/Longitude، الـ Model Binder بيحاول يحوّل النص اللي جاي من المتصفح (اللي دايمًا
+// بيبعته بصيغة إنجليزية زي "150.50") باستخدام ثقافة "ar" → التحويل بيفشل بصمت وبترجع
+// القيمة صفر أو مش بتتحدث خالص. نفس المشكلة كانت بتظهر في عرض الأرقام في الفورم برضو.
+// الحل: نسيب Culture (نسق الأرقام/التواريخ) على الإنجليزي دايمًا، ونسيب UICulture
+// (النصوص المترجمة بس) على اختيار المستخدم.
+app.Use(async (context, next) =>
+{
+    var uiCulture = CultureInfo.CurrentUICulture;
+    CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+    CultureInfo.CurrentUICulture = uiCulture;
+    await next();
+});
 
 app.UseRouting();
 app.UseAuthentication();
