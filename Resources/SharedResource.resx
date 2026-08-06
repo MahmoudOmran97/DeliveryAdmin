@@ -379,6 +379,8 @@
 	<data name="MyStore_LogoUrl" xml:space="preserve"><value>Logo Image URL</value></data>
 	<data name="MyStore_CoverUrl" xml:space="preserve"><value>Cover Image URL</value></data>
 	<data name="MyStore_SaveChanges" xml:space="preserve"><value>💾 Save Changes</value></data>
+	<data name="MyStore_WeeklyOrders" xml:space="preserve"><value>Orders — Last 7 Days</value></data>
+	<data name="MyStore_OrdersCountLabel" xml:space="preserve"><value>Order Count</value></data>
 	<data name="MyDrivers_Total" xml:space="preserve"><value>Total Drivers</value></data>
 	<data name="MyDrivers_Online" xml:space="preserve"><value>Online Now</value></data>
 	<data name="MyDrivers_Active" xml:space="preserve"><value>On an Order for My Store</value></data>

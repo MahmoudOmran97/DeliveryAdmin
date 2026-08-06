@@ -382,6 +382,8 @@
 	<data name="MyStore_LogoUrl" xml:space="preserve"><value>رابط صورة اللوجو</value></data>
 	<data name="MyStore_CoverUrl" xml:space="preserve"><value>رابط صورة الغلاف</value></data>
 	<data name="MyStore_SaveChanges" xml:space="preserve"><value>💾 حفظ التعديلات</value></data>
+	<data name="MyStore_WeeklyOrders" xml:space="preserve"><value>الطلبات آخر 7 أيام</value></data>
+	<data name="MyStore_OrdersCountLabel" xml:space="preserve"><value>عدد الطلبات</value></data>
 	<data name="MyDrivers_Total" xml:space="preserve"><value>إجمالي السواقين</value></data>
 	<data name="MyDrivers_Online" xml:space="preserve"><value>اونلاين دلوقتي</value></data>
 	<data name="MyDrivers_Active" xml:space="preserve"><value>شغالين على طلب لمحلي</value></data>

@@ -24,7 +24,7 @@ namespace DeliveryAdmin.Controllers
             _config = config;
         }
 
-        // بيانات المحل + تعديلها
+        // بيانات المحل + تعديلها + مؤشرات سريعة (آخر الطلبات + شارتين)
         public async Task<IActionResult> Index()
         {
             var store = await _api.GetMyRestaurant();
@@ -32,6 +32,30 @@ namespace DeliveryAdmin.Controllers
 
             ViewData["Title"] = L["Nav_MyStore"].Value;
             ViewBag.StoreType = store.StoreType;
+
+            // بناخد آخر 100 أوردر بتاعين المحل ده ونحسب منهم كل الإحصائيات محلياً
+            // (بنفس أسلوب DashboardController) بدل ما نطلب من الـ API endpoint جديد
+            var ordersResult = await _api.GetOrdersByRestaurant(store.Id, null, 1, 100);
+            var allOrders = ordersResult?.Data ?? new();
+
+            // آخر الطلبات (لجدول "أحدث الطلبات")
+            ViewBag.RecentOrders = allOrders
+                .OrderByDescending(o => o.CreatedAt)
+                .Take(8)
+                .ToList();
+
+            // توزيع حالات الطلب (شارت الدونات)
+            var statuses = new[] { "Pending", "Accepted", "Preparing", "ReadyForPickup", "OnTheWay", "Delivered", "Cancelled" };
+            ViewBag.StatusCounts = statuses.Select(s => allOrders.Count(o => o.Status == s)).ToArray();
+
+            // عدد الطلبات آخر 7 أيام (شارت الأعمدة)
+            var today = DateTime.UtcNow.Date;
+            var last7Days = Enumerable.Range(0, 7).Select(i => today.AddDays(-6 + i)).ToList();
+            ViewBag.WeeklyLabels = last7Days.Select(d => d.ToString("dd/MM")).ToArray();
+            ViewBag.WeeklyOrderCounts = last7Days
+                .Select(d => allOrders.Count(o => o.CreatedAt.Date == d))
+                .ToArray();
+
             return View(store);
         }
 
