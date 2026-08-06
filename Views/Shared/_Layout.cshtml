@@ -64,7 +64,7 @@
                     isPharmacyStore = string.Equals(myStore?.StoreType, "Pharmacy", StringComparison.OrdinalIgnoreCase);
                     // زر "تواصل مع الدعم" — بيظهر لصاحب المحل بس، مش للأدمن
                     supportContacts = (await Api.GetSupportContacts() ?? new())
-                        .Where(c => !string.IsNullOrWhiteSpace(c.Phone)).ToList();
+                    .Where(c => !string.IsNullOrWhiteSpace(c.Phone)).ToList();
                 }
             }
             @if (isStoreOwner)
@@ -134,8 +134,22 @@
                     <form asp-controller="Settings" asp-action="SetLanguage" method="post" class="lang-form">
                         <input type="hidden" name="returnUrl" value="@(Context.Request.Path + Context.Request.QueryString)" />
                         <select name="culture" class="lang-select" onchange="this.form.submit()">
-                            @if (lang == "en") { <option value="en" selected>@Localizer["Lang_English"]</option> } else { <option value="en">@Localizer["Lang_English"]</option> }
-                            @if (lang == "ar") { <option value="ar" selected>@Localizer["Lang_Arabic"]</option> } else { <option value="ar">@Localizer["Lang_Arabic"]</option> }
+                            @if (lang == "en")
+                            {
+                                <option value="en" selected>@Localizer["Lang_English"]</option>
+                            }
+                            else
+                            {
+                                <option value="en">@Localizer["Lang_English"]</option>
+                            }
+                            @if (lang == "ar")
+                            {
+                                <option value="ar" selected>@Localizer["Lang_Arabic"]</option>
+                            }
+                            else
+                            {
+                                <option value="ar">@Localizer["Lang_Arabic"]</option>
+                            }
                         </select>
                     </form>
                     <div class="notif-bell-wrap" id="notifBellWrap">
@@ -181,14 +195,7 @@
     {
         <button type="button" class="support-float-bar" id="supportFloatBtn" aria-haspopup="dialog" aria-controls="supportSheetOverlay">
             <span class="support-float-icon" aria-hidden="true">
-                <svg viewBox="0 0 48 48" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="24" cy="17" r="8" fill="currentColor"/>
-                    <path d="M9 40c0-8.3 6.7-14 15-14s15 5.7 15 14" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none"/>
-                    <path d="M11 21a13 13 0 0 1 26 0" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
-                    <rect x="8" y="20" width="5" height="9" rx="2.5" fill="currentColor"/>
-                    <rect x="35" y="20" width="5" height="9" rx="2.5" fill="currentColor"/>
-                    <path d="M40 29v2a5 5 0 0 1-5 5h-2.5" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/>
-                </svg>
+                <img src="~/images/support-icon.png" alt="" />
             </span>
             <span class="support-float-text">@Localizer["Support_ContactUs"]</span>
         </button>
@@ -225,16 +232,107 @@
         </div>
 
         <script>
-        (function () {
-            var btn = document.getElementById('supportFloatBtn');
-            var overlay = document.getElementById('supportSheetOverlay');
-            var closeBtn = document.getElementById('supportSheetClose');
-            if (!btn || !overlay) return;
-            btn.addEventListener('click', function () { overlay.classList.add('open'); });
-            closeBtn.addEventListener('click', function () { overlay.classList.remove('open'); });
-            overlay.addEventListener('click', function (e) { if (e.target === overlay) overlay.classList.remove('open'); });
-            document.addEventListener('keydown', function (e) { if (e.key === 'Escape') overlay.classList.remove('open'); });
-        })();
+            (function () {
+                var btn = document.getElementById('supportFloatBtn');
+                var overlay = document.getElementById('supportSheetOverlay');
+                var closeBtn = document.getElementById('supportSheetClose');
+                if (!btn || !overlay) return;
+
+                // ── تفتح التابة ──────────────────────────────────────────
+                function openSheet() { overlay.classList.add('open'); }
+                function closeSheet() { overlay.classList.remove('open'); }
+                closeBtn.addEventListener('click', closeSheet);
+                overlay.addEventListener('click', function (e) { if (e.target === overlay) closeSheet(); });
+                document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSheet(); });
+
+                // ── سحب الأيقونة لأي مكان في الشاشة، ومكانها بيتحفظ محليًا
+                //    عشان يفضل زي ما سايبه المرة اللي فاتت ────────────────
+                var STORAGE_KEY = 'tawseela_support_btn_pos';
+                var dragging = false, moved = false;
+                var startX, startY, startLeft, startTop;
+
+                function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+                function applyPosition(left, top) {
+                    var r = btn.getBoundingClientRect();
+                    left = clamp(left, 8, window.innerWidth - r.width - 8);
+                    top = clamp(top, 8, window.innerHeight - r.height - 8);
+                    btn.style.left = left + 'px';
+                    btn.style.top = top + 'px';
+                    btn.style.right = 'auto';
+                    btn.style.bottom = 'auto';
+                    updateTipSide();
+                }
+
+                // بيقرر الاسم يظهر يمين ولا شمال الأيقونة حسب المساحة الفاضية،
+                // عشان لو سحبتها لطرف الشاشة الاسم يفضل ظاهر بالكامل
+                function updateTipSide() {
+                    var r = btn.getBoundingClientRect();
+                    var spaceRight = window.innerWidth - r.right;
+                    btn.classList.toggle('tip-left', spaceRight < 170);
+                }
+
+                function savePosition() {
+                    var r = btn.getBoundingClientRect();
+                    try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ left: r.left, top: r.top })); } catch (e) {}
+                }
+
+                function restorePosition() {
+                    try {
+                        var saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+                        if (saved && typeof saved.left === 'number' && typeof saved.top === 'number') {
+                            applyPosition(saved.left, saved.top);
+                            return;
+                        }
+                    } catch (e) {}
+                    updateTipSide(); // مفيش موضع محفوظ، سيبها في مكانها الافتراضي بس اظبط اتجاه التلميح
+                }
+
+                function onDown(e) {
+                    dragging = true; moved = false;
+                    var p = e.touches ? e.touches[0] : e;
+                    var r = btn.getBoundingClientRect();
+                    startX = p.clientX; startY = p.clientY;
+                    startLeft = r.left; startTop = r.top;
+                    btn.classList.add('dragging');
+                }
+                function onMove(e) {
+                    if (!dragging) return;
+                    var p = e.touches ? e.touches[0] : e;
+                    var dx = p.clientX - startX, dy = p.clientY - startY;
+                    if (Math.abs(dx) > 4 || Math.abs(dy) > 4) moved = true;
+                    if (moved) {
+                        if (e.cancelable) e.preventDefault();
+                        applyPosition(startLeft + dx, startTop + dy);
+                    }
+                }
+                function onUp() {
+                    if (!dragging) return;
+                    dragging = false;
+                    btn.classList.remove('dragging');
+                    if (moved) savePosition();
+                }
+
+                btn.addEventListener('mousedown', onDown);
+                document.addEventListener('mousemove', onMove);
+                document.addEventListener('mouseup', onUp);
+                btn.addEventListener('touchstart', onDown, { passive: true });
+                document.addEventListener('touchmove', onMove, { passive: false });
+                document.addEventListener('touchend', onUp);
+
+                window.addEventListener('resize', function () {
+                    var r = btn.getBoundingClientRect();
+                    if (btn.style.left) applyPosition(r.left, r.top); else updateTipSide();
+                });
+
+                // دوسة عادية (من غير سحب) = فتح التابة
+                btn.addEventListener('click', function (e) {
+                    if (moved) { e.preventDefault(); moved = false; return; }
+                    openSheet();
+                });
+
+                restorePosition();
+            })();
         </script>
     }
 
@@ -244,124 +342,123 @@
          بيتصادم مع تسجيل '/firebase-messaging-sw.js' تحت (نفس الـ scope '/')
          ويلغي استقبال الإشعارات في الخلفية. اتشال من هنا، ودلوقتي فيه تسجيل
          واحد بس للملف المدمج (caching + push) — شوف تحت. -->
-
     <!-- ─────────────────────────────────────────────────────────────
          زر الجرس 🔔 — متاح للأدمن وصاحب المحل مع بعض. بيعرض عدد
          التنبيهات اللي لسه ملقتش (بولينج كل 25 ثانية + تحديث لحظي
          عن طريق SignalR تحت)، وبيفتح قائمة بآخر التنبيهات المحفوظة.
     ───────────────────────────────────────────────────────────────── -->
     <script>
-    (function () {
-        var badge = document.getElementById('notifBadge');
-        var btn = document.getElementById('notifBellBtn');
-        var dropdown = document.getElementById('notifDropdown');
-        var list = document.getElementById('notifList');
-        var markAllBtn = document.getElementById('notifMarkAllBtn');
-        if (!btn || !dropdown) return;
+        (function () {
+            var badge = document.getElementById('notifBadge');
+            var btn = document.getElementById('notifBellBtn');
+            var dropdown = document.getElementById('notifDropdown');
+            var list = document.getElementById('notifList');
+            var markAllBtn = document.getElementById('notifMarkAllBtn');
+            if (!btn || !dropdown) return;
 
-        var isRtl = @Html.Raw(isRtl ? "true" : "false");
-        var emptyText = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Localizer["Notif_Empty"].Value));
-        var isOpen = false;
-        var loadedOnce = false;
+            var isRtl = @Html.Raw(isRtl ? "true" : "false");
+            var emptyText = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Localizer["Notif_Empty"].Value));
+            var isOpen = false;
+            var loadedOnce = false;
 
-        function timeAgo(iso) {
-            var diffSec = Math.max(0, (Date.now() - new Date(iso + 'Z').getTime()) / 1000);
-            if (diffSec < 60) return isRtl ? 'دلوقتي' : 'now';
-            if (diffSec < 3600) return Math.floor(diffSec / 60) + (isRtl ? ' د' : 'm');
-            if (diffSec < 86400) return Math.floor(diffSec / 3600) + (isRtl ? ' س' : 'h');
-            return Math.floor(diffSec / 86400) + (isRtl ? ' يوم' : 'd');
-        }
-
-        function notifUrl(n) {
-            if (n.type === 'PrescriptionRequest') return '/Pharmacy';
-            if (n.orderId) return @Html.Raw(isStoreOwner ? "'/MyStore/Orders'" : "'/Orders/Details/' + n.orderId");
-            return '#';
-        }
-
-        function renderList(items) {
-            if (!items || !items.length) {
-                list.innerHTML = '<div class="notif-empty-state">🔕<br>' + emptyText + '</div>';
-                return;
+            function timeAgo(iso) {
+                var diffSec = Math.max(0, (Date.now() - new Date(iso + 'Z').getTime()) / 1000);
+                if (diffSec < 60) return isRtl ? 'دلوقتي' : 'now';
+                if (diffSec < 3600) return Math.floor(diffSec / 60) + (isRtl ? ' د' : 'm');
+                if (diffSec < 86400) return Math.floor(diffSec / 3600) + (isRtl ? ' س' : 'h');
+                return Math.floor(diffSec / 86400) + (isRtl ? ' يوم' : 'd');
             }
-            list.innerHTML = items.map(function (n) {
-                return '<a href="' + notifUrl(n) + '" class="notif-item' + (n.isRead ? '' : ' unread') + '" data-id="' + n.id + '">' +
-                    '<div class="notif-item-title">' + escapeHtml(n.title) + '</div>' +
-                    '<div class="notif-item-body">' + escapeHtml(n.body) + '</div>' +
-                    '<div class="notif-item-time">' + timeAgo(n.createdAt) + '</div>' +
-                    '</a>';
-            }).join('');
 
-            Array.prototype.forEach.call(list.querySelectorAll('.notif-item'), function (el) {
-                el.addEventListener('click', function () {
-                    var id = this.getAttribute('data-id');
-                    fetch('/Notifications/MarkRead?id=' + id, { method: 'POST' }).catch(function () {});
-                });
-            });
-        }
+            function notifUrl(n) {
+                if (n.type === 'PrescriptionRequest') return '/Pharmacy';
+                if (n.orderId) return @Html.Raw(isStoreOwner ? "'/MyStore/Orders'" : "'/Orders/Details/' + n.orderId");
+                return '#';
+            }
 
-        function escapeHtml(s) {
-            var d = document.createElement('div');
-            d.textContent = s || '';
-            return d.innerHTML;
-        }
-
-        function refreshBadge() {
-            fetch('/Notifications/UnreadCount').then(function (r) { return r.json(); }).then(function (d) {
-                var count = d && d.count ? d.count : 0;
-                if (count > 0) {
-                    badge.textContent = count > 99 ? '99+' : count;
-                    badge.style.display = 'flex';
-                } else {
-                    badge.style.display = 'none';
+            function renderList(items) {
+                if (!items || !items.length) {
+                    list.innerHTML = '<div class="notif-empty-state">🔕<br>' + emptyText + '</div>';
+                    return;
                 }
-            }).catch(function () {});
-        }
+                list.innerHTML = items.map(function (n) {
+                    return '<a href="' + notifUrl(n) + '" class="notif-item' + (n.isRead ? '' : ' unread') + '" data-id="' + n.id + '">' +
+                        '<div class="notif-item-title">' + escapeHtml(n.title) + '</div>' +
+                        '<div class="notif-item-body">' + escapeHtml(n.body) + '</div>' +
+                        '<div class="notif-item-time">' + timeAgo(n.createdAt) + '</div>' +
+                        '</a>';
+                }).join('');
 
-        function loadFeed() {
-            list.innerHTML = '<div class="notif-loading">…</div>';
-            fetch('/Notifications/Feed').then(function (r) { return r.json(); }).then(function (d) {
-                renderList(d && d.data ? d.data : []);
-            }).catch(function () {
-                list.innerHTML = '<div class="notif-empty-state">⚠️</div>';
-            });
-        }
-
-        btn.addEventListener('click', function (e) {
-            e.stopPropagation();
-            isOpen = !isOpen;
-            dropdown.style.display = isOpen ? 'block' : 'none';
-            if (isOpen) {
-                loadFeed();
-                loadedOnce = true;
-                setTimeout(refreshBadge, 600); // بعد ما نفتح القائمة نفترض إنه هيقرا، نحدث العداد شوية بعدين
+                Array.prototype.forEach.call(list.querySelectorAll('.notif-item'), function (el) {
+                    el.addEventListener('click', function () {
+                        var id = this.getAttribute('data-id');
+                        fetch('/Notifications/MarkRead?id=' + id, { method: 'POST' }).catch(function () {});
+                    });
+                });
             }
-        });
 
-        document.addEventListener('click', function (e) {
-            if (isOpen && !dropdown.contains(e.target) && e.target !== btn) {
-                isOpen = false;
-                dropdown.style.display = 'none';
+            function escapeHtml(s) {
+                var d = document.createElement('div');
+                d.textContent = s || '';
+                return d.innerHTML;
             }
-        });
 
-        if (markAllBtn) {
-            markAllBtn.addEventListener('click', function () {
-                fetch('/Notifications/MarkAllRead', { method: 'POST' }).then(function () {
-                    refreshBadge();
-                    if (loadedOnce) loadFeed();
+            function refreshBadge() {
+                fetch('/Notifications/UnreadCount').then(function (r) { return r.json(); }).then(function (d) {
+                    var count = d && d.count ? d.count : 0;
+                    if (count > 0) {
+                        badge.textContent = count > 99 ? '99+' : count;
+                        badge.style.display = 'flex';
+                    } else {
+                        badge.style.display = 'none';
+                    }
                 }).catch(function () {});
+            }
+
+            function loadFeed() {
+                list.innerHTML = '<div class="notif-loading">…</div>';
+                fetch('/Notifications/Feed').then(function (r) { return r.json(); }).then(function (d) {
+                    renderList(d && d.data ? d.data : []);
+                }).catch(function () {
+                    list.innerHTML = '<div class="notif-empty-state">⚠️</div>';
+                });
+            }
+
+            btn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                isOpen = !isOpen;
+                dropdown.style.display = isOpen ? 'block' : 'none';
+                if (isOpen) {
+                    loadFeed();
+                    loadedOnce = true;
+                    setTimeout(refreshBadge, 600); // بعد ما نفتح القائمة نفترض إنه هيقرا، نحدث العداد شوية بعدين
+                }
             });
-        }
 
-        refreshBadge();
-        setInterval(refreshBadge, 25000);
+            document.addEventListener('click', function (e) {
+                if (isOpen && !dropdown.contains(e.target) && e.target !== btn) {
+                    isOpen = false;
+                    dropdown.style.display = 'none';
+                }
+            });
 
-        // بيتنادى من بلوك الـ SignalR تحت لما يوصل حدث "NewNotification" لحظي
-        window.__onLiveNotification = function () {
+            if (markAllBtn) {
+                markAllBtn.addEventListener('click', function () {
+                    fetch('/Notifications/MarkAllRead', { method: 'POST' }).then(function () {
+                        refreshBadge();
+                        if (loadedOnce) loadFeed();
+                    }).catch(function () {});
+                });
+            }
+
             refreshBadge();
-            if (isOpen) loadFeed();
-        };
-    })();
+            setInterval(refreshBadge, 25000);
+
+            // بيتنادى من بلوك الـ SignalR تحت لما يوصل حدث "NewNotification" لحظي
+            window.__onLiveNotification = function () {
+                refreshBadge();
+                if (isOpen) loadFeed();
+            };
+        })();
     </script>
 
     @{
@@ -392,81 +489,83 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@@8.0.0/dist/browser/signalr.min.js"></script>
     <script>
-    (function () {
-        var isStoreOwner = @Html.Raw(isStoreOwner ? "true" : "false");
+        (function () {
+            var isStoreOwner = @Html.Raw(isStoreOwner ? "true" : "false");
 
-        // ── الكارت الجامد في نص الشاشة + الصوت اللي بيفضل شغال ──────────
-        var overlay = document.getElementById('notifCenterOverlay');
-        var sound = document.getElementById('loudAlertSound');
-        var titleEl = document.getElementById('notifCenterTitle');
-        var bodyEl = document.getElementById('notifCenterBody');
-        var viewBtn = document.getElementById('notifCenterViewBtn');
-        var dismissBtn = document.getElementById('notifCenterDismissBtn');
-        var autoStopTimer = null;
+            // ── الكارت الجامد في نص الشاشة + الصوت اللي بيفضل شغال ──────────
+            var overlay = document.getElementById('notifCenterOverlay');
+            var sound = document.getElementById('loudAlertSound');
+            var titleEl = document.getElementById('notifCenterTitle');
+            var bodyEl = document.getElementById('notifCenterBody');
+            var viewBtn = document.getElementById('notifCenterViewBtn');
+            var dismissBtn = document.getElementById('notifCenterDismissBtn');
+            var autoStopTimer = null;
 
-        function stopAlert() {
-            overlay.style.display = 'none';
-            if (sound) { sound.pause(); sound.currentTime = 0; }
-            if (autoStopTimer) { clearTimeout(autoStopTimer); autoStopTimer = null; }
-        }
-
-        function showCenterAlert(title, body, url) {
-            titleEl.textContent = title || '🔔';
-            bodyEl.textContent = body || '';
-            overlay.style.display = 'flex';
-            if (sound) { sound.currentTime = 0; sound.play().catch(function () {}); }
-
-            viewBtn.onclick = function () {
-                stopAlert();
-                if (url && url !== '#') window.location.href = url;
-            };
-            dismissBtn.onclick = stopAlert;
-
-            // منوقفش الصوت لوحده - بس بعد دقيقتين نوقفه تلقائي عشان محدش ينسى التاب مفتوح
-            if (autoStopTimer) clearTimeout(autoStopTimer);
-            autoStopTimer = setTimeout(stopAlert, 120000);
-        }
-
-        var hubBase = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(hubBaseUrl));
-        var token = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(myToken ?? ""));
-        if (!hubBase || !token) return;
-
-        var connection = new signalR.HubConnectionBuilder()
-            // withCredentials: false — إحنا بنستخدم Bearer token مش كوكيز، ومفيش
-            // داعي للـ credentials mode أصلاً؛ ده كمان بيتفادى مشكلة الـ CORS
-            // اللي بتظهر لإن سياسة الـ API الحالية بترجع wildcard origin "*"
-            // ومتصفحات الويب بترفض ده مع طلبات credentials:include
-            .withUrl(hubBase + "/hubs/tracking", { accessTokenFactory: () => token, withCredentials: false })
-            .withAutomaticReconnect()
-            .build();
-
-        // 🔔 حدث عام بيتبعت لأي مستخدم (أدمن أو صاحب محل) لما يتحفظله تنبيه
-        // جديد في الجرس — سواء أوردر جديد، روشتة جديدة، أو بث يدوي من الأدمن
-        connection.on("NewNotification", function (data) {
-            if (typeof window.__onLiveNotification === 'function') window.__onLiveNotification();
-            if (!data) return;
-
-            var isOrderish = data.type === 'NewOrder' || data.type === 'PrescriptionRequest';
-            if (isOrderish) {
-                var url = data.type === 'PrescriptionRequest'
-                    ? '/Pharmacy'
-                    : (isStoreOwner ? '/MyStore/Orders' : (data.orderId ? '/Orders/Details/' + data.orderId : '#'));
-                showCenterAlert(data.title, data.body, url);
-            } else if ("Notification" in window && Notification.permission === "granted") {
-                // تنبيهات تانية (بث يدوي من الأدمن مثلاً) بتاخد إشعار متصفح عادي بس
-                new Notification(data.title || "🔔", { body: data.body || "", icon: "🔔" });
+            function stopAlert() {
+                overlay.style.display = 'none';
+                if (sound) { sound.pause(); sound.currentTime = 0; }
+                if (autoStopTimer) { clearTimeout(autoStopTimer); autoStopTimer = null; }
             }
-        });
 
-        connection.start().catch(function (err) { console.error('SignalR connection error:', err); });
+            function showCenterAlert(title, body, url) {
+                titleEl.textContent = title || '🔔';
+                bodyEl.textContent = body || '';
+                overlay.style.display = 'flex';
+                if (sound) { sound.currentTime = 0; sound.play().catch(function () {}); }
 
-        if ("Notification" in window && Notification.permission === "default") {
-            Notification.requestPermission();
-        }
-    })();
+                viewBtn.onclick = function () {
+                    stopAlert();
+                    if (url && url !== '#') window.location.href = url;
+                };
+                dismissBtn.onclick = stopAlert;
+
+                // منوقفش الصوت لوحده - بس بعد دقيقتين نوقفه تلقائي عشان محدش ينسى التاب مفتوح
+                if (autoStopTimer) clearTimeout(autoStopTimer);
+                autoStopTimer = setTimeout(stopAlert, 120000);
+            }
+
+            var hubBase = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(hubBaseUrl));
+            var token = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(myToken ?? ""));
+            if (!hubBase || !token) return;
+
+            var connection = new signalR.HubConnectionBuilder()
+                // withCredentials: false — إحنا بنستخدم Bearer token مش كوكيز، ومفيش
+                // داعي للـ credentials mode أصلاً؛ ده كمان بيتفادى مشكلة الـ CORS
+                // اللي بتظهر لإن سياسة الـ API الحالية بترجع wildcard origin "*"
+                // ومتصفحات الويب بترفض ده مع طلبات credentials:include
+                .withUrl(hubBase + "/hubs/tracking", { accessTokenFactory: () => token, withCredentials: false })
+                .withAutomaticReconnect()
+                .build();
+
+            // 🔔 حدث عام بيتبعت لأي مستخدم (أدمن أو صاحب محل) لما يتحفظله تنبيه
+            // جديد في الجرس — سواء أوردر جديد، روشتة جديدة، أو بث يدوي من الأدمن
+            connection.on("NewNotification", function (data) {
+                if (typeof window.__onLiveNotification === 'function') window.__onLiveNotification();
+                if (!data) return;
+
+                var isOrderish = data.type === 'NewOrder' || data.type === 'PrescriptionRequest';
+                if (isOrderish) {
+                    var url = data.type === 'PrescriptionRequest'
+                        ? '/Pharmacy'
+                        : (isStoreOwner ? '/MyStore/Orders' : (data.orderId ? '/Orders/Details/' + data.orderId : '#'));
+                    showCenterAlert(data.title, data.body, url);
+                } else if ("Notification" in window && Notification.permission === "granted") {
+                    // تنبيهات تانية (بث يدوي من الأدمن مثلاً) بتاخد إشعار متصفح عادي بس
+                    new Notification(data.title || "🔔", { body: data.body || "", icon: "🔔" });
+                }
+            });
+
+            connection.start().catch(function (err) { console.error('SignalR connection error:', err); });
+
+            if ("Notification" in window && Notification.permission === "default") {
+                Notification.requestPermission();
+            }
+        })();
     </script>
 
-    @{ var hasFirebaseWeb = !string.IsNullOrWhiteSpace(Configuration["FirebaseWeb:ApiKey"]); }
+    @{
+        var hasFirebaseWeb = !string.IsNullOrWhiteSpace(Configuration["FirebaseWeb:ApiKey"]);
+    }
     <!-- ─────────────────────────────────────────────────────────────
          ✅ FIX: تسجيل SW واحد بس (مدمج فيه الـ caching + استقبال الإشعارات
          في الخلفية) بدل تسجيلين منفصلين على نفس الـ scope كانوا بيتصادموا
@@ -479,54 +578,54 @@
         <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging-compat.js"></script>
     }
     <script>
-    (function () {
-        if (!('serviceWorker' in navigator)) return;
+        (function () {
+            if (!('serviceWorker' in navigator)) return;
 
-        navigator.serviceWorker.register('/firebase-messaging-sw.js').then(function (registration) {
-            var hasFirebaseWeb = @Html.Raw(hasFirebaseWeb ? "true" : "false");
-            if (!hasFirebaseWeb) return;
+            navigator.serviceWorker.register('/firebase-messaging-sw.js').then(function (registration) {
+                var hasFirebaseWeb = @Html.Raw(hasFirebaseWeb ? "true" : "false");
+                if (!hasFirebaseWeb) return;
 
-            var apiToken = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(myToken ?? ""));
-            var apiBase = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(apiBase));
-            var vapidKey = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:VapidKey"] ?? ""));
-            if (!apiToken || !vapidKey) return;
+                var apiToken = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(myToken ?? ""));
+                var apiBase = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(apiBase));
+                var vapidKey = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:VapidKey"] ?? ""));
+                if (!apiToken || !vapidKey) return;
 
-            var app = firebase.initializeApp({
-                apiKey: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:ApiKey"])),
-                authDomain: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:AuthDomain"])),
-                projectId: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:ProjectId"])),
-                storageBucket: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:StorageBucket"])),
-                messagingSenderId: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:MessagingSenderId"])),
-                appId: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:AppId"]))
-            });
-            var messaging = firebase.messaging(app);
-
-            function registerToken() {
-                if (Notification.permission !== "granted") return;
-                messaging.getToken({ vapidKey: vapidKey, serviceWorkerRegistration: registration })
-                    .then(function (token) {
-                        if (!token) return;
-                        fetch(apiBase + '/user/fcm-token', {
-                            method: 'PUT',
-                            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiToken },
-                            body: JSON.stringify({ token: token })
-                        }).catch(function () {});
-                    }).catch(function (err) { console.error('FCM getToken failed:', err); });
-            }
-
-            if (Notification.permission === "granted") {
-                registerToken();
-            } else if (Notification.permission === "default") {
-                Notification.requestPermission().then(function (perm) {
-                    if (perm === "granted") registerToken();
+                var app = firebase.initializeApp({
+                    apiKey: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:ApiKey"])),
+                    authDomain: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:AuthDomain"])),
+                    projectId: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:ProjectId"])),
+                    storageBucket: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:StorageBucket"])),
+                    messagingSenderId: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:MessagingSenderId"])),
+                    appId: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Configuration["FirebaseWeb:AppId"]))
                 });
-            }
+                var messaging = firebase.messaging(app);
 
-            // التاب مفتوح والمتصفح شايف الإشعار (data-only) — مش هنعرضه تاني
-            // عشان الكارت الجامد بتاع الـ SignalR فوق أصلاً بيغطي الحالة دي
-            messaging.onMessage(function () {});
-        }).catch(function (err) { console.error('SW register failed:', err); });
-    })();
+                function registerToken() {
+                    if (Notification.permission !== "granted") return;
+                    messaging.getToken({ vapidKey: vapidKey, serviceWorkerRegistration: registration })
+                        .then(function (token) {
+                            if (!token) return;
+                            fetch(apiBase + '/user/fcm-token', {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiToken },
+                                body: JSON.stringify({ token: token })
+                            }).catch(function () {});
+                        }).catch(function (err) { console.error('FCM getToken failed:', err); });
+                }
+
+                if (Notification.permission === "granted") {
+                    registerToken();
+                } else if (Notification.permission === "default") {
+                    Notification.requestPermission().then(function (perm) {
+                        if (perm === "granted") registerToken();
+                    });
+                }
+
+                // التاب مفتوح والمتصفح شايف الإشعار (data-only) — مش هنعرضه تاني
+                // عشان الكارت الجامد بتاع الـ SignalR فوق أصلاً بيغطي الحالة دي
+                messaging.onMessage(function () {});
+            }).catch(function (err) { console.error('SW register failed:', err); });
+        })();
     </script>
 </body>
 </html>
