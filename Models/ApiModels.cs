@@ -161,6 +161,10 @@ namespace DeliveryAdmin.Models
         public string Body { get; set; } = "";
         public string? Type { get; set; } = "General";
         public int? OrderId { get; set; }
+
+        // نفس نظام التوجيه بتاع البانرات: "order/5", "restaurant/12", "chat/5",
+        // "category/food", أو رابط خارجي https://... — فاضي = من غير توجيه.
+        public string? ActionUrl { get; set; }
     }
 
     // ── Order ─────────────────────────────────
@@ -186,7 +190,7 @@ namespace DeliveryAdmin.Models
     public class StoreRatingsResult { public int Total { get; set; } public int Page { get; set; } public int PageSize { get; set; } public double AvgRestaurant { get; set; } public double AvgFood { get; set; } public List<RatingDto> Data { get; set; } = new(); }
 
     // ── Notification ──────────────────────────
-    public class NotificationDto { public int Id { get; set; } public string Title { get; set; } = ""; public string Body { get; set; } = ""; public string Type { get; set; } = ""; public bool IsRead { get; set; } public int? OrderId { get; set; } public DateTime CreatedAt { get; set; } }
+    public class NotificationDto { public int Id { get; set; } public string Title { get; set; } = ""; public string Body { get; set; } = ""; public string Type { get; set; } = ""; public bool IsRead { get; set; } public int? OrderId { get; set; } public string? ActionUrl { get; set; } public DateTime CreatedAt { get; set; } }
 
     // ── Coupons ───────────────────────────────
     public class CouponDto

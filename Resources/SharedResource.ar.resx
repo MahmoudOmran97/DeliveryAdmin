@@ -75,6 +75,11 @@
 	<data name="Notif_MessageTitle" xml:space="preserve"><value>العنوان</value></data>
 	<data name="Notif_MessageBody" xml:space="preserve"><value>الرسالة</value></data>
 	<data name="Notif_Send" xml:space="preserve"><value>إرسال الإشعار</value></data>
+	<data name="Notif_Destination" xml:space="preserve"><value>توجيه الإشعار</value></data>
+	<data name="Notif_DestNone" xml:space="preserve"><value>بدون توجيه (معلوماتي بس)</value></data>
+	<data name="Notif_DestOrder" xml:space="preserve"><value>تفاصيل أوردر</value></data>
+	<data name="Notif_DestChat" xml:space="preserve"><value>شات الأوردر</value></data>
+	<data name="Notif_OrderId" xml:space="preserve"><value>رقم الأوردر</value></data>
 	<data name="OptionalPassword" xml:space="preserve"><value>اتركه فارغاً للإبقاء على كلمة المرور الحالية</value></data>
 	<data name="SelectRestaurant" xml:space="preserve"><value>اختر المطعم (لصاحب المطعم)</value></data>
 	<data name="NoRestaurant" xml:space="preserve"><value>— بدون مطعم —</value></data>

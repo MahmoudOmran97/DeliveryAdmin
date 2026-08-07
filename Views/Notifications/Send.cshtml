@@ -6,7 +6,10 @@
 }
 
 @model DeliveryAdmin.Models.SendNotificationDto
-@{ var users = (List<DeliveryAdmin.Models.UserDto>)ViewBag.Users; }
+@{
+    var users = (List<DeliveryAdmin.Models.UserDto>)ViewBag.Users;
+    var restaurants = (List<DeliveryAdmin.Models.RestaurantDto>)(ViewBag.Restaurants ?? new List<DeliveryAdmin.Models.RestaurantDto>());
+}
 <div class="card" style="max-width:720px">
   <div class="card-header"><div class="card-title">@Localizer["Notif_Title"]</div></div>
   <div class="card-body">
@@ -37,8 +40,99 @@
       </div>
       <div class="form-group"><label class="form-label">@Localizer["Notif_MessageTitle"]</label><input class="form-control" asp-for="Title" required /></div>
       <div class="form-group"><label class="form-label">@Localizer["Notif_MessageBody"]</label><textarea class="form-control" asp-for="Body" rows="4" required></textarea></div>
+
+      <div class="form-group form-full">
+        <label class="form-label">@Localizer["Notif_Destination"]</label>
+        <select class="form-control" id="destType" onchange="onDestTypeChange()">
+          <option value="">@Localizer["Notif_DestNone"]</option>
+          <option value="order">@Localizer["Notif_DestOrder"]</option>
+          <option value="restaurant">@Localizer["Banners_DestStore"]</option>
+          <option value="chat">@Localizer["Notif_DestChat"]</option>
+          <option value="external">@Localizer["Banners_DestExternal"]</option>
+        </select>
+      </div>
+
+      <div class="form-group form-full" id="destOrderGroup" style="display:none">
+        <label class="form-label">@Localizer["Notif_OrderId"]</label>
+        <input class="form-control" id="destOrderInput" type="number" min="1" oninput="buildActionUrl()" placeholder="#" />
+      </div>
+
+      <div class="form-group form-full" id="destStoreGroup" style="display:none">
+        <label class="form-label">@Localizer["Banners_SelectStore"]</label>
+        <select class="form-control" id="destStoreSelect" onchange="buildActionUrl()">
+          <option value="">— @Localizer["Banners_SelectStore"] —</option>
+          @foreach (var r in restaurants)
+          {
+            <option value="@r.Id">@r.Name</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-group form-full" id="destChatGroup" style="display:none">
+        <label class="form-label">@Localizer["Notif_OrderId"]</label>
+        <input class="form-control" id="destChatInput" type="number" min="1" oninput="buildActionUrl()" placeholder="#" />
+      </div>
+
+      <div class="form-group form-full" id="destExternalGroup" style="display:none">
+        <label class="form-label">@Localizer["Banners_ExternalUrlLabel"]</label>
+        <input class="form-control" id="destExternalInput" placeholder="https://..." oninput="buildActionUrl()" />
+      </div>
+
+      <input type="hidden" asp-for="ActionUrl" id="ActionUrlHidden" />
+
       <button type="submit" class="btn btn-primary">@Localizer["Notif_Send"]</button>
     </form>
   </div>
 </div>
-@section Scripts{<script>function toggleMode(m){document.getElementById('userField').style.display=m==='user'?'block':'none';document.getElementById('roleField').style.display=m==='role'?'block':'none';}</script>}
+@section Scripts{
+<script>
+function toggleMode(m){document.getElementById('userField').style.display=m==='user'?'block':'none';document.getElementById('roleField').style.display=m==='role'?'block':'none';}
+
+(function () {
+  function $(id) { return document.getElementById(id); }
+
+  window.buildActionUrl = function () {
+    var type = $('destType').value;
+    var value = '';
+    if (type === 'order') value = 'order/' + ($('destOrderInput').value || '');
+    else if (type === 'restaurant') value = 'restaurant/' + ($('destStoreSelect').value || '');
+    else if (type === 'chat') value = 'chat/' + ($('destChatInput').value || '');
+    else if (type === 'external') value = ($('destExternalInput').value || '').trim();
+    else value = '';
+    // لو مفيش قيمة فعلية اتحددت لسه، سيب الحقل فاضي بدل ما نسجّل صيغة ناقصة
+    if (type === 'order' && !$('destOrderInput').value) value = '';
+    if (type === 'restaurant' && !$('destStoreSelect').value) value = '';
+    if (type === 'chat' && !$('destChatInput').value) value = '';
+    $('ActionUrlHidden').value = value;
+  };
+
+  window.onDestTypeChange = function () {
+    var type = $('destType').value;
+    $('destOrderGroup').style.display = (type === 'order') ? '' : 'none';
+    $('destStoreGroup').style.display = (type === 'restaurant') ? '' : 'none';
+    $('destChatGroup').style.display = (type === 'chat') ? '' : 'none';
+    $('destExternalGroup').style.display = (type === 'external') ? '' : 'none';
+    buildActionUrl();
+  };
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var current = ($('ActionUrlHidden').value || '').trim();
+    if (!current) { onDestTypeChange(); return; }
+
+    if (/^https?:\/\//i.test(current)) {
+      $('destType').value = 'external';
+      $('destExternalInput').value = current;
+    } else {
+      var parts = current.split('/');
+      var type = (parts[0] || '').toLowerCase();
+      var value = parts.slice(1).join('/');
+      if (type === 'order') { $('destType').value = 'order'; $('destOrderInput').value = value; }
+      else if (type === 'restaurant' || type === 'store') { $('destType').value = 'restaurant'; $('destStoreSelect').value = value; }
+      else if (type === 'chat') { $('destType').value = 'chat'; $('destChatInput').value = value; }
+      else { $('destType').value = 'external'; $('destExternalInput').value = current; }
+    }
+    onDestTypeChange();
+  });
+})();
+</script>
+}

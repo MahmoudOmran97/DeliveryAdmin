@@ -54,6 +54,7 @@ public class NotificationsController : LocalizedController
     {
         SetTitle("Notif_Title");
         ViewBag.Users = (await _api.GetUsers(1, 200))?.Data ?? new();
+        ViewBag.Restaurants = (await _api.GetRestaurants(1, 500))?.Data ?? new();
         return View(new SendNotificationDto());
     }
 
@@ -68,6 +69,7 @@ public class NotificationsController : LocalizedController
         {
             TempData["Error"] = "Title and message are required";
             ViewBag.Users = (await _api.GetUsers(1, 200))?.Data ?? new();
+            ViewBag.Restaurants = (await _api.GetRestaurants(1, 500))?.Data ?? new();
             return View(dto);
         }
 
@@ -76,6 +78,7 @@ public class NotificationsController : LocalizedController
         {
             TempData["Error"] = error;
             ViewBag.Users = (await _api.GetUsers(1, 200))?.Data ?? new();
+            ViewBag.Restaurants = (await _api.GetRestaurants(1, 500))?.Data ?? new();
             return View(dto);
         }
 

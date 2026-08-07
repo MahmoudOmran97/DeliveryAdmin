@@ -74,6 +74,11 @@
 	<data name="Notif_MessageTitle" xml:space="preserve"><value>Title</value></data>
 	<data name="Notif_MessageBody" xml:space="preserve"><value>Message</value></data>
 	<data name="Notif_Send" xml:space="preserve"><value>Send Notification</value></data>
+	<data name="Notif_Destination" xml:space="preserve"><value>Notification Destination</value></data>
+	<data name="Notif_DestNone" xml:space="preserve"><value>None (informational only)</value></data>
+	<data name="Notif_DestOrder" xml:space="preserve"><value>Order details</value></data>
+	<data name="Notif_DestChat" xml:space="preserve"><value>Order chat</value></data>
+	<data name="Notif_OrderId" xml:space="preserve"><value>Order ID</value></data>
 	<data name="OptionalPassword" xml:space="preserve"><value>Leave blank to keep current password</value></data>
 	<data name="SelectRestaurant" xml:space="preserve"><value>Select restaurant (for owner)</value></data>
 	<data name="NoRestaurant" xml:space="preserve"><value>— No restaurant —</value></data>
