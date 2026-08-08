@@ -6,6 +6,9 @@
     var to = (string?)ViewBag.To;
     var summary = (DeliveryAdmin.Models.RevenueSummaryDto)ViewBag.Summary;
     var isStore = tab != "driver";
+    // أقصى تاريخ مسموح لنهاية الفترة = إمبارح (بنفس منطق التحقق في الـ API)،
+    // عشان الأدمن ميقدرش من الأساس يختار فترة لسه ما خلصتش
+    var maxPeriodEnd = DateTime.UtcNow.Date.AddDays(-1).ToString("yyyy-MM-dd");
 }
 
 <div class="stat-row">
@@ -28,11 +31,11 @@
       <input type="hidden" name="tab" value="@tab" />
       <div>
         <label class="form-label">@Localizer["Revenue_PeriodStart"]</label>
-        <input class="filter-input" type="date" name="periodStart" required />
+        <input class="filter-input" type="date" name="periodStart" max="@maxPeriodEnd" required />
       </div>
       <div>
         <label class="form-label">@Localizer["Revenue_PeriodEnd"]</label>
-        <input class="filter-input" type="date" name="periodEnd" required />
+        <input class="filter-input" type="date" name="periodEnd" max="@maxPeriodEnd" required />
       </div>
       <button class="btn btn-primary btn-sm" type="submit" id="generateSettlementsBtn">@Localizer["Revenue_GenerateBtn"]</button>
     </form>
