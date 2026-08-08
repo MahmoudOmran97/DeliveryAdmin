@@ -137,6 +137,7 @@
 	<data name="Revenue_PeriodStart" xml:space="preserve"><value>From</value></data>
 	<data name="Revenue_PeriodEnd" xml:space="preserve"><value>To</value></data>
 	<data name="Revenue_GenerateBtn" xml:space="preserve"><value>Generate Settlements</value></data>
+	<data name="Revenue_Generating" xml:space="preserve"><value>Generating...</value></data>
 	<data name="Revenue_GenerateNote" xml:space="preserve"><value>Calculated from Delivered orders in this period, based on each store/driver's plan. Already-generated periods won't be duplicated.</value></data>
 	<data name="Revenue_Filter" xml:space="preserve"><value>Filter</value></data>
 	<data name="Revenue_Status" xml:space="preserve"><value>Status</value></data>

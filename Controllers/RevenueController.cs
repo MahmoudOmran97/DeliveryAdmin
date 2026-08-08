@@ -40,8 +40,21 @@ public class RevenueController : LocalizedController
     [HttpPost]
     public async Task<IActionResult> Generate(DateTime periodStart, DateTime periodEnd, string tab = "store")
     {
-        var (ok, error) = await _api.GenerateRevenueSettlements(periodStart, periodEnd);
-        if (!ok) TempData["Error"] = error;
+        var (ok, error, result) = await _api.GenerateRevenueSettlements(periodStart, periodEnd);
+        if (!ok)
+        {
+            // بيشمل حالة الـ 409 لما الفترة دي (أو جزء منها) تكون اتعملها استحقاقات قبل كده
+            TempData["Error"] = error;
+        }
+        else if (result != null && result.Generated == 0)
+        {
+            // مفيش خطط نشطة أو مفيش مبيعات في الفترة - مش خطأ لكن الأدمن محتاج يعرف
+            TempData["Info"] = result.Message;
+        }
+        else if (result != null)
+        {
+            TempData["Success"] = result.Message ?? $"تم توليد {result.Generated} استحقاق بنجاح";
+        }
         return RedirectToAction("Index", new { tab });
     }
 

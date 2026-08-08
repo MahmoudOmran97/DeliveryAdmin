@@ -187,6 +187,10 @@
             {
                 <div class="alert alert-danger">❌ @TempData["Error"]</div>
             }
+            @if (TempData["Info"] != null)
+            {
+                <div class="alert alert-info">ℹ️ @TempData["Info"]</div>
+            }
             @RenderBody()
         </div>
     </main>

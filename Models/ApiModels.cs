@@ -446,6 +446,14 @@ namespace DeliveryAdmin.Models
         public int DriversOverdueCount { get; set; }
     }
 
+    // نتيجة توليد الاستحقاقات: بترجع كام سجل اتولد وكام اتخطى (فترة متقاطعة موجودة بالفعل)
+    public class GenerateSettlementsResultDto
+    {
+        public string? Message { get; set; }
+        public int Generated { get; set; }
+        public int Skipped { get; set; }
+    }
+
     // ── Delivery Settings ─────────────────────
     public class DeliverySettingsDto
     {

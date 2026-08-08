@@ -290,8 +290,10 @@ namespace DeliveryAdmin.Services
 
         public async Task<RevenueSummaryDto?> GetRevenueSummary() => await Get<RevenueSummaryDto>("revenue/summary");
 
-        public async Task<(bool ok, string? error)> GenerateRevenueSettlements(DateTime periodStart, DateTime periodEnd)
-            => await PostNoContent("revenue/settlements/generate", new { periodStart, periodEnd });
+        // بترجع كمان رسالة/عدد المولّد والمتخطي عشان نقدر نعرض للأدمن تنبيه واضح
+        // لو الفترة (أو جزء منها) كانت اتعملها استحقاقات قبل كده (409 Conflict من الـ API).
+        public async Task<(bool ok, string? error, GenerateSettlementsResultDto? result)> GenerateRevenueSettlements(DateTime periodStart, DateTime periodEnd)
+            => await Post<GenerateSettlementsResultDto>("revenue/settlements/generate", new { periodStart, periodEnd });
 
         public async Task<(bool ok, string? error)> MarkSettlementPaid(int id, decimal? amountPaid, string? notes)
             => await PostNoContent($"revenue/settlements/{id}/mark-paid", new { amountPaid, notes });
