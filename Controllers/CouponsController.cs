@@ -24,9 +24,26 @@ namespace DeliveryAdmin.Controllers
         {
             var rests = await _api.GetRestaurants(1, 100);
             ViewBag.Restaurants = rests?.Data ?? new();
-            var customers = await _api.GetUsers(1, 500, role: "Customer");
-            ViewBag.Customers = customers?.Data ?? new();
             return View(new CreateCouponDto());
+        }
+
+        // GET /Coupons/SearchCustomers?q=... — بحث حي بالاسم/الإيميل/رقم التليفون
+        // بيستخدم في صفحة إضافة/تعديل الكوبون عشان تلاقي العميل بسرعة بدل قائمة طويلة
+        [HttpGet]
+        public async Task<IActionResult> SearchCustomers(string? q)
+        {
+            if (string.IsNullOrWhiteSpace(q) || q.Trim().Length < 2)
+                return Json(new List<object>());
+
+            var result = await _api.GetUsers(1, 20, role: "Customer", search: q.Trim());
+            var list = (result?.Data ?? new()).Select(u => new
+            {
+                id = u.Id,
+                fullName = u.FullName,
+                phone = u.Phone,
+                email = u.Email
+            });
+            return Json(list);
         }
 
         [HttpPost]
@@ -46,9 +63,14 @@ namespace DeliveryAdmin.Controllers
 
             var rests = await _api.GetRestaurants(1, 100);
             ViewBag.Restaurants = rests?.Data ?? new();
-            var customers = await _api.GetUsers(1, 500, role: "Customer");
-            ViewBag.Customers = customers?.Data ?? new();
             ViewBag.CouponId = id;
+
+            // لو الكوبون خاص بعميل معين، هنجيب بياناته عشان نعرضها جاهزة في حقل البحث
+            if (c.OwnerUserId.HasValue)
+            {
+                var owner = await _api.GetUser(c.OwnerUserId.Value);
+                ViewBag.OwnerCustomer = owner;
+            }
 
             var dto = new CreateCouponDto
             {

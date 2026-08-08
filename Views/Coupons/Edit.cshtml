@@ -2,7 +2,7 @@
 @{
   ViewData["Title"] = "Edit Coupon";
   var rests = (List<DeliveryAdmin.Models.RestaurantDto>)ViewBag.Restaurants;
-  var customers = (List<DeliveryAdmin.Models.UserDto>)ViewBag.Customers;
+  var owner = ViewBag.OwnerCustomer as DeliveryAdmin.Models.UserDto;
 }
 <div style="max-width:700px">
 <div class="card">
@@ -44,10 +44,18 @@
 
         <div class="form-group form-full">
           <label class="form-label">@Localizer["Coupons_OwnerCustomer"]</label>
-          <select class="form-control" asp-for="OwnerUserId">
-            <option value="">@Localizer["Coupons_AllCustomers"]</option>
-            @foreach (var c in customers) { <option value="@c.Id">@c.FullName (@c.Phone)</option> }
-          </select>
+          <input type="hidden" asp-for="OwnerUserId" id="ownerUserIdInput" />
+          <div id="ownerCustomerPicker">
+            <div id="ownerCustomerSelected" style="@(owner != null ? "display:flex" : "display:none");align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg2)">
+              <span id="ownerCustomerSelectedText" style="font-weight:600">@(owner != null ? owner.FullName + " — " + owner.Phone : "")</span>
+              <button type="button" id="ownerCustomerClearBtn" class="btn btn-secondary btn-sm" style="margin-inline-start:auto">✕ @Localizer["Cancel"]</button>
+            </div>
+            <div id="ownerCustomerSearchBox" style="@(owner != null ? "display:none" : "display:block");position:relative">
+              <input class="form-control" id="ownerCustomerSearchInput" type="text" autocomplete="off"
+                     placeholder="@Localizer["Coupons_SearchCustomerPlaceholder"]" />
+              <div id="ownerCustomerResults" style="display:none;position:absolute;z-index:20;top:100%;left:0;right:0;background:var(--bg1);border:1px solid var(--border);border-radius:8px;margin-top:4px;max-height:260px;overflow-y:auto;box-shadow:0 8px 20px rgba(0,0,0,.15)"></div>
+            </div>
+          </div>
           <div class="text-muted text-sm" style="margin-top:4px">@Localizer["Coupons_OwnerCustomerHint"]</div>
         </div>
 
@@ -67,3 +75,82 @@
   </div>
 </div>
 </div>
+
+@section Scripts {
+<script>
+(function () {
+    var hiddenInput = document.getElementById('ownerUserIdInput');
+    var searchBox = document.getElementById('ownerCustomerSearchBox');
+    var searchInput = document.getElementById('ownerCustomerSearchInput');
+    var resultsBox = document.getElementById('ownerCustomerResults');
+    var selectedBox = document.getElementById('ownerCustomerSelected');
+    var selectedText = document.getElementById('ownerCustomerSelectedText');
+    var clearBtn = document.getElementById('ownerCustomerClearBtn');
+    var debounceTimer = null;
+
+    function escapeHtml(s) {
+        var d = document.createElement('div');
+        d.textContent = s || '';
+        return d.innerHTML;
+    }
+
+    function selectCustomer(id, fullName, phone) {
+        hiddenInput.value = id;
+        selectedText.textContent = fullName + (phone ? ' — ' + phone : '');
+        selectedBox.style.display = 'flex';
+        searchBox.style.display = 'none';
+        resultsBox.style.display = 'none';
+        searchInput.value = '';
+    }
+
+    function clearCustomer() {
+        hiddenInput.value = '';
+        selectedBox.style.display = 'none';
+        searchBox.style.display = 'block';
+        searchInput.value = '';
+        resultsBox.style.display = 'none';
+    }
+
+    clearBtn.addEventListener('click', clearCustomer);
+
+    searchInput.addEventListener('input', function () {
+        var q = searchInput.value.trim();
+        if (debounceTimer) clearTimeout(debounceTimer);
+        if (q.length < 2) { resultsBox.style.display = 'none'; resultsBox.innerHTML = ''; return; }
+
+        debounceTimer = setTimeout(function () {
+            fetch('@Url.Action("SearchCustomers", "Coupons")?q=' + encodeURIComponent(q))
+                .then(function (r) { return r.json(); })
+                .then(function (list) {
+                    if (!list || !list.length) {
+                        resultsBox.innerHTML = '<div style="padding:10px 12px;color:var(--text3)">@Localizer["Coupons_NoCustomersFound"]</div>';
+                        resultsBox.style.display = 'block';
+                        return;
+                    }
+                    resultsBox.innerHTML = list.map(function (u) {
+                        return '<div class="owner-customer-result" data-id="' + u.id + '" data-name="' + escapeHtml(u.fullName) + '" data-phone="' + escapeHtml(u.phone) + '" ' +
+                            'style="padding:9px 12px;cursor:pointer;border-bottom:1px solid var(--border)">' +
+                            '<div style="font-weight:600">' + escapeHtml(u.fullName) + '</div>' +
+                            '<div class="text-muted text-sm">' + escapeHtml(u.phone) + (u.email ? ' • ' + escapeHtml(u.email) : '') + '</div>' +
+                            '</div>';
+                    }).join('');
+                    resultsBox.style.display = 'block';
+
+                    Array.prototype.forEach.call(resultsBox.querySelectorAll('.owner-customer-result'), function (el) {
+                        el.addEventListener('mouseenter', function () { el.style.background = 'var(--bg2)'; });
+                        el.addEventListener('mouseleave', function () { el.style.background = ''; });
+                        el.addEventListener('click', function () {
+                            selectCustomer(el.getAttribute('data-id'), el.getAttribute('data-name'), el.getAttribute('data-phone'));
+                        });
+                    });
+                })
+                .catch(function () { resultsBox.style.display = 'none'; });
+        }, 300);
+    });
+
+    document.addEventListener('click', function (e) {
+        if (!searchBox.contains(e.target)) resultsBox.style.display = 'none';
+    });
+})();
+</script>
+}
