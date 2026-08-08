@@ -53,9 +53,31 @@ public class NotificationsController : LocalizedController
     public async Task<IActionResult> Send()
     {
         SetTitle("Notif_Title");
-        ViewBag.Users = (await _api.GetUsers(1, 200))?.Data ?? new();
         ViewBag.Restaurants = (await _api.GetRestaurants(1, 500))?.Data ?? new();
         return View(new SendNotificationDto());
+    }
+
+    // GET /Notifications/SearchUsers?q=... — بحث حي بكل المستخدمين (أي دور)
+    // بالاسم/الإيميل/رقم التليفون. لو q فاضي، بيرجّع أحدث 20 مستخدم مسجل
+    // عشان تلاقي المستخدمين الجداد بسهولة من غير ما تعرف اسمهم بالظبط.
+    [Authorize(Roles = "Admin")]
+    [HttpGet]
+    public async Task<IActionResult> SearchUsers(string? q)
+    {
+        var search = string.IsNullOrWhiteSpace(q) ? null : q.Trim();
+        if (search != null && search.Length < 2)
+            return Json(new List<object>());
+
+        var result = await _api.GetUsers(1, 20, role: null, search: search);
+        var list = (result?.Data ?? new()).Select(u => new
+        {
+            id = u.Id,
+            fullName = u.FullName,
+            phone = u.Phone,
+            email = u.Email,
+            role = u.Role
+        });
+        return Json(list);
     }
 
     [Authorize(Roles = "Admin")]
@@ -68,8 +90,8 @@ public class NotificationsController : LocalizedController
         if (string.IsNullOrWhiteSpace(dto.Title) || string.IsNullOrWhiteSpace(dto.Body))
         {
             TempData["Error"] = "Title and message are required";
-            ViewBag.Users = (await _api.GetUsers(1, 200))?.Data ?? new();
             ViewBag.Restaurants = (await _api.GetRestaurants(1, 500))?.Data ?? new();
+            if (dto.UserId.HasValue) ViewBag.SelectedUser = await _api.GetUser(dto.UserId.Value);
             return View(dto);
         }
 
@@ -77,8 +99,8 @@ public class NotificationsController : LocalizedController
         if (!ok)
         {
             TempData["Error"] = error;
-            ViewBag.Users = (await _api.GetUsers(1, 200))?.Data ?? new();
             ViewBag.Restaurants = (await _api.GetRestaurants(1, 500))?.Data ?? new();
+            if (dto.UserId.HasValue) ViewBag.SelectedUser = await _api.GetUser(dto.UserId.Value);
             return View(dto);
         }
 

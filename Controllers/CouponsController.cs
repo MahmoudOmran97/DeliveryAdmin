@@ -27,15 +27,17 @@ namespace DeliveryAdmin.Controllers
             return View(new CreateCouponDto());
         }
 
-        // GET /Coupons/SearchCustomers?q=... — بحث حي بالاسم/الإيميل/رقم التليفون
-        // بيستخدم في صفحة إضافة/تعديل الكوبون عشان تلاقي العميل بسرعة بدل قائمة طويلة
+        // GET /Coupons/SearchCustomers?q=... — بحث حي بالاسم/الإيميل/رقم التليفون.
+        // لو q فاضي، بيرجّع أحدث 20 عميل (أحدث المسجلين الأول) عشان تقدر تشوف
+        // العملاء الجداد بسهولة من غير ما تعرف اسمهم بالظبط.
         [HttpGet]
         public async Task<IActionResult> SearchCustomers(string? q)
         {
-            if (string.IsNullOrWhiteSpace(q) || q.Trim().Length < 2)
+            var search = string.IsNullOrWhiteSpace(q) ? null : q.Trim();
+            if (search != null && search.Length < 2)
                 return Json(new List<object>());
 
-            var result = await _api.GetUsers(1, 20, role: "Customer", search: q.Trim());
+            var result = await _api.GetUsers(1, 20, role: "Customer", search: search);
             var list = (result?.Data ?? new()).Select(u => new
             {
                 id = u.Id,
