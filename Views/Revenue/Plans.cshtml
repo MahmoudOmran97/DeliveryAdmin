@@ -1,0 +1,90 @@
+@model List<DeliveryAdmin.Models.SubscriptionPlanDto>
+@{
+    var tab = (string)ViewBag.Tab;
+    var isStore = tab != "driver";
+    var restaurants = isStore ? (List<DeliveryAdmin.Models.RestaurantDto>)ViewBag.Restaurants : new();
+    var drivers = !isStore ? (List<DeliveryAdmin.Models.DriverDto>)ViewBag.Drivers : new();
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger" style="margin-bottom:14px">@TempData["Error"]</div>
+}
+
+<div style="display:flex;gap:10px;margin-bottom:18px">
+  <a class="btn btn-sm @(isStore ? "btn-primary" : "btn-secondary")" asp-action="Plans" asp-route-tab="store">🏪 @Localizer["Revenue_Stores"]</a>
+  <a class="btn btn-sm @(!isStore ? "btn-primary" : "btn-secondary")" asp-action="Plans" asp-route-tab="driver">🛵 @Localizer["Revenue_Drivers"]</a>
+  <a class="btn btn-secondary btn-sm" asp-action="Index" asp-route-tab="@tab" style="margin-inline-start:auto">📋 @Localizer["Revenue_BackToSettlements"]</a>
+</div>
+
+<div class="card">
+  <div class="card-header"><div class="card-title">@(isStore ? Localizer["Revenue_StorePlansTitle"] : Localizer["Revenue_DriverPlansTitle"])</div></div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>@(isStore ? Localizer["Restaurant"] : Localizer["FullName"])</th>
+          <th>@Localizer["Revenue_SubType"]</th>
+          <th>@Localizer["Revenue_SubValue"]</th>
+          <th>@Localizer["Revenue_Active"]</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (isStore)
+        {
+          @foreach (var r in restaurants)
+          {
+            var plan = Model.FirstOrDefault(p => p.RestaurantId == r.Id);
+            <tr>
+              <td style="font-weight:600">@r.Name</td>
+              <td colspan="3">
+                <form method="post" asp-action="SavePlan" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                  <input type="hidden" name="tab" value="store" />
+                  <input type="hidden" name="entityId" value="@r.Id" />
+                  <select class="filter-input" name="type" style="width:120px">
+                    <option value="Percentage" selected="@(plan == null || plan.Type == DeliveryAdmin.Models.SubscriptionType.Percentage)">@Localizer["Revenue_Percentage"]</option>
+                    <option value="Fixed" selected="@(plan != null && plan.Type == DeliveryAdmin.Models.SubscriptionType.Fixed)">@Localizer["Revenue_Fixed"]</option>
+                  </select>
+                  <input class="filter-input" style="width:100px" type="number" step="0.01" min="0" name="value" value="@(plan?.Value ?? 0)" required />
+                  <label class="text-sm" style="display:flex;align-items:center;gap:4px">
+                    <input type="checkbox" name="isActive" value="true" checked="@(plan == null || plan.IsActive)" />
+                    @Localizer["Revenue_Active"]
+                  </label>
+                  <button class="btn btn-primary btn-sm" type="submit">💾 @Localizer["Save"]</button>
+                </form>
+              </td>
+            </tr>
+          }
+        }
+        else
+        {
+          @foreach (var d in drivers)
+          {
+            var plan = Model.FirstOrDefault(p => p.DriverId == d.Id);
+            var name = d.FullName ?? d.UserName ?? $"Driver #{d.Id}";
+            <tr>
+              <td style="font-weight:600">@name</td>
+              <td colspan="3">
+                <form method="post" asp-action="SavePlan" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                  <input type="hidden" name="tab" value="driver" />
+                  <input type="hidden" name="entityId" value="@d.Id" />
+                  <select class="filter-input" name="type" style="width:120px">
+                    <option value="Percentage" selected="@(plan == null || plan.Type == DeliveryAdmin.Models.SubscriptionType.Percentage)">@Localizer["Revenue_Percentage"]</option>
+                    <option value="Fixed" selected="@(plan != null && plan.Type == DeliveryAdmin.Models.SubscriptionType.Fixed)">@Localizer["Revenue_Fixed"]</option>
+                  </select>
+                  <input class="filter-input" style="width:100px" type="number" step="0.01" min="0" name="value" value="@(plan?.Value ?? 0)" required />
+                  <label class="text-sm" style="display:flex;align-items:center;gap:4px">
+                    <input type="checkbox" name="isActive" value="true" checked="@(plan == null || plan.IsActive)" />
+                    @Localizer["Revenue_Active"]
+                  </label>
+                  <button class="btn btn-primary btn-sm" type="submit">💾 @Localizer["Save"]</button>
+                </form>
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

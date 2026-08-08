@@ -18,22 +18,38 @@ namespace DeliveryAdmin.Models
     // ── Restaurant ────────────────────────────
     public class RestaurantDto
     {
-        public int Id { get; set; } public string Name { get; set; } = ""; public string? Description { get; set; }
-        public string Address { get; set; } = ""; public double Latitude { get; set; } public double Longitude { get; set; }
-        public string? Phone { get; set; } public string? ImageUrl { get; set; } public string? CoverImageUrl { get; set; }
-        public double Rating { get; set; } public int TotalRatings { get; set; }
-        public decimal DeliveryFee { get; set; } public decimal MinOrderAmount { get; set; }
-        public int EstimatedTime { get; set; } public bool IsOpen { get; set; } public bool IsActive { get; set; }
-        public int? OwnerUserId { get; set; } public string? OwnerName { get; set; } public string? OwnerEmail { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; } = ""; public string? Description { get; set; }
+        public string Address { get; set; } = ""; public double Latitude { get; set; }
+        public double Longitude { get; set; }
+        public string? Phone { get; set; }
+        public string? ImageUrl { get; set; }
+        public string? CoverImageUrl { get; set; }
+        public double Rating { get; set; }
+        public int TotalRatings { get; set; }
+        public decimal DeliveryFee { get; set; }
+        public decimal MinOrderAmount { get; set; }
+        public int EstimatedTime { get; set; }
+        public bool IsOpen { get; set; }
+        public bool IsActive { get; set; }
+        public int? OwnerUserId { get; set; }
+        public string? OwnerName { get; set; }
+        public string? OwnerEmail { get; set; }
         public string StoreType { get; set; } = "Restaurant";
         public DateTime CreatedAt { get; set; }
     }
     public class CreateRestaurantDto
     {
-        public string Name { get; set; } = ""; public string? Description { get; set; } public string Address { get; set; } = "";
-        public double Latitude { get; set; } public double Longitude { get; set; } public string? Phone { get; set; }
-        public decimal DeliveryFee { get; set; } public decimal MinOrderAmount { get; set; } public int EstimatedTime { get; set; } = 30;
-        public string? ImageUrl { get; set; } public string? CoverImageUrl { get; set; }
+        public string Name { get; set; } = ""; public string? Description { get; set; }
+        public string Address { get; set; } = "";
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+        public string? Phone { get; set; }
+        public decimal DeliveryFee { get; set; }
+        public decimal MinOrderAmount { get; set; }
+        public int EstimatedTime { get; set; } = 30;
+        public string? ImageUrl { get; set; }
+        public string? CoverImageUrl { get; set; }
         public int? OwnerUserId { get; set; }
         public string StoreType { get; set; } = "Restaurant";
     }
@@ -62,17 +78,27 @@ namespace DeliveryAdmin.Models
     // ── Product ───────────────────────────────
     public class ProductDto
     {
-        public int Id { get; set; } public string Name { get; set; } = ""; public string? Description { get; set; }
-        public decimal Price { get; set; } public decimal? DiscountedPrice { get; set; } public string? ImageUrl { get; set; }
-        public int PreparationTime { get; set; } public int? Calories { get; set; } public bool IsAvailable { get; set; }
-        public string? CategoryName { get; set; } public int? RestaurantId { get; set; } public string? RestaurantName { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; } = ""; public string? Description { get; set; }
+        public decimal Price { get; set; }
+        public decimal? DiscountedPrice { get; set; }
+        public string? ImageUrl { get; set; }
+        public int PreparationTime { get; set; }
+        public int? Calories { get; set; }
+        public bool IsAvailable { get; set; }
+        public string? CategoryName { get; set; }
+        public int? RestaurantId { get; set; }
+        public string? RestaurantName { get; set; }
         public object? Category { get; set; }
         public List<ProductVariantDto>? Variants { get; set; }
     }
     public class CreateProductDto
     {
-        public int CategoryId { get; set; } public string Name { get; set; } = ""; public string? Description { get; set; }
-        public decimal Price { get; set; } public decimal? DiscountedPrice { get; set; } public string? ImageUrl { get; set; }
+        public int CategoryId { get; set; }
+        public string Name { get; set; } = ""; public string? Description { get; set; }
+        public decimal Price { get; set; }
+        public decimal? DiscountedPrice { get; set; }
+        public string? ImageUrl { get; set; }
         public int PreparationTime { get; set; } = 15; public int? Calories { get; set; }
     }
 
@@ -88,11 +114,21 @@ namespace DeliveryAdmin.Models
     // ── Driver ────────────────────────────────
     public class DriverDto
     {
-        public int Id { get; set; } public int UserId { get; set; } public string? UserName { get; set; } public string? FullName { get; set; } public string? Email { get; set; }
+        public int Id { get; set; }
+        public int UserId { get; set; }
+        public string? UserName { get; set; }
+        public string? FullName { get; set; }
+        public string? Email { get; set; }
         public string VehicleType { get; set; } = ""; public string LicensePlate { get; set; } = ""; public string? NationalId { get; set; }
-        public double Rating { get; set; } public int TotalRatings { get; set; } public int TotalDeliveries { get; set; }
-        public bool IsOnline { get; set; } public bool IsAvailable { get; set; } public bool IsVerified { get; set; }
-        public double? CurrentLatitude { get; set; } public double? CurrentLongitude { get; set; } public DateTime JoinedAt { get; set; }
+        public double Rating { get; set; }
+        public int TotalRatings { get; set; }
+        public int TotalDeliveries { get; set; }
+        public bool IsOnline { get; set; }
+        public bool IsAvailable { get; set; }
+        public bool IsVerified { get; set; }
+        public double? CurrentLatitude { get; set; }
+        public double? CurrentLongitude { get; set; }
+        public DateTime JoinedAt { get; set; }
         public string? Phone { get; set; }
     }
 
@@ -108,23 +144,34 @@ namespace DeliveryAdmin.Models
     // سواق متصل بمحل معين (بورتال صاحب المحل — MyStore/Drivers)
     public class StoreDriverDto
     {
-        public int Id { get; set; } public string? UserName { get; set; } public string? FullName { get; set; }
-        public string? Phone { get; set; } public string VehicleType { get; set; } = ""; public string LicensePlate { get; set; } = "";
-        public double Rating { get; set; } public int TotalDeliveries { get; set; }
-        public bool IsOnline { get; set; } public bool IsAvailable { get; set; }
-        public double? CurrentLatitude { get; set; } public double? CurrentLongitude { get; set; }
+        public int Id { get; set; }
+        public string? UserName { get; set; }
+        public string? FullName { get; set; }
+        public string? Phone { get; set; }
+        public string VehicleType { get; set; } = ""; public string LicensePlate { get; set; } = "";
+        public double Rating { get; set; }
+        public int TotalDeliveries { get; set; }
+        public bool IsOnline { get; set; }
+        public bool IsAvailable { get; set; }
+        public double? CurrentLatitude { get; set; }
+        public double? CurrentLongitude { get; set; }
         public int DeliveriesForThisStore { get; set; }
-        public int? CurrentOrderId { get; set; } public string? CurrentOrderStatus { get; set; }
+        public int? CurrentOrderId { get; set; }
+        public string? CurrentOrderStatus { get; set; }
     }
     public class StoreDriversResult { public int Total { get; set; } public List<StoreDriverDto> Data { get; set; } = new(); }
 
     // ── User ──────────────────────────────────
     public class UserDto
     {
-        public int Id { get; set; } public string FullName { get; set; } = ""; public string Email { get; set; } = "";
+        public int Id { get; set; }
+        public string FullName { get; set; } = ""; public string Email { get; set; } = "";
         public string Phone { get; set; } = ""; public string Role { get; set; } = ""; public string? Address { get; set; }
-        public string? ProfileImageUrl { get; set; } public bool IsActive { get; set; } public DateTime CreatedAt { get; set; }
-        public int? RestaurantId { get; set; } public string? RestaurantName { get; set; }
+        public string? ProfileImageUrl { get; set; }
+        public bool IsActive { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public int? RestaurantId { get; set; }
+        public string? RestaurantName { get; set; }
     }
 
     public class CreateUserDto
@@ -170,12 +217,20 @@ namespace DeliveryAdmin.Models
     // ── Order ─────────────────────────────────
     public class OrderDto
     {
-        public int Id { get; set; } public string Status { get; set; } = ""; public string? CustomerName { get; set; } public string? RestaurantName { get; set; }
-        public decimal SubTotal { get; set; } public decimal DeliveryFee { get; set; } public decimal Discount { get; set; } public decimal TotalAmount { get; set; }
+        public int Id { get; set; }
+        public string Status { get; set; } = ""; public string? CustomerName { get; set; }
+        public string? RestaurantName { get; set; }
+        public decimal SubTotal { get; set; }
+        public decimal DeliveryFee { get; set; }
+        public decimal Discount { get; set; }
+        public decimal TotalAmount { get; set; }
         public string PaymentMethod { get; set; } = ""; public string PaymentStatus { get; set; } = "";
         public string DeliveryAddress { get; set; } = ""; public string? DeliveryNotes { get; set; }
-        public int? ItemCount { get; set; } public DateTime CreatedAt { get; set; } public DateTime? DeliveredAt { get; set; }
-        public RestaurantDto? Restaurant { get; set; } public DriverInfo? Driver { get; set; }
+        public int? ItemCount { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? DeliveredAt { get; set; }
+        public RestaurantDto? Restaurant { get; set; }
+        public DriverInfo? Driver { get; set; }
         public List<OrderItemDto>? Items { get; set; }
     }
     public class OrderItemDto { public int Id { get; set; } public string ProductName { get; set; } = ""; public int Quantity { get; set; } public decimal UnitPrice { get; set; } public decimal TotalPrice { get; set; } public string? Notes { get; set; } }
@@ -195,21 +250,29 @@ namespace DeliveryAdmin.Models
     // ── Coupons ───────────────────────────────
     public class CouponDto
     {
-        public int Id { get; set; } public string Code { get; set; } = ""; public string Title { get; set; } = ""; public string? Description { get; set; }
+        public int Id { get; set; }
+        public string Code { get; set; } = ""; public string Title { get; set; } = ""; public string? Description { get; set; }
         public string DiscountType { get; set; } = "Fixed"; public decimal DiscountValue { get; set; }
-        public decimal? MinOrderAmount { get; set; } public decimal? MaxDiscount { get; set; }
-        public int? RestaurantId { get; set; } public string? RestaurantName { get; set; }
-        public int? OwnerUserId { get; set; } public string? OwnerUserName { get; set; }
-        public int? UsageLimit { get; set; } public int UsedCount { get; set; }
-        public bool IsActive { get; set; } = true; public DateTime? ExpiresAt { get; set; } public DateTime CreatedAt { get; set; }
+        public decimal? MinOrderAmount { get; set; }
+        public decimal? MaxDiscount { get; set; }
+        public int? RestaurantId { get; set; }
+        public string? RestaurantName { get; set; }
+        public int? OwnerUserId { get; set; }
+        public string? OwnerUserName { get; set; }
+        public int? UsageLimit { get; set; }
+        public int UsedCount { get; set; }
+        public bool IsActive { get; set; } = true; public DateTime? ExpiresAt { get; set; }
+        public DateTime CreatedAt { get; set; }
         public bool IsExpired { get; set; }
     }
     public class CreateCouponDto
     {
         public string Code { get; set; } = ""; public string Title { get; set; } = ""; public string? Description { get; set; }
         public string DiscountType { get; set; } = "Fixed"; public decimal DiscountValue { get; set; }
-        public decimal? MinOrderAmount { get; set; } public decimal? MaxDiscount { get; set; }
-        public int? RestaurantId { get; set; } public int? UsageLimit { get; set; }
+        public decimal? MinOrderAmount { get; set; }
+        public decimal? MaxDiscount { get; set; }
+        public int? RestaurantId { get; set; }
+        public int? UsageLimit { get; set; }
         // ✅ لو اتحدد، الكوبون بيبقى خاص بالعميل ده بس (مش بيظهر في القايمة العامة)
         public int? OwnerUserId { get; set; }
         public bool IsActive { get; set; } = true; public DateTime? ExpiresAt { get; set; }
@@ -218,35 +281,60 @@ namespace DeliveryAdmin.Models
     // ── Deals ─────────────────────────────────
     public class DealDto
     {
-        public int Id { get; set; } public string Title { get; set; } = ""; public string? Description { get; set; } public string? ImageUrl { get; set; }
-        public int? RestaurantId { get; set; } public string? RestaurantName { get; set; }
-        public int? ProductId { get; set; } public string? ProductName { get; set; }
-        public decimal? OriginalPrice { get; set; } public decimal? DiscountedPrice { get; set; } public int? DiscountPercent { get; set; }
-        public string? BadgeText { get; set; } public string? BadgeColor { get; set; }
-        public bool IsActive { get; set; } = true; public int SortOrder { get; set; } public DateTime? ExpiresAt { get; set; } public DateTime CreatedAt { get; set; }
+        public int Id { get; set; }
+        public string Title { get; set; } = ""; public string? Description { get; set; }
+        public string? ImageUrl { get; set; }
+        public int? RestaurantId { get; set; }
+        public string? RestaurantName { get; set; }
+        public int? ProductId { get; set; }
+        public string? ProductName { get; set; }
+        public decimal? OriginalPrice { get; set; }
+        public decimal? DiscountedPrice { get; set; }
+        public int? DiscountPercent { get; set; }
+        public string? BadgeText { get; set; }
+        public string? BadgeColor { get; set; }
+        public bool IsActive { get; set; } = true; public int SortOrder { get; set; }
+        public DateTime? ExpiresAt { get; set; }
+        public DateTime CreatedAt { get; set; }
         public bool IsExpired { get; set; }
     }
     public class CreateDealDto
     {
-        public string Title { get; set; } = ""; public string? Description { get; set; } public string? ImageUrl { get; set; }
-        public int? RestaurantId { get; set; } public int? ProductId { get; set; }
-        public decimal? OriginalPrice { get; set; } public decimal? DiscountedPrice { get; set; } public int? DiscountPercent { get; set; }
-        public string? BadgeText { get; set; } public string? BadgeColor { get; set; }
-        public bool IsActive { get; set; } = true; public int SortOrder { get; set; } public DateTime? ExpiresAt { get; set; }
+        public string Title { get; set; } = ""; public string? Description { get; set; }
+        public string? ImageUrl { get; set; }
+        public int? RestaurantId { get; set; }
+        public int? ProductId { get; set; }
+        public decimal? OriginalPrice { get; set; }
+        public decimal? DiscountedPrice { get; set; }
+        public int? DiscountPercent { get; set; }
+        public string? BadgeText { get; set; }
+        public string? BadgeColor { get; set; }
+        public bool IsActive { get; set; } = true; public int SortOrder { get; set; }
+        public DateTime? ExpiresAt { get; set; }
     }
 
     // ── Banners ───────────────────────────────
     public class BannerDto
     {
-        public int Id { get; set; } public string Title { get; set; } = ""; public string? SubTitle { get; set; } public string? ImageUrl { get; set; }
-        public string? ActionUrl { get; set; } public string? BackgroundColor { get; set; } public int SortOrder { get; set; }
-        public bool IsActive { get; set; } = true; public DateTime? StartsAt { get; set; } public DateTime? EndsAt { get; set; } public DateTime CreatedAt { get; set; }
+        public int Id { get; set; }
+        public string Title { get; set; } = ""; public string? SubTitle { get; set; }
+        public string? ImageUrl { get; set; }
+        public string? ActionUrl { get; set; }
+        public string? BackgroundColor { get; set; }
+        public int SortOrder { get; set; }
+        public bool IsActive { get; set; } = true; public DateTime? StartsAt { get; set; }
+        public DateTime? EndsAt { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
     public class CreateBannerDto
     {
-        public string Title { get; set; } = ""; public string? SubTitle { get; set; } public string? ImageUrl { get; set; }
-        public string? ActionUrl { get; set; } public string? BackgroundColor { get; set; } public int SortOrder { get; set; }
-        public bool IsActive { get; set; } = true; public DateTime? StartsAt { get; set; } public DateTime? EndsAt { get; set; }
+        public string Title { get; set; } = ""; public string? SubTitle { get; set; }
+        public string? ImageUrl { get; set; }
+        public string? ActionUrl { get; set; }
+        public string? BackgroundColor { get; set; }
+        public int SortOrder { get; set; }
+        public bool IsActive { get; set; } = true; public DateTime? StartsAt { get; set; }
+        public DateTime? EndsAt { get; set; }
     }
 
     // ── Paged ─────────────────────────────────
@@ -296,6 +384,66 @@ namespace DeliveryAdmin.Models
         public decimal DeliveryFees { get; set; }
         public int CashOrders { get; set; }
         public int CardOrders { get; set; }
+    }
+
+    // ── Revenue (أرباحنا) ──────────────────────
+    public enum RevenueEntityType { Store = 0, Driver = 1 }
+    public enum SubscriptionType { Percentage = 0, Fixed = 1 }
+    public enum SettlementStatus { Unpaid = 0, PartiallyPaid = 1, Paid = 2 }
+
+    public class SubscriptionPlanDto
+    {
+        public int Id { get; set; }
+        public RevenueEntityType EntityType { get; set; }
+        public int? RestaurantId { get; set; }
+        public string? RestaurantName { get; set; }
+        public int? DriverId { get; set; }
+        public string? DriverName { get; set; }
+        public SubscriptionType Type { get; set; }
+        public decimal Value { get; set; }
+        public bool IsActive { get; set; }
+        public DateTime UpdatedAt { get; set; }
+    }
+
+    public class UpsertSubscriptionPlanDto
+    {
+        public RevenueEntityType EntityType { get; set; }
+        public int? RestaurantId { get; set; }
+        public int? DriverId { get; set; }
+        public SubscriptionType Type { get; set; }
+        public decimal Value { get; set; }
+        public bool IsActive { get; set; } = true;
+    }
+
+    public class RevenueSettlementDto
+    {
+        public int Id { get; set; }
+        public RevenueEntityType EntityType { get; set; }
+        public int? RestaurantId { get; set; }
+        public string? RestaurantName { get; set; }
+        public int? DriverId { get; set; }
+        public string? DriverName { get; set; }
+        public DateTime PeriodStart { get; set; }
+        public DateTime PeriodEnd { get; set; }
+        public decimal OrdersTotal { get; set; }
+        public int OrdersCount { get; set; }
+        public SubscriptionType PlanType { get; set; }
+        public decimal PlanValue { get; set; }
+        public decimal AmountDue { get; set; }
+        public decimal AmountPaid { get; set; }
+        public SettlementStatus Status { get; set; }
+        public DateTime? PaidAt { get; set; }
+        public string? Notes { get; set; }
+    }
+
+    public class RevenueSummaryDto
+    {
+        public decimal StoresCollected { get; set; }
+        public decimal StoresPending { get; set; }
+        public decimal DriversCollected { get; set; }
+        public decimal DriversPending { get; set; }
+        public int StoresOverdueCount { get; set; }
+        public int DriversOverdueCount { get; set; }
     }
 
     // ── Delivery Settings ─────────────────────

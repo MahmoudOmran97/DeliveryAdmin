@@ -1,0 +1,137 @@
+@model List<DeliveryAdmin.Models.RevenueSettlementDto>
+@{
+    var tab = (string)ViewBag.Tab;
+    var status = (string?)ViewBag.Status;
+    var from = (string?)ViewBag.From;
+    var to = (string?)ViewBag.To;
+    var summary = (DeliveryAdmin.Models.RevenueSummaryDto)ViewBag.Summary;
+    var isStore = tab != "driver";
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger" style="margin-bottom:14px">@TempData["Error"]</div>
+}
+
+<div class="stat-row">
+  <div class="stat-box"><div class="stat-label">@Localizer["Revenue_StoresCollected"]</div><div class="stat-val" style="color:var(--green)">@summary.StoresCollected.ToString("N0") EGP</div></div>
+  <div class="stat-box"><div class="stat-label">@Localizer["Revenue_StoresPending"]</div><div class="stat-val" style="color:var(--amber)">@summary.StoresPending.ToString("N0") EGP</div></div>
+  <div class="stat-box"><div class="stat-label">@Localizer["Revenue_DriversCollected"]</div><div class="stat-val" style="color:var(--green)">@summary.DriversCollected.ToString("N0") EGP</div></div>
+  <div class="stat-box"><div class="stat-label">@Localizer["Revenue_DriversPending"]</div><div class="stat-val" style="color:var(--amber)">@summary.DriversPending.ToString("N0") EGP</div></div>
+</div>
+
+<div style="display:flex;gap:10px;margin:18px 0">
+  <a class="btn btn-sm @(isStore ? "btn-primary" : "btn-secondary")" asp-action="Index" asp-route-tab="store">🏪 @Localizer["Revenue_Stores"]</a>
+  <a class="btn btn-sm @(!isStore ? "btn-primary" : "btn-secondary")" asp-action="Index" asp-route-tab="driver">🛵 @Localizer["Revenue_Drivers"]</a>
+  <a class="btn btn-secondary btn-sm" asp-action="Plans" asp-route-tab="@tab" style="margin-inline-start:auto">⚙️ @Localizer["Revenue_ManagePlans"]</a>
+</div>
+
+<div class="card" style="margin-bottom:18px">
+  <div class="card-header"><div class="card-title">@Localizer["Revenue_GenerateTitle"]</div></div>
+  <div style="padding:16px 18px">
+    <form method="post" asp-action="Generate" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+      <input type="hidden" name="tab" value="@tab" />
+      <div>
+        <label class="form-label">@Localizer["Revenue_PeriodStart"]</label>
+        <input class="filter-input" type="date" name="periodStart" required />
+      </div>
+      <div>
+        <label class="form-label">@Localizer["Revenue_PeriodEnd"]</label>
+        <input class="filter-input" type="date" name="periodEnd" required />
+      </div>
+      <button class="btn btn-primary btn-sm" type="submit">@Localizer["Revenue_GenerateBtn"]</button>
+    </form>
+    <div class="text-muted text-sm" style="margin-top:10px">@Localizer["Revenue_GenerateNote"]</div>
+  </div>
+</div>
+
+<div class="card" style="margin-bottom:18px">
+  <div class="card-header"><div class="card-title">@Localizer["Revenue_Filter"]</div></div>
+  <div style="padding:16px 18px">
+    <form method="get" asp-action="Index" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+      <input type="hidden" name="tab" value="@tab" />
+      <div>
+        <label class="form-label">@Localizer["Settlements_From"]</label>
+        <input class="filter-input" type="date" name="from" value="@from" />
+      </div>
+      <div>
+        <label class="form-label">@Localizer["Settlements_To"]</label>
+        <input class="filter-input" type="date" name="to" value="@to" />
+      </div>
+      <div>
+        <label class="form-label">@Localizer["Revenue_Status"]</label>
+        <select class="filter-input" name="status">
+          <option value="">@Localizer["Revenue_AllStatuses"]</option>
+          <option value="Unpaid" selected="@(status == "Unpaid")">@Localizer["Revenue_Unpaid"]</option>
+          <option value="PartiallyPaid" selected="@(status == "PartiallyPaid")">@Localizer["Revenue_PartiallyPaid"]</option>
+          <option value="Paid" selected="@(status == "Paid")">@Localizer["Revenue_Paid"]</option>
+        </select>
+      </div>
+      <button class="btn btn-primary btn-sm" type="submit">@Localizer["Settlements_Calculate"]</button>
+    </form>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header"><div class="card-title">@(isStore ? Localizer["Revenue_Stores"] : Localizer["Revenue_Drivers"])</div></div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>@(isStore ? Localizer["Restaurant"] : Localizer["FullName"])</th>
+          <th>@Localizer["Revenue_Period"]</th>
+          <th>@(isStore ? Localizer["Revenue_OrdersTotal"] : Localizer["Revenue_DeliveryTotal"])</th>
+          <th>@Localizer["Revenue_PlanValue"]</th>
+          <th>@Localizer["Revenue_AmountDue"]</th>
+          <th>@Localizer["Revenue_AmountPaid"]</th>
+          <th>@Localizer["Revenue_Status"]</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (!Model.Any())
+        {
+          <tr><td colspan="8"><div class="empty"><div class="empty-icon">💰</div><div>@Localizer["NoData"]</div></div></td></tr>
+        }
+        @foreach (var s in Model)
+        {
+          var badge = s.Status == DeliveryAdmin.Models.SettlementStatus.Paid ? "b-paid"
+                      : s.Status == DeliveryAdmin.Models.SettlementStatus.PartiallyPaid ? "b-pending" : "b-cancelled";
+          var statusLabel = s.Status == DeliveryAdmin.Models.SettlementStatus.Paid ? Localizer["Revenue_Paid"]
+                      : s.Status == DeliveryAdmin.Models.SettlementStatus.PartiallyPaid ? Localizer["Revenue_PartiallyPaid"] : Localizer["Revenue_Unpaid"];
+          var planLabel = s.PlanType == DeliveryAdmin.Models.SubscriptionType.Percentage ? $"{s.PlanValue}%" : $"{s.PlanValue.ToString("N0")} EGP";
+          <tr>
+            <td style="font-weight:600">@(isStore ? s.RestaurantName : s.DriverName)</td>
+            <td class="text-sm">@s.PeriodStart.ToString("yyyy-MM-dd") → @s.PeriodEnd.ToString("yyyy-MM-dd")</td>
+            <td class="mono">@s.OrdersTotal.ToString("N2") EGP <span class="text-muted text-sm">(@s.OrdersCount)</span></td>
+            <td class="mono">@planLabel</td>
+            <td class="mono" style="font-weight:700">@s.AmountDue.ToString("N2") EGP</td>
+            <td class="mono" style="color:var(--green)">@s.AmountPaid.ToString("N2") EGP</td>
+            <td><span class="badge @badge">@statusLabel</span></td>
+            <td>
+              @if (s.Status != DeliveryAdmin.Models.SettlementStatus.Paid)
+              {
+                <form method="post" asp-action="MarkPaid" style="display:flex;gap:4px">
+                  <input type="hidden" name="id" value="@s.Id" />
+                  <input type="hidden" name="tab" value="@tab" />
+                  <button class="btn btn-success btn-sm" type="submit">✅ @Localizer["Revenue_MarkCollected"]</button>
+                </form>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+      @if (Model.Any())
+      {
+        <tfoot>
+          <tr style="font-weight:700;border-top:2px solid var(--border)">
+            <td colspan="4">@Localizer["Total"]</td>
+            <td class="mono">@Model.Sum(x => x.AmountDue).ToString("N2") EGP</td>
+            <td class="mono">@Model.Sum(x => x.AmountPaid).ToString("N2") EGP</td>
+            <td colspan="2"></td>
+          </tr>
+        </tfoot>
+      }
+    </table>
+  </div>
+</div>

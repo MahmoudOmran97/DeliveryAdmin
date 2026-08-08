@@ -123,6 +123,42 @@
 	<data name="DeliveryFee_SaveBtn" xml:space="preserve"><value>Save Changes</value></data>
 	<data name="DeliveryFee_ValidationError" xml:space="preserve"><value>Values must be zero or greater</value></data>
 	<data name="DeliveryFee_SaveSuccess" xml:space="preserve"><value>Delivery fee settings updated successfully</value></data>
+	<data name="Nav_Revenue" xml:space="preserve"><value>Our Revenue</value></data>
+	<data name="Revenue_Title" xml:space="preserve"><value>Our Revenue</value></data>
+	<data name="Revenue_PlansTitle" xml:space="preserve"><value>Manage Store &amp; Driver Subscriptions</value></data>
+	<data name="Revenue_StoresCollected" xml:space="preserve"><value>Collected from Stores</value></data>
+	<data name="Revenue_StoresPending" xml:space="preserve"><value>Pending from Stores</value></data>
+	<data name="Revenue_DriversCollected" xml:space="preserve"><value>Collected from Drivers</value></data>
+	<data name="Revenue_DriversPending" xml:space="preserve"><value>Pending from Drivers</value></data>
+	<data name="Revenue_Stores" xml:space="preserve"><value>Stores</value></data>
+	<data name="Revenue_Drivers" xml:space="preserve"><value>Drivers</value></data>
+	<data name="Revenue_ManagePlans" xml:space="preserve"><value>Manage Subscriptions</value></data>
+	<data name="Revenue_GenerateTitle" xml:space="preserve"><value>Generate Monthly Settlement</value></data>
+	<data name="Revenue_PeriodStart" xml:space="preserve"><value>From</value></data>
+	<data name="Revenue_PeriodEnd" xml:space="preserve"><value>To</value></data>
+	<data name="Revenue_GenerateBtn" xml:space="preserve"><value>Generate Settlements</value></data>
+	<data name="Revenue_GenerateNote" xml:space="preserve"><value>Calculated from Delivered orders in this period, based on each store/driver's plan. Already-generated periods won't be duplicated.</value></data>
+	<data name="Revenue_Filter" xml:space="preserve"><value>Filter</value></data>
+	<data name="Revenue_Status" xml:space="preserve"><value>Status</value></data>
+	<data name="Revenue_AllStatuses" xml:space="preserve"><value>All Statuses</value></data>
+	<data name="Revenue_Unpaid" xml:space="preserve"><value>Unpaid</value></data>
+	<data name="Revenue_PartiallyPaid" xml:space="preserve"><value>Partially Paid</value></data>
+	<data name="Revenue_Paid" xml:space="preserve"><value>Paid</value></data>
+	<data name="Revenue_Period" xml:space="preserve"><value>Period</value></data>
+	<data name="Revenue_OrdersTotal" xml:space="preserve"><value>Period Sales</value></data>
+	<data name="Revenue_DeliveryTotal" xml:space="preserve"><value>Delivery Total</value></data>
+	<data name="Revenue_PlanValue" xml:space="preserve"><value>Subscription Value</value></data>
+	<data name="Revenue_AmountDue" xml:space="preserve"><value>Amount Due</value></data>
+	<data name="Revenue_AmountPaid" xml:space="preserve"><value>Amount Paid</value></data>
+	<data name="Revenue_MarkCollected" xml:space="preserve"><value>Mark Collected</value></data>
+	<data name="Revenue_BackToSettlements" xml:space="preserve"><value>Settlements</value></data>
+	<data name="Revenue_StorePlansTitle" xml:space="preserve"><value>Store Subscriptions</value></data>
+	<data name="Revenue_DriverPlansTitle" xml:space="preserve"><value>Driver Commissions</value></data>
+	<data name="Revenue_SubType" xml:space="preserve"><value>Subscription Type</value></data>
+	<data name="Revenue_SubValue" xml:space="preserve"><value>Value</value></data>
+	<data name="Revenue_Active" xml:space="preserve"><value>Active</value></data>
+	<data name="Revenue_Percentage" xml:space="preserve"><value>Percentage %</value></data>
+	<data name="Revenue_Fixed" xml:space="preserve"><value>Fixed Amount</value></data>
 	<data name="Settlements_Title" xml:space="preserve"><value>Settlements</value></data>
 	<data name="Settlements_TotalOrders" xml:space="preserve"><value>Delivered Orders</value></data>
 	<data name="Settlements_TotalRevenue" xml:space="preserve"><value>Total Revenue</value></data>

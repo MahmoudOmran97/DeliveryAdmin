@@ -124,6 +124,42 @@
 	<data name="DeliveryFee_SaveBtn" xml:space="preserve"><value>حفظ التعديلات</value></data>
 	<data name="DeliveryFee_ValidationError" xml:space="preserve"><value>القيم لازم تكون صفر أو أكبر</value></data>
 	<data name="DeliveryFee_SaveSuccess" xml:space="preserve"><value>تم تحديث إعدادات سعر التوصيل بنجاح</value></data>
+	<data name="Nav_Revenue" xml:space="preserve"><value>أرباحنا</value></data>
+	<data name="Revenue_Title" xml:space="preserve"><value>أرباحنا</value></data>
+	<data name="Revenue_PlansTitle" xml:space="preserve"><value>إدارة اشتراكات المحلات والسواقين</value></data>
+	<data name="Revenue_StoresCollected" xml:space="preserve"><value>محصّل من المحلات</value></data>
+	<data name="Revenue_StoresPending" xml:space="preserve"><value>معلق من المحلات</value></data>
+	<data name="Revenue_DriversCollected" xml:space="preserve"><value>محصّل من السواقين</value></data>
+	<data name="Revenue_DriversPending" xml:space="preserve"><value>معلق من السواقين</value></data>
+	<data name="Revenue_Stores" xml:space="preserve"><value>المحلات</value></data>
+	<data name="Revenue_Drivers" xml:space="preserve"><value>السواقين</value></data>
+	<data name="Revenue_ManagePlans" xml:space="preserve"><value>إدارة الاشتراكات</value></data>
+	<data name="Revenue_GenerateTitle" xml:space="preserve"><value>توليد استحقاق الشهر</value></data>
+	<data name="Revenue_PeriodStart" xml:space="preserve"><value>من تاريخ</value></data>
+	<data name="Revenue_PeriodEnd" xml:space="preserve"><value>إلى تاريخ</value></data>
+	<data name="Revenue_GenerateBtn" xml:space="preserve"><value>توليد الاستحقاقات</value></data>
+	<data name="Revenue_GenerateNote" xml:space="preserve"><value>بيتحسب من الطلبات المُسلَّمة في الفترة دي، بناءً على خطة كل محل/سواق. لو الاستحقاق اتولد قبل كده لنفس الفترة مش هيتكرر.</value></data>
+	<data name="Revenue_Filter" xml:space="preserve"><value>فلترة</value></data>
+	<data name="Revenue_Status" xml:space="preserve"><value>الحالة</value></data>
+	<data name="Revenue_AllStatuses" xml:space="preserve"><value>كل الحالات</value></data>
+	<data name="Revenue_Unpaid" xml:space="preserve"><value>لسه ماتحصلش</value></data>
+	<data name="Revenue_PartiallyPaid" xml:space="preserve"><value>متحصل جزئي</value></data>
+	<data name="Revenue_Paid" xml:space="preserve"><value>متحصل</value></data>
+	<data name="Revenue_Period" xml:space="preserve"><value>الفترة</value></data>
+	<data name="Revenue_OrdersTotal" xml:space="preserve"><value>مبيعات الفترة</value></data>
+	<data name="Revenue_DeliveryTotal" xml:space="preserve"><value>إجمالي التوصيل</value></data>
+	<data name="Revenue_PlanValue" xml:space="preserve"><value>قيمة الاشتراك</value></data>
+	<data name="Revenue_AmountDue" xml:space="preserve"><value>المستحق</value></data>
+	<data name="Revenue_AmountPaid" xml:space="preserve"><value>المحصّل</value></data>
+	<data name="Revenue_MarkCollected" xml:space="preserve"><value>تم التحصيل</value></data>
+	<data name="Revenue_BackToSettlements" xml:space="preserve"><value>الاستحقاقات</value></data>
+	<data name="Revenue_StorePlansTitle" xml:space="preserve"><value>اشتراكات المحلات</value></data>
+	<data name="Revenue_DriverPlansTitle" xml:space="preserve"><value>عمولة السواقين</value></data>
+	<data name="Revenue_SubType" xml:space="preserve"><value>نوع الاشتراك</value></data>
+	<data name="Revenue_SubValue" xml:space="preserve"><value>القيمة</value></data>
+	<data name="Revenue_Active" xml:space="preserve"><value>فعّال</value></data>
+	<data name="Revenue_Percentage" xml:space="preserve"><value>نسبة %</value></data>
+	<data name="Revenue_Fixed" xml:space="preserve"><value>مبلغ ثابت</value></data>
 	<data name="Settlements_Title" xml:space="preserve"><value>التسويات المالية</value></data>
 	<data name="Settlements_TotalOrders" xml:space="preserve"><value>الطلبات المُسلّمة</value></data>
 	<data name="Settlements_TotalRevenue" xml:space="preserve"><value>إجمالي الإيراد</value></data>

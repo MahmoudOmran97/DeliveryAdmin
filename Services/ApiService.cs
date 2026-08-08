@@ -264,6 +264,38 @@ namespace DeliveryAdmin.Services
             return await Get<SettlementReportDto>(q.TrimEnd('&', '?'));
         }
 
+        // ── Revenue (أرباحنا) ────────────────────────────────────────────────
+        public async Task<List<SubscriptionPlanDto>> GetSubscriptionPlans(RevenueEntityType? entityType = null)
+        {
+            var q = "revenue/plans" + (entityType.HasValue ? $"?entityType={entityType}" : "");
+            return await Get<List<SubscriptionPlanDto>>(q) ?? new();
+        }
+
+        public async Task<(bool ok, string? error)> SaveSubscriptionPlan(UpsertSubscriptionPlanDto dto)
+        {
+            var (ok, error, _) = await Post<object>("revenue/plans", dto);
+            return (ok, error);
+        }
+
+        public async Task<List<RevenueSettlementDto>> GetRevenueSettlements(
+            RevenueEntityType? entityType = null, SettlementStatus? status = null, DateTime? from = null, DateTime? to = null)
+        {
+            var q = "revenue/settlements?";
+            if (entityType.HasValue) q += $"entityType={entityType}&";
+            if (status.HasValue) q += $"status={status}&";
+            if (from.HasValue) q += $"from={from.Value:yyyy-MM-dd}&";
+            if (to.HasValue) q += $"to={to.Value:yyyy-MM-dd}&";
+            return await Get<List<RevenueSettlementDto>>(q.TrimEnd('&', '?')) ?? new();
+        }
+
+        public async Task<RevenueSummaryDto?> GetRevenueSummary() => await Get<RevenueSummaryDto>("revenue/summary");
+
+        public async Task<(bool ok, string? error)> GenerateRevenueSettlements(DateTime periodStart, DateTime periodEnd)
+            => await PostNoContent("revenue/settlements/generate", new { periodStart, periodEnd });
+
+        public async Task<(bool ok, string? error)> MarkSettlementPaid(int id, decimal? amountPaid, string? notes)
+            => await PostNoContent($"revenue/settlements/{id}/mark-paid", new { amountPaid, notes });
+
         // ── Payments ──────────────────────────────────────────────────────
         public async Task<PagedResult<PaymentDto>?> GetPayments(int page = 1, int size = 20, string? search = null)
         {
