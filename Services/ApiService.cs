@@ -384,6 +384,44 @@ namespace DeliveryAdmin.Services
         public Task<PrescriptionRequestDto?> GetPrescriptionRequestById(int id)
             => Get<PrescriptionRequestDto>($"prescriptionrequests/{id}");
 
+        // ── إعدادات الـ AI (شات الدعم) ──────────────────────────────────────
+        public Task<AiSettingsDto?> GetAiSettings() => Get<AiSettingsDto>("aisettings");
+
+        public Task<(bool ok, string? error)> UpdateAiSettings(UpdateAiSettingsRequest dto)
+            => Put("aisettings", dto);
+
+        // ── الشكاوى (Complaints) ─────────────────────────────────────────────
+        public Task<ComplaintsAdminResult?> GetComplaintsAdmin(string? status = null, int page = 1, int size = 20)
+        {
+            var qs = string.IsNullOrEmpty(status) ? "" : $"&status={Uri.EscapeDataString(status)}";
+            return Get<ComplaintsAdminResult>($"complaints/admin?page={page}&pageSize={size}{qs}");
+        }
+
+        public Task<ComplaintDto?> GetComplaintById(int id) => Get<ComplaintDto>($"complaints/{id}");
+
+        public Task<(bool ok, string? error)> UpdateComplaintStatus(int id, UpdateComplaintStatusRequest dto)
+            => Put($"complaints/{id}/status", dto);
+
+        // ── شاتات الدعم (Support Chats) ──────────────────────────────────────
+        public Task<SupportSessionsAdminResult?> GetSupportSessionsAdmin(string? status = null, int page = 1, int size = 20)
+        {
+            var qs = string.IsNullOrEmpty(status) ? "" : $"&status={Uri.EscapeDataString(status)}";
+            return Get<SupportSessionsAdminResult>($"supportchat/admin?page={page}&pageSize={size}{qs}");
+        }
+
+        public Task<SupportSessionDetailDto?> GetSupportSessionById(int id)
+            => Get<SupportSessionDetailDto>($"supportchat/admin/{id}");
+
+        public async Task<(bool ok, string? error)> SendSupportAdminReply(int id, string message)
+        {
+            var (ok, error, _) = await Post<SupportSessionMessageDto>($"supportchat/admin/{id}/messages",
+                new SendSupportMessageRequest { Message = message });
+            return (ok, error);
+        }
+
+        public Task<(bool ok, string? error)> CloseSupportSession(int id)
+            => Put($"supportchat/admin/{id}/close");
+
         // ── شات الطلب بين العميل والدليفري (الأدمن بيراجعها بس، مفيش إرسال) ──
         public Task<List<OrderChatMessageDto>?> GetOrderChatMessages(int orderId)
             => Get<List<OrderChatMessageDto>>($"chatmessages/{orderId}");

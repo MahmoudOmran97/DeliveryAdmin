@@ -348,6 +348,106 @@ namespace DeliveryAdmin.Models
         public DateTime CreatedAt { get; set; }
     }
 
+    // ── AI Settings ──────────────────────────────────────────────────────
+    public class AiSettingsDto
+    {
+        public int Id { get; set; }
+        public bool IsEnabled { get; set; }
+        public string? ApiKeyMasked { get; set; }
+        public bool HasApiKey { get; set; }
+        public string Model { get; set; } = "";
+        public string? SystemPrompt { get; set; }
+        public int MaxTokens { get; set; }
+        public DateTime UpdatedAt { get; set; }
+    }
+
+    public class UpdateAiSettingsRequest
+    {
+        public bool IsEnabled { get; set; } = true;
+        public string? ApiKey { get; set; }
+        public string? Model { get; set; }
+        public string? SystemPrompt { get; set; }
+        public int? MaxTokens { get; set; }
+    }
+
+    // ── Complaints ───────────────────────────────────────────────────────
+    public class ComplaintDto
+    {
+        public int Id { get; set; }
+        public int CustomerId { get; set; }
+        public string? CustomerName { get; set; }
+        public string? CustomerPhone { get; set; }
+        public string Subject { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string Status { get; set; } = "Open";
+        public string Source { get; set; } = "Customer";
+        public int? OrderId { get; set; }
+        public int? SupportSessionId { get; set; }
+        public string? AdminNote { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? ResolvedAt { get; set; }
+    }
+
+    public class ComplaintsAdminResult
+    {
+        public int Total { get; set; }
+        public int Page { get; set; }
+        public int PageSize { get; set; }
+        public List<ComplaintDto> Items { get; set; } = new();
+    }
+
+    public class UpdateComplaintStatusRequest
+    {
+        public string Status { get; set; } = "Open";
+        public string? AdminNote { get; set; }
+    }
+
+    // ── Support Chats ────────────────────────────────────────────────────
+    public class SupportSessionListDto
+    {
+        public int Id { get; set; }
+        public int CustomerId { get; set; }
+        public string? CustomerName { get; set; }
+        public string Status { get; set; } = "AI";
+        public DateTime CreatedAt { get; set; }
+        public DateTime LastMessageAt { get; set; }
+        public string? LastMessage { get; set; }
+    }
+
+    public class SupportSessionsAdminResult
+    {
+        public int Total { get; set; }
+        public int Page { get; set; }
+        public int PageSize { get; set; }
+        public List<SupportSessionListDto> Items { get; set; } = new();
+    }
+
+    public class SupportSessionMessageDto
+    {
+        public int Id { get; set; }
+        public string SenderRole { get; set; } = "Customer"; // Customer/AI/Admin
+        public int? SenderId { get; set; }
+        public string Message { get; set; } = "";
+        public DateTime CreatedAt { get; set; }
+    }
+
+    public class SupportSessionDetailDto
+    {
+        public int Id { get; set; }
+        public int CustomerId { get; set; }
+        public string? CustomerName { get; set; }
+        public string? CustomerPhone { get; set; }
+        public string Status { get; set; } = "AI";
+        public DateTime CreatedAt { get; set; }
+        public DateTime LastMessageAt { get; set; }
+        public List<SupportSessionMessageDto> Messages { get; set; } = new();
+    }
+
+    public class SendSupportMessageRequest
+    {
+        public string Message { get; set; } = "";
+    }
+
     // ── شات الطلب بين العميل والدليفري (للعرض من الأدمن فقط، read-only) ──
     public class OrderChatMessageDto
     {

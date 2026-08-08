@@ -1,0 +1,75 @@
+@model DeliveryAdmin.Models.ComplaintDto
+
+<div class="card" style="margin-bottom:16px">
+    <div class="card-header">
+        <div class="card-title">📝 #@Model.Id — @Model.Subject</div>
+        <a class="btn btn-secondary btn-sm" asp-action="Index">← @Localizer["Complaints_Back"]</a>
+    </div>
+    <div style="padding:16px;display:flex;gap:28px;flex-wrap:wrap">
+        <div>
+            <div class="stat-label" style="margin-bottom:6px">@Localizer["Complaints_Customer"]</div>
+            <div>@Model.CustomerName</div>
+            @if (!string.IsNullOrEmpty(Model.CustomerPhone))
+            {
+                <div class="text-muted text-sm">@Model.CustomerPhone</div>
+            }
+        </div>
+        <div>
+            <div class="stat-label" style="margin-bottom:6px">@Localizer["Complaints_Source"]</div>
+            <div>@(Model.Source == "AI" ? Localizer["Complaints_Source_AI"] : Localizer["Complaints_Source_Customer"])</div>
+        </div>
+        @if (Model.OrderId.HasValue)
+        {
+            <div>
+                <div class="stat-label" style="margin-bottom:6px">@Localizer["Complaints_Order"]</div>
+                <a asp-controller="Orders" asp-action="Details" asp-route-id="@Model.OrderId">#@Model.OrderId</a>
+            </div>
+        }
+        @if (Model.SupportSessionId.HasValue)
+        {
+            <div>
+                <div class="stat-label" style="margin-bottom:6px">@Localizer["SupportChats_Title"]</div>
+                <a asp-controller="SupportChats" asp-action="Chat" asp-route-id="@Model.SupportSessionId">@Localizer["SupportChats_OpenChat"]</a>
+            </div>
+        }
+        <div>
+            <div class="stat-label" style="margin-bottom:6px">@Localizer["Complaints_Date"]</div>
+            <div>@Model.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</div>
+        </div>
+    </div>
+</div>
+
+<div class="card" style="margin-bottom:16px">
+    <div class="card-header"><div class="card-title">@Localizer["Complaints_Description"]</div></div>
+    <div style="padding:16px;white-space:pre-wrap">@Model.Description</div>
+</div>
+
+<div class="card">
+    <div class="card-header"><div class="card-title">@Localizer["Complaints_UpdateStatus"]</div></div>
+    <div style="padding:16px">
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger" style="margin-bottom:12px">@TempData["Error"]</div>
+        }
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success" style="margin-bottom:12px">@TempData["Success"]</div>
+        }
+        <form method="post" asp-action="UpdateStatus" asp-route-id="@Model.Id">
+            <div class="form-group" style="margin-bottom:12px">
+                <label class="form-label">@Localizer["Complaints_Status"]</label>
+                <select class="form-control" name="status">
+                    @foreach (var s in new[] { "Open", "InProgress", "Resolved", "Closed" })
+                    {
+                        <option value="@s" selected="@(Model.Status == s)">@s</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group" style="margin-bottom:16px">
+                <label class="form-label">@Localizer["Complaints_AdminNote"]</label>
+                <textarea class="form-control" name="adminNote" rows="3">@Model.AdminNote</textarea>
+            </div>
+            <button class="btn btn-primary" type="submit">💾 @Localizer["Save"]</button>
+        </form>
+    </div>
+</div>

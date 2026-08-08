@@ -469,4 +469,49 @@
 	<data name="Msg_ProductDeleted" xml:space="preserve"><value>تم حذف المنتج</value></data>
 	<data name="Msg_OrderUpdated" xml:space="preserve"><value>تم تحديث الطلب</value></data>
 	<data name="Msg_OrderUpdateFailed" xml:space="preserve"><value>فشل تحديث الحالة</value></data>
+
+	<data name="AiSettings_Title" xml:space="preserve"><value>إعدادات الذكاء الاصطناعي</value></data>
+	<data name="AiSettings_Description" xml:space="preserve"><value>تحكم في مساعد الذكاء الاصطناعي اللي بيرد على العملاء في شات الدعم داخل تطبيق الكاستمر. النظام بيكلم OpenRouter (openrouter.ai) فتقدر تختار أي موديل متاح عندهم. تقدر توقف المساعد، تغيّر مفتاح الـ API، الموديل، أو التعليمات اللي بيتبعها.</value></data>
+	<data name="AiSettings_IsEnabled" xml:space="preserve"><value>تفعيل المساعد الذكي في شات الدعم</value></data>
+	<data name="AiSettings_ApiKey" xml:space="preserve"><value>مفتاح OpenRouter API</value></data>
+	<data name="AiSettings_ApiKeyHint" xml:space="preserve"><value>من موقع openrouter.ai — سيبه فاضي لو مش عايز تغيّر المفتاح الحالي.</value></data>
+	<data name="AiSettings_Model" xml:space="preserve"><value>الموديل (OpenRouter model slug)</value></data>
+	<data name="AiSettings_ModelHint" xml:space="preserve"><value>زي openai/gpt-4o-mini أو anthropic/claude-3.5-sonnet أو google/gemini-2.0-flash-001 — شوف القائمة الكاملة على openrouter.ai/models</value></data>
+	<data name="AiSettings_MaxTokens" xml:space="preserve"><value>أقصى طول للرد (Tokens)</value></data>
+	<data name="AiSettings_SystemPrompt" xml:space="preserve"><value>تعليمات المساعد (System Prompt)</value></data>
+	<data name="AiSettings_SystemPromptHint" xml:space="preserve"><value>ده اللي بيحدد شخصية وسلوك المساعد، وإمتى يسجل شكوى تلقائي وإمتى يحوّل الشات لأدمن.</value></data>
+	<data name="AiSettings_LastUpdated" xml:space="preserve"><value>آخر تحديث:</value></data>
+
+	<data name="Complaints_Title" xml:space="preserve"><value>شكاوى العملاء</value></data>
+	<data name="Complaints_Subtitle" xml:space="preserve"><value>الشكاوى اللي وصلت من العملاء يدويًا أو تلقائي من المساعد الذكي</value></data>
+	<data name="Complaints_Customer" xml:space="preserve"><value>العميل</value></data>
+	<data name="Complaints_Subject" xml:space="preserve"><value>عنوان الشكوى</value></data>
+	<data name="Complaints_Status" xml:space="preserve"><value>الحالة</value></data>
+	<data name="Complaints_Source" xml:space="preserve"><value>المصدر</value></data>
+	<data name="Complaints_Source_AI" xml:space="preserve"><value>🤖 المساعد الذكي</value></data>
+	<data name="Complaints_Source_Customer" xml:space="preserve"><value>👤 العميل</value></data>
+	<data name="Complaints_Date" xml:space="preserve"><value>التاريخ</value></data>
+	<data name="Complaints_ViewDetails" xml:space="preserve"><value>عرض</value></data>
+	<data name="Complaints_AdminNote" xml:space="preserve"><value>ملاحظة الأدمن</value></data>
+	<data name="Complaints_UpdateStatus" xml:space="preserve"><value>تحديث الحالة</value></data>
+	<data name="Complaints_Order" xml:space="preserve"><value>الطلب</value></data>
+	<data name="Complaints_Empty" xml:space="preserve"><value>مفيش شكاوى دلوقتي</value></data>
+	<data name="Complaints_Description" xml:space="preserve"><value>تفاصيل الشكوى</value></data>
+	<data name="Complaints_Back" xml:space="preserve"><value>رجوع لكل الشكاوى</value></data>
+
+	<data name="SupportChats_Title" xml:space="preserve"><value>شاتات الدعم</value></data>
+	<data name="SupportChats_Subtitle" xml:space="preserve"><value>الشاتات اللي محولة من المساعد الذكي لأدمن حقيقي</value></data>
+	<data name="SupportChats_Customer" xml:space="preserve"><value>العميل</value></data>
+	<data name="SupportChats_Status" xml:space="preserve"><value>الحالة</value></data>
+	<data name="SupportChats_LastMessage" xml:space="preserve"><value>آخر رسالة</value></data>
+	<data name="SupportChats_OpenChat" xml:space="preserve"><value>فتح الشات</value></data>
+	<data name="SupportChats_Close" xml:space="preserve"><value>إغلاق الشات</value></data>
+	<data name="SupportChats_SendReply" xml:space="preserve"><value>إرسال</value></data>
+	<data name="SupportChats_Empty" xml:space="preserve"><value>مفيش شاتات دعم دلوقتي</value></data>
+	<data name="SupportChats_TypeMessage" xml:space="preserve"><value>اكتب ردك هنا...</value></data>
+	<data name="SupportChats_Back" xml:space="preserve"><value>رجوع لكل الشاتات</value></data>
+
+	<data name="Sidebar_AiSettings" xml:space="preserve"><value>إعدادات الـ AI</value></data>
+	<data name="Sidebar_Complaints" xml:space="preserve"><value>شكاوى العملاء</value></data>
+	<data name="Sidebar_SupportChats" xml:space="preserve"><value>شاتات الدعم</value></data>
 </root>

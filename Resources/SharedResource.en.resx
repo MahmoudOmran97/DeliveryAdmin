@@ -469,4 +469,49 @@
 	<data name="Msg_ProductDeleted" xml:space="preserve"><value>Product deleted</value></data>
 	<data name="Msg_OrderUpdated" xml:space="preserve"><value>Order updated</value></data>
 	<data name="Msg_OrderUpdateFailed" xml:space="preserve"><value>Failed to update status</value></data>
+
+	<data name="AiSettings_Title" xml:space="preserve"><value>AI Settings</value></data>
+	<data name="AiSettings_Description" xml:space="preserve"><value>Control the AI assistant that replies to customers in the support chat of the customer app. The system talks to OpenRouter (openrouter.ai), so you can pick any model available there. You can disable the assistant, change the API key, model, or the instructions it follows.</value></data>
+	<data name="AiSettings_IsEnabled" xml:space="preserve"><value>Enable the AI assistant in support chat</value></data>
+	<data name="AiSettings_ApiKey" xml:space="preserve"><value>OpenRouter API Key</value></data>
+	<data name="AiSettings_ApiKeyHint" xml:space="preserve"><value>From openrouter.ai — leave blank to keep the current key.</value></data>
+	<data name="AiSettings_Model" xml:space="preserve"><value>Model (OpenRouter model slug)</value></data>
+	<data name="AiSettings_ModelHint" xml:space="preserve"><value>e.g. openai/gpt-4o-mini, anthropic/claude-3.5-sonnet, google/gemini-2.0-flash-001 — full list at openrouter.ai/models</value></data>
+	<data name="AiSettings_MaxTokens" xml:space="preserve"><value>Max reply length (tokens)</value></data>
+	<data name="AiSettings_SystemPrompt" xml:space="preserve"><value>Assistant Instructions (System Prompt)</value></data>
+	<data name="AiSettings_SystemPromptHint" xml:space="preserve"><value>This defines the assistant's personality and behavior, and when it auto-creates a complaint or escalates to an admin.</value></data>
+	<data name="AiSettings_LastUpdated" xml:space="preserve"><value>Last updated:</value></data>
+
+	<data name="Complaints_Title" xml:space="preserve"><value>Customer Complaints</value></data>
+	<data name="Complaints_Subtitle" xml:space="preserve"><value>Complaints submitted manually or auto-created by the AI assistant</value></data>
+	<data name="Complaints_Customer" xml:space="preserve"><value>Customer</value></data>
+	<data name="Complaints_Subject" xml:space="preserve"><value>Subject</value></data>
+	<data name="Complaints_Status" xml:space="preserve"><value>Status</value></data>
+	<data name="Complaints_Source" xml:space="preserve"><value>Source</value></data>
+	<data name="Complaints_Source_AI" xml:space="preserve"><value>🤖 AI Assistant</value></data>
+	<data name="Complaints_Source_Customer" xml:space="preserve"><value>👤 Customer</value></data>
+	<data name="Complaints_Date" xml:space="preserve"><value>Date</value></data>
+	<data name="Complaints_ViewDetails" xml:space="preserve"><value>View</value></data>
+	<data name="Complaints_AdminNote" xml:space="preserve"><value>Admin Note</value></data>
+	<data name="Complaints_UpdateStatus" xml:space="preserve"><value>Update Status</value></data>
+	<data name="Complaints_Order" xml:space="preserve"><value>Order</value></data>
+	<data name="Complaints_Empty" xml:space="preserve"><value>No complaints yet</value></data>
+	<data name="Complaints_Description" xml:space="preserve"><value>Complaint Details</value></data>
+	<data name="Complaints_Back" xml:space="preserve"><value>Back to all complaints</value></data>
+
+	<data name="SupportChats_Title" xml:space="preserve"><value>Support Chats</value></data>
+	<data name="SupportChats_Subtitle" xml:space="preserve"><value>Chats escalated from the AI assistant to a human admin</value></data>
+	<data name="SupportChats_Customer" xml:space="preserve"><value>Customer</value></data>
+	<data name="SupportChats_Status" xml:space="preserve"><value>Status</value></data>
+	<data name="SupportChats_LastMessage" xml:space="preserve"><value>Last Message</value></data>
+	<data name="SupportChats_OpenChat" xml:space="preserve"><value>Open Chat</value></data>
+	<data name="SupportChats_Close" xml:space="preserve"><value>Close Chat</value></data>
+	<data name="SupportChats_SendReply" xml:space="preserve"><value>Send</value></data>
+	<data name="SupportChats_Empty" xml:space="preserve"><value>No support chats yet</value></data>
+	<data name="SupportChats_TypeMessage" xml:space="preserve"><value>Type your reply...</value></data>
+	<data name="SupportChats_Back" xml:space="preserve"><value>Back to all chats</value></data>
+
+	<data name="Sidebar_AiSettings" xml:space="preserve"><value>AI Settings</value></data>
+	<data name="Sidebar_Complaints" xml:space="preserve"><value>Complaints</value></data>
+	<data name="Sidebar_SupportChats" xml:space="preserve"><value>Support Chats</value></data>
 </root>

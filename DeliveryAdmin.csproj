@@ -5,4 +5,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>DeliveryAdmin</RootNamespace>
   </PropertyGroup>
+  <ItemGroup>
+    <Content Include="Properties\launchSettings.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml.user" />
+    <None Include="Properties\PublishProfiles\site83003-WebDeploy.pubxml.user" />
+    <None Include="Properties\PublishProfiles\site83003-WebDeploy1.pubxml.user" />
+  </ItemGroup>
 </Project>

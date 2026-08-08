@@ -1,0 +1,78 @@
+@model DeliveryAdmin.Models.ComplaintsAdminResult
+@{
+    ViewData["Title"] = Localizer["Complaints_Title"];
+    var currentStatus = ViewBag.CurrentStatus as string;
+}
+
+<div class="card" style="margin-bottom:16px">
+    <div class="card-header">
+        <div class="card-title">📝 @Localizer["Complaints_Title"]</div>
+        <div class="text-muted text-sm">@Localizer["Complaints_Subtitle"]</div>
+    </div>
+    <div style="padding:12px 16px;display:flex;gap:8px;flex-wrap:wrap">
+        <a class="btn btn-sm @(currentStatus == "Open" ? "btn-primary" : "btn-secondary")" asp-action="Index" asp-route-status="Open">Open</a>
+        <a class="btn btn-sm @(currentStatus == "InProgress" ? "btn-primary" : "btn-secondary")" asp-action="Index" asp-route-status="InProgress">InProgress</a>
+        <a class="btn btn-sm @(currentStatus == "Resolved" ? "btn-primary" : "btn-secondary")" asp-action="Index" asp-route-status="Resolved">Resolved</a>
+        <a class="btn btn-sm @(currentStatus == "Closed" ? "btn-primary" : "btn-secondary")" asp-action="Index" asp-route-status="Closed">Closed</a>
+        <a class="btn btn-sm @(string.IsNullOrEmpty(currentStatus) ? "btn-primary" : "btn-secondary")" asp-action="Index">@Localizer["Users_All"]</a>
+    </div>
+</div>
+
+<div class="card">
+    @if (Model.Items.Count == 0)
+    {
+        <div class="empty" style="padding:40px">
+            <div class="empty-icon">📝</div>
+            <div>@Localizer["Complaints_Empty"]</div>
+        </div>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>@Localizer["Complaints_Customer"]</th>
+                    <th>@Localizer["Complaints_Subject"]</th>
+                    <th>@Localizer["Complaints_Source"]</th>
+                    <th>@Localizer["Complaints_Status"]</th>
+                    <th>@Localizer["Complaints_Date"]</th>
+                    <th>@Localizer["Actions"]</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in Model.Items)
+                {
+                    <tr>
+                        <td>#@c.Id</td>
+                        <td>@c.CustomerName</td>
+                        <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">@c.Subject</td>
+                        <td>@(c.Source == "AI" ? Localizer["Complaints_Source_AI"] : Localizer["Complaints_Source_Customer"])</td>
+                        <td>
+                            @{
+                                var cls = c.Status switch { "Open" => "b-pending", "InProgress" => "b-active", "Resolved" => "b-active", "Closed" => "b-inactive", _ => "b-pending" };
+                            }
+                            <span class="badge @cls">@c.Status</span>
+                        </td>
+                        <td>@c.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                        <td><a class="btn btn-sm btn-primary" asp-action="Details" asp-route-id="@c.Id">@Localizer["Complaints_ViewDetails"]</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @if (Model.Total > Model.PageSize)
+        {
+            <div style="padding:12px 16px;display:flex;gap:8px;justify-content:center">
+                @{
+                    var totalPages = (int)Math.Ceiling(Model.Total / (double)Model.PageSize);
+                }
+                @for (int p = 1; p <= totalPages; p++)
+                {
+                    <a class="btn btn-sm @(p == Model.Page ? "btn-primary" : "btn-secondary")"
+                       asp-action="Index" asp-route-page="@p" asp-route-status="@currentStatus">@p</a>
+                }
+            </div>
+        }
+    }
+</div>

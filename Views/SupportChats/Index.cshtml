@@ -1,0 +1,59 @@
+@model DeliveryAdmin.Models.SupportSessionsAdminResult
+@{
+    ViewData["Title"] = Localizer["SupportChats_Title"];
+    var currentStatus = ViewBag.CurrentStatus as string;
+}
+
+<div class="card" style="margin-bottom:16px">
+    <div class="card-header">
+        <div class="card-title">💬 @Localizer["SupportChats_Title"]</div>
+        <div class="text-muted text-sm">@Localizer["SupportChats_Subtitle"]</div>
+    </div>
+    <div style="padding:12px 16px;display:flex;gap:8px;flex-wrap:wrap">
+        <a class="btn btn-sm @(currentStatus == "Escalated" ? "btn-primary" : "btn-secondary")" asp-action="Index" asp-route-status="Escalated">🆘 Escalated</a>
+        <a class="btn btn-sm @(currentStatus == "AI" ? "btn-primary" : "btn-secondary")" asp-action="Index" asp-route-status="AI">🤖 AI</a>
+        <a class="btn btn-sm @(currentStatus == "Closed" ? "btn-primary" : "btn-secondary")" asp-action="Index" asp-route-status="Closed">✅ Closed</a>
+        <a class="btn btn-sm @(string.IsNullOrEmpty(currentStatus) ? "btn-primary" : "btn-secondary")" asp-action="Index">@Localizer["Users_All"]</a>
+    </div>
+</div>
+
+<div class="card">
+    @if (Model.Items.Count == 0)
+    {
+        <div class="empty" style="padding:40px">
+            <div class="empty-icon">💬</div>
+            <div>@Localizer["SupportChats_Empty"]</div>
+        </div>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>@Localizer["SupportChats_Customer"]</th>
+                    <th>@Localizer["SupportChats_LastMessage"]</th>
+                    <th>@Localizer["SupportChats_Status"]</th>
+                    <th>@Localizer["Orders_Date"]</th>
+                    <th>@Localizer["Actions"]</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var s in Model.Items)
+                {
+                    <tr>
+                        <td>@s.CustomerName</td>
+                        <td style="max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">@s.LastMessage</td>
+                        <td>
+                            @{
+                                var cls = s.Status switch { "Escalated" => "b-active", "Closed" => "b-inactive", _ => "b-pending" };
+                            }
+                            <span class="badge @cls">@s.Status</span>
+                        </td>
+                        <td>@s.LastMessageAt.ToLocalTime().ToString("dd/MM HH:mm")</td>
+                        <td><a class="btn btn-sm btn-primary" asp-action="Chat" asp-route-id="@s.Id">@Localizer["SupportChats_OpenChat"]</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

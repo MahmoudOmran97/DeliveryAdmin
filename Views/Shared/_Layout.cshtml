@@ -103,6 +103,10 @@
                 <a class="nav-item @(ctrl == "Coupons" ? "active" : "")" asp-controller="Coupons" asp-action="Index"><span class="nav-icon">🎟️</span> @Localizer["Nav_Coupons"]</a>
                 <a class="nav-item @(ctrl == "Deals" ? "active" : "")" asp-controller="Deals" asp-action="Index"><span class="nav-icon">🔥</span> @Localizer["Nav_Deals"]</a>
                 <a class="nav-item @(ctrl == "Banners" ? "active" : "")" asp-controller="Banners" asp-action="Index"><span class="nav-icon">🖼️</span> @Localizer["Nav_Banners"]</a>
+                <div class="nav-section">🤖 @Localizer["Sidebar_AiSettings"]</div>
+                <a class="nav-item @(ctrl == "SupportChats" ? "active" : "")" asp-controller="SupportChats" asp-action="Index"><span class="nav-icon">💬</span> @Localizer["Sidebar_SupportChats"]</a>
+                <a class="nav-item @(ctrl == "Complaints" ? "active" : "")" asp-controller="Complaints" asp-action="Index"><span class="nav-icon">📝</span> @Localizer["Sidebar_Complaints"]</a>
+                <a class="nav-item @(ctrl == "AiSettings" ? "active" : "")" asp-controller="AiSettings" asp-action="Index"><span class="nav-icon">🤖</span> @Localizer["Sidebar_AiSettings"]</a>
                 <div class="nav-section">@Localizer["Nav_Notifications"]</div>
                 <a class="nav-item @(ctrl == "Notifications" ? "active" : "")" asp-controller="Notifications" asp-action="Send"><span class="nav-icon">🔔</span> @Localizer["Notif_Title"]</a>
             }
@@ -372,7 +376,13 @@
             }
 
             function notifUrl(n) {
+                if (n.actionUrl) {
+                    if (n.actionUrl.indexOf('supportchat/') === 0) return '/SupportChats/Chat/' + n.actionUrl.split('/')[1];
+                    if (n.actionUrl.indexOf('complaint/') === 0) return '/Complaints/Details/' + n.actionUrl.split('/')[1];
+                }
                 if (n.type === 'PrescriptionRequest') return '/Pharmacy';
+                if (n.type === 'SupportMessage' || n.type === 'SupportEscalated') return '/SupportChats';
+                if (n.type === 'Complaint' || n.type === 'ComplaintUpdate') return '/Complaints';
                 if (n.orderId) return @Html.Raw(isStoreOwner ? "'/MyStore/Orders'" : "'/Orders/Details/' + n.orderId");
                 return '#';
             }
