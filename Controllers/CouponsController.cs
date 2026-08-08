@@ -24,6 +24,8 @@ namespace DeliveryAdmin.Controllers
         {
             var rests = await _api.GetRestaurants(1, 100);
             ViewBag.Restaurants = rests?.Data ?? new();
+            var customers = await _api.GetUsers(1, 500, role: "Customer");
+            ViewBag.Customers = customers?.Data ?? new();
             return View(new CreateCouponDto());
         }
 
@@ -44,6 +46,8 @@ namespace DeliveryAdmin.Controllers
 
             var rests = await _api.GetRestaurants(1, 100);
             ViewBag.Restaurants = rests?.Data ?? new();
+            var customers = await _api.GetUsers(1, 500, role: "Customer");
+            ViewBag.Customers = customers?.Data ?? new();
             ViewBag.CouponId = id;
 
             var dto = new CreateCouponDto
@@ -56,6 +60,7 @@ namespace DeliveryAdmin.Controllers
                 MinOrderAmount = c.MinOrderAmount,
                 MaxDiscount = c.MaxDiscount,
                 RestaurantId = c.RestaurantId,
+                OwnerUserId = c.OwnerUserId,
                 UsageLimit = c.UsageLimit,
                 IsActive = c.IsActive,
                 ExpiresAt = c.ExpiresAt

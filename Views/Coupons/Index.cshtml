@@ -36,7 +36,13 @@
                             <div style="font-weight:600">@c.Title</div>
                             <div class="text-muted text-sm" style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">@c.Description</div>
                         </td>
-                        <td class="text-sm">@(c.RestaurantName ?? Localizer["Coupons_AllRestaurants"].Value)</td>
+                        <td class="text-sm">
+                            @(c.RestaurantName ?? Localizer["Coupons_AllRestaurants"].Value)
+                            @if (c.OwnerUserId.HasValue)
+                            {
+                                <div class="badge b-pending" style="margin-top:4px;display:inline-block">👤 @(c.OwnerUserName ?? ("#" + c.OwnerUserId))</div>
+                            }
+                        </td>
                         <td class="mono" style="font-weight:600">
                             @(c.DiscountType == "Percentage" ? c.DiscountValue.ToString("N0") + "%" : c.DiscountValue.ToString("N2") + " " + Localizer["Currency"])
                         </td>

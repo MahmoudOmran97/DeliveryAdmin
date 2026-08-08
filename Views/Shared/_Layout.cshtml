@@ -380,7 +380,7 @@
                     if (n.actionUrl.indexOf('supportchat/') === 0) return '/SupportChats/Chat/' + n.actionUrl.split('/')[1];
                     if (n.actionUrl.indexOf('complaint/') === 0) return '/Complaints/Details/' + n.actionUrl.split('/')[1];
                 }
-                if (n.type === 'PrescriptionRequest') return '/Pharmacy';
+                if (n.type === 'PrescriptionRequest') return @Html.Raw(isStoreOwner ? "'/Pharmacy'" : "'/PharmacyChats'");
                 if (n.type === 'SupportMessage' || n.type === 'SupportEscalated') return '/SupportChats';
                 if (n.type === 'Complaint' || n.type === 'ComplaintUpdate') return '/Complaints';
                 if (n.orderId) return @Html.Raw(isStoreOwner ? "'/MyStore/Orders'" : "'/Orders/Details/' + n.orderId");
@@ -558,7 +558,7 @@
                 var isOrderish = data.type === 'NewOrder' || data.type === 'PrescriptionRequest';
                 if (isOrderish) {
                     var url = data.type === 'PrescriptionRequest'
-                        ? '/Pharmacy'
+                        ? (isStoreOwner ? '/Pharmacy' : '/PharmacyChats')
                         : (isStoreOwner ? '/MyStore/Orders' : (data.orderId ? '/Orders/Details/' + data.orderId : '#'));
                     showCenterAlert(data.title, data.body, url);
                 } else if ("Notification" in window && Notification.permission === "granted") {

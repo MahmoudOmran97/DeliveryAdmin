@@ -27,6 +27,7 @@
     }
     else
     {
+        <div class="table-wrap">
         <table class="table">
             <thead>
                 <tr>
@@ -41,19 +42,20 @@
                 @foreach (var s in Model.Items)
                 {
                     <tr>
-                        <td>@s.CustomerName</td>
-                        <td style="max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">@s.LastMessage</td>
-                        <td>
+                        <td data-label="@Localizer["SupportChats_Customer"]">@s.CustomerName</td>
+                        <td data-label="@Localizer["SupportChats_LastMessage"]" style="max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">@s.LastMessage</td>
+                        <td data-label="@Localizer["SupportChats_Status"]">
                             @{
                                 var cls = s.Status switch { "Escalated" => "b-active", "Closed" => "b-inactive", _ => "b-pending" };
                             }
                             <span class="badge @cls">@s.Status</span>
                         </td>
-                        <td>@s.LastMessageAt.ToLocalTime().ToString("dd/MM HH:mm")</td>
-                        <td><a class="btn btn-sm btn-primary" asp-action="Chat" asp-route-id="@s.Id">@Localizer["SupportChats_OpenChat"]</a></td>
+                        <td data-label="@Localizer["Orders_Date"]">@s.LastMessageAt.ToLocalTime().ToString("dd/MM HH:mm")</td>
+                        <td data-label="@Localizer["Actions"]"><a class="btn btn-sm btn-primary" asp-action="Chat" asp-route-id="@s.Id">@Localizer["SupportChats_OpenChat"]</a></td>
                     </tr>
                 }
             </tbody>
         </table>
+        </div>
     }
 </div>

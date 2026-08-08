@@ -280,6 +280,9 @@
 	<data name="Coupons_Usage" xml:space="preserve"><value>Usage</value></data>
 	<data name="Coupons_Expires" xml:space="preserve"><value>Expires</value></data>
 	<data name="Coupons_AllRestaurants" xml:space="preserve"><value>All Restaurants</value></data>
+	<data name="Coupons_OwnerCustomer" xml:space="preserve"><value>Assign to a specific customer</value></data>
+	<data name="Coupons_AllCustomers" xml:space="preserve"><value>All Customers (public coupon)</value></data>
+	<data name="Coupons_OwnerCustomerHint" xml:space="preserve"><value>If you pick a customer, this coupon will only be available to them and won't show in the public coupons list</value></data>
 	<data name="Coupons_NoData" xml:space="preserve"><value>No coupons found</value></data>
 	<data name="Coupons_Disabled" xml:space="preserve"><value>Disabled</value></data>
 	<data name="Coupons_Expired" xml:space="preserve"><value>Expired</value></data>

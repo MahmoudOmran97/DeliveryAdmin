@@ -28,6 +28,7 @@
     }
     else
     {
+        <div class="table-wrap">
         <table class="table">
             <thead>
                 <tr>
@@ -44,22 +45,23 @@
                 @foreach (var c in Model.Items)
                 {
                     <tr>
-                        <td>#@c.Id</td>
-                        <td>@c.CustomerName</td>
-                        <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">@c.Subject</td>
-                        <td>@(c.Source == "AI" ? Localizer["Complaints_Source_AI"] : Localizer["Complaints_Source_Customer"])</td>
-                        <td>
+                        <td data-label="#">#@c.Id</td>
+                        <td data-label="@Localizer["Complaints_Customer"]">@c.CustomerName</td>
+                        <td data-label="@Localizer["Complaints_Subject"]" style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">@c.Subject</td>
+                        <td data-label="@Localizer["Complaints_Source"]">@(c.Source == "AI" ? Localizer["Complaints_Source_AI"] : Localizer["Complaints_Source_Customer"])</td>
+                        <td data-label="@Localizer["Complaints_Status"]">
                             @{
                                 var cls = c.Status switch { "Open" => "b-pending", "InProgress" => "b-active", "Resolved" => "b-active", "Closed" => "b-inactive", _ => "b-pending" };
                             }
                             <span class="badge @cls">@c.Status</span>
                         </td>
-                        <td>@c.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
-                        <td><a class="btn btn-sm btn-primary" asp-action="Details" asp-route-id="@c.Id">@Localizer["Complaints_ViewDetails"]</a></td>
+                        <td data-label="@Localizer["Complaints_Date"]">@c.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                        <td data-label="@Localizer["Actions"]"><a class="btn btn-sm btn-primary" asp-action="Details" asp-route-id="@c.Id">@Localizer["Complaints_ViewDetails"]</a></td>
                     </tr>
                 }
             </tbody>
         </table>
+        </div>
 
         @if (Model.Total > Model.PageSize)
         {

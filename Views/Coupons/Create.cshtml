@@ -2,6 +2,7 @@
 @{
   ViewData["Title"] = "Add Coupon";
   var rests = (List<DeliveryAdmin.Models.RestaurantDto>)ViewBag.Restaurants;
+  var customers = (List<DeliveryAdmin.Models.UserDto>)ViewBag.Customers;
 }
 <div style="max-width:700px">
 <div class="card">
@@ -40,6 +41,15 @@
         </div>
         <div class="form-group"><label class="form-label">@Localizer["Coupons_UsageLimit"]</label><input class="form-control" asp-for="UsageLimit" type="number" placeholder="@Localizer["Coupons_UnlimitedHint"]"></div>
         <div class="form-group"><label class="form-label">@Localizer["Coupons_Expires"]</label><input class="form-control" asp-for="ExpiresAt" type="date"></div>
+
+        <div class="form-group form-full">
+          <label class="form-label">@Localizer["Coupons_OwnerCustomer"]</label>
+          <select class="form-control" asp-for="OwnerUserId">
+            <option value="">@Localizer["Coupons_AllCustomers"]</option>
+            @foreach (var c in customers) { <option value="@c.Id">@c.FullName (@c.Phone)</option> }
+          </select>
+          <div class="text-muted text-sm" style="margin-top:4px">@Localizer["Coupons_OwnerCustomerHint"]</div>
+        </div>
 
         <div class="form-group">
           <label class="form-label">@Localizer["Status"]</label>

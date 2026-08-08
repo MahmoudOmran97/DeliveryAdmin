@@ -199,6 +199,7 @@ namespace DeliveryAdmin.Models
         public string DiscountType { get; set; } = "Fixed"; public decimal DiscountValue { get; set; }
         public decimal? MinOrderAmount { get; set; } public decimal? MaxDiscount { get; set; }
         public int? RestaurantId { get; set; } public string? RestaurantName { get; set; }
+        public int? OwnerUserId { get; set; } public string? OwnerUserName { get; set; }
         public int? UsageLimit { get; set; } public int UsedCount { get; set; }
         public bool IsActive { get; set; } = true; public DateTime? ExpiresAt { get; set; } public DateTime CreatedAt { get; set; }
         public bool IsExpired { get; set; }
@@ -209,6 +210,8 @@ namespace DeliveryAdmin.Models
         public string DiscountType { get; set; } = "Fixed"; public decimal DiscountValue { get; set; }
         public decimal? MinOrderAmount { get; set; } public decimal? MaxDiscount { get; set; }
         public int? RestaurantId { get; set; } public int? UsageLimit { get; set; }
+        // ✅ لو اتحدد، الكوبون بيبقى خاص بالعميل ده بس (مش بيظهر في القايمة العامة)
+        public int? OwnerUserId { get; set; }
         public bool IsActive { get; set; } = true; public DateTime? ExpiresAt { get; set; }
     }
 
