@@ -522,9 +522,24 @@
 	<data name="AiSettings_MaxTokens" xml:space="preserve"><value>أقصى طول للرد (Tokens)</value></data>
 	<data name="AiSettings_SystemPrompt" xml:space="preserve"><value>تعليمات المساعد (System Prompt)</value></data>
 	<data name="AiSettings_SystemPromptHint" xml:space="preserve"><value>ده اللي بيحدد شخصية وسلوك المساعد، وإمتى يسجل شكوى تلقائي وإمتى يحوّل الشات لأدمن.</value></data>
-	<data name="AiSettings_LastUpdated" xml:space="preserve"><value>آخر تحديث:</value></data>
+			<data name="AiSettings_LastUpdated" xml:space="preserve"><value>آخر تحديث:</value></data>
 
-	<data name="Complaints_Title" xml:space="preserve"><value>شكاوى العملاء</value></data>
+		<data name="SiteLinks_Title" xml:space="preserve"><value>روابط التواصل والموقع</value></data>
+		<data name="SiteLinks_Description" xml:space="preserve"><value>حدّث روابط موقعك وحسابات التواصل الاجتماعي التي تظهر للعملاء في تطبيق العميل. يمكنك تفعيل أو إخفاء أي رابط وترتيب ظهوره.</value></data>
+		<data name="SiteLinks_TitleField" xml:space="preserve"><value>اسم الرابط</value></data>
+		<data name="SiteLinks_Url" xml:space="preserve"><value>الرابط</value></data>
+		<data name="SiteLinks_Icon" xml:space="preserve"><value>الأيقونة</value></data>
+		<data name="SiteLinks_Order" xml:space="preserve"><value>الترتيب</value></data>
+		<data name="SiteLinks_Active" xml:space="preserve"><value>إظهار الرابط للعملاء</value></data>
+		<data name="SiteLinks_Save" xml:space="preserve"><value>حفظ الرابط</value></data>
+		<data name="SiteLinks_SaveSuccess" xml:space="preserve"><value>تم حفظ رابط التواصل بنجاح</value></data>
+		<data name="SiteLinks_SaveError" xml:space="preserve"><value>تعذر حفظ رابط التواصل</value></data>
+		<data name="SiteLinks_ValidationKey" xml:space="preserve"><value>مفتاح الرابط غير صحيح</value></data>
+		<data name="SiteLinks_ValidationUrl" xml:space="preserve"><value>اكتب رابطًا صحيحًا يبدأ بـ http أو https</value></data>
+		<data name="SiteLinks_Empty" xml:space="preserve"><value>لا توجد روابط تواصل مضافة حتى الآن</value></data>
+		<data name="SiteLinks_LastUpdated" xml:space="preserve"><value>آخر تحديث:</value></data>
+
+		<data name="Complaints_Title" xml:space="preserve"><value>شكاوى العملاء</value></data>
 	<data name="Complaints_Subtitle" xml:space="preserve"><value>الشكاوى اللي وصلت من العملاء يدويًا أو تلقائي من المساعد الذكي</value></data>
 	<data name="Complaints_Customer" xml:space="preserve"><value>العميل</value></data>
 	<data name="Complaints_Subject" xml:space="preserve"><value>عنوان الشكوى</value></data>
@@ -555,5 +570,6 @@
 
 	<data name="Sidebar_AiSettings" xml:space="preserve"><value>إعدادات الـ AI</value></data>
 	<data name="Sidebar_Complaints" xml:space="preserve"><value>شكاوى العملاء</value></data>
-	<data name="Sidebar_SupportChats" xml:space="preserve"><value>شاتات الدعم</value></data>
-</root>
+		<data name="Sidebar_SupportChats" xml:space="preserve"><value>شاتات الدعم</value></data>
+		<data name="Sidebar_SiteLinks" xml:space="preserve"><value>روابط التواصل</value></data>
+	</root>

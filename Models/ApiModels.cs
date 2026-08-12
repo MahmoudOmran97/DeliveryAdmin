@@ -627,4 +627,25 @@ namespace DeliveryAdmin.Models
     {
         public string Message { get; set; } = "";
     }
+
+    // ── Site Links / Social Links ─────────────────────────────────────────
+    public class SiteLinkAdminDto
+    {
+        public string Key { get; set; } = "";
+        public string Title { get; set; } = "";
+        public string Url { get; set; } = "";
+        public string? Icon { get; set; }
+        public bool IsActive { get; set; }
+        public int SortOrder { get; set; }
+        public DateTime UpdatedAt { get; set; }
+    }
+
+    public class UpdateSiteLinkRequest
+    {
+        public string Title { get; set; } = "";
+        public string Url { get; set; } = "";
+        public string? Icon { get; set; }
+        public bool IsActive { get; set; } = true;
+        public int SortOrder { get; set; }
+    }
 }

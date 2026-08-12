@@ -424,6 +424,13 @@ namespace DeliveryAdmin.Services
         public Task<(bool ok, string? error)> UpdateAiSettings(UpdateAiSettingsRequest dto)
             => Put("aisettings", dto);
 
+        // ── Site Links / Social Links ───────────────────────────────────────
+        public Task<List<SiteLinkAdminDto>?> GetSiteLinksAdmin()
+            => Get<List<SiteLinkAdminDto>>("site-links/admin");
+
+        public Task<(bool ok, string? error)> UpdateSiteLink(string key, UpdateSiteLinkRequest dto)
+            => Put($"site-links/{Uri.EscapeDataString(key)}", dto);
+
         // ── الشكاوى (Complaints) ─────────────────────────────────────────────
         public Task<ComplaintsAdminResult?> GetComplaintsAdmin(string? status = null, int page = 1, int size = 20)
         {

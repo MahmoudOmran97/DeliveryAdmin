@@ -522,9 +522,24 @@
 	<data name="AiSettings_MaxTokens" xml:space="preserve"><value>Max reply length (tokens)</value></data>
 	<data name="AiSettings_SystemPrompt" xml:space="preserve"><value>Assistant Instructions (System Prompt)</value></data>
 	<data name="AiSettings_SystemPromptHint" xml:space="preserve"><value>This defines the assistant's personality and behavior, and when it auto-creates a complaint or escalates to an admin.</value></data>
-	<data name="AiSettings_LastUpdated" xml:space="preserve"><value>Last updated:</value></data>
+			<data name="AiSettings_LastUpdated" xml:space="preserve"><value>Last updated:</value></data>
 
-	<data name="Complaints_Title" xml:space="preserve"><value>Customer Complaints</value></data>
+		<data name="SiteLinks_Title" xml:space="preserve"><value>Social &amp; Website Links</value></data>
+		<data name="SiteLinks_Description" xml:space="preserve"><value>Manage the website and social media links shown to customers in the customer app. You can enable, hide, and reorder each link.</value></data>
+		<data name="SiteLinks_TitleField" xml:space="preserve"><value>Link name</value></data>
+		<data name="SiteLinks_Url" xml:space="preserve"><value>URL</value></data>
+		<data name="SiteLinks_Icon" xml:space="preserve"><value>Icon</value></data>
+		<data name="SiteLinks_Order" xml:space="preserve"><value>Order</value></data>
+		<data name="SiteLinks_Active" xml:space="preserve"><value>Show this link to customers</value></data>
+		<data name="SiteLinks_Save" xml:space="preserve"><value>Save link</value></data>
+		<data name="SiteLinks_SaveSuccess" xml:space="preserve"><value>Social link saved successfully</value></data>
+		<data name="SiteLinks_SaveError" xml:space="preserve"><value>Could not save the social link</value></data>
+		<data name="SiteLinks_ValidationKey" xml:space="preserve"><value>The link key is invalid.</value></data>
+		<data name="SiteLinks_ValidationUrl" xml:space="preserve"><value>Enter a valid URL that starts with http or https.</value></data>
+		<data name="SiteLinks_Empty" xml:space="preserve"><value>No social links have been added yet.</value></data>
+		<data name="SiteLinks_LastUpdated" xml:space="preserve"><value>Last updated:</value></data>
+
+		<data name="Complaints_Title" xml:space="preserve"><value>Customer Complaints</value></data>
 	<data name="Complaints_Subtitle" xml:space="preserve"><value>Complaints submitted manually or auto-created by the AI assistant</value></data>
 	<data name="Complaints_Customer" xml:space="preserve"><value>Customer</value></data>
 	<data name="Complaints_Subject" xml:space="preserve"><value>Subject</value></data>
@@ -555,5 +570,6 @@
 
 	<data name="Sidebar_AiSettings" xml:space="preserve"><value>AI Settings</value></data>
 	<data name="Sidebar_Complaints" xml:space="preserve"><value>Complaints</value></data>
-	<data name="Sidebar_SupportChats" xml:space="preserve"><value>Support Chats</value></data>
-</root>
+		<data name="Sidebar_SupportChats" xml:space="preserve"><value>Support Chats</value></data>
+		<data name="Sidebar_SiteLinks" xml:space="preserve"><value>Social Links</value></data>
+	</root>
