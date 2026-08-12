@@ -1,7 +1,7 @@
 {
-  "name": "Tawseela Admin",
-  "short_name": "Tawseela",
-  "description": "Tawseela Delivery Admin Dashboard",
+  "name": "Taly Admin",
+  "short_name": "Taly",
+  "description": "Taly Delivery Admin Dashboard",
   "start_url": "/Dashboard",
   "scope": "/",
   "display": "standalone",

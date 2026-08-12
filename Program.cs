@@ -32,7 +32,7 @@ builder.Services.AddControllersWithViews(options =>
 var keysFolder = Path.Combine(builder.Environment.ContentRootPath, "App_Data", "Keys");
 Directory.CreateDirectory(keysFolder);
 builder.Services.AddDataProtection()
-    .SetApplicationName("TawseelaAdmin")
+    .SetApplicationName("TalyAdmin")
     .PersistKeysToFileSystem(new DirectoryInfo(keysFolder));
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

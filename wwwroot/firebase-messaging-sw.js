@@ -11,7 +11,7 @@
 // ─────────────────────────────────────────────────────────────────────────
 
 // ── 1) PWA shell caching (منقول من service-worker.js القديم) ─────────────
-const CACHE_NAME = 'tawseela-admin-shell-v1';
+const CACHE_NAME = 'Taly-admin-shell-v1';
 const SHELL_ASSETS = [
   '/css/admin.css',
   '/js/admin.js',
@@ -80,7 +80,7 @@ if (self.firebaseConfig && self.firebaseConfig.apiKey) {
 
     messaging.onBackgroundMessage(function (payload) {
         var data = payload.data || {};
-        var title = data.title || 'Tawseela';
+        var title = data.title || 'Taly';
         var body = data.body || '';
         var url = data.orderId
             ? (data.type === 'PrescriptionRequest' ? '/Pharmacy' : '/MyStore/Orders')
