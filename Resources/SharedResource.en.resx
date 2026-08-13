@@ -336,6 +336,17 @@
 	<data name="OrderChat_NoMessages" xml:space="preserve"><value>No messages between customer and driver yet</value></data>
 	<data name="OrderChat_Customer" xml:space="preserve"><value>Customer</value></data>
 	<data name="OrderChat_Driver" xml:space="preserve"><value>Driver</value></data>
+	<data name="OrderEstimate_Title" xml:space="preserve"><value>Estimated Preparation Time</value></data>
+	<data name="OrderEstimate_Subtitle" xml:space="preserve"><value>Calculated automatically from the store's base time and the slowest item in the order</value></data>
+	<data name="OrderEstimate_RangeLabel" xml:space="preserve"><value>Estimated range shown to the customer</value></data>
+	<data name="OrderEstimate_Minutes" xml:space="preserve"><value>min</value></data>
+	<data name="OrderEstimate_Min" xml:space="preserve"><value>Minimum (min)</value></data>
+	<data name="OrderEstimate_Max" xml:space="preserve"><value>Maximum (min)</value></data>
+	<data name="OrderEstimate_Review" xml:space="preserve"><value>Review &amp; Save</value></data>
+	<data name="OrderEstimate_NotSetYet" xml:space="preserve"><value>Not calculated yet — will be set automatically once the store accepts the order</value></data>
+	<data name="OrderEstimate_ValidationRange" xml:space="preserve"><value>Invalid range: minimum must be at least 1 and maximum must not be less than the minimum.</value></data>
+	<data name="OrderEstimate_SaveSuccess" xml:space="preserve"><value>Estimated time updated successfully</value></data>
+	<data name="OrderEstimate_SaveError" xml:space="preserve"><value>Failed to update the estimated time</value></data>
 	<data name="Description" xml:space="preserve"><value>Description</value></data>
 	<data name="SaveChanges" xml:space="preserve"><value>Save Changes</value></data>
 	<data name="Products_Image" xml:space="preserve"><value>Image URL</value></data>

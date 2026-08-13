@@ -245,6 +245,7 @@ namespace DeliveryAdmin.Services
         }
         public async Task<OrderDto?> GetOrder(int id) => await Get<OrderDto>($"orders/{id}");
         public async Task<(bool ok, string? error)> UpdateOrderStatus(int id, string status) => await Put($"orders/{id}/status", new { status });
+        public async Task<(bool ok, string? error)> UpdateEstimatedTime(int id, int min, int max) => await Put($"orders/{id}/estimated-time", new { min, max });
 
         // تستخدمها MyStoreController (صاحب المحل/الصيدلية): قبول/رفض/تحضير/جاهز
         public async Task<(bool ok, string? error)> UpdateMyOrderStatus(int id, string status) => await Put($"orders/{id}/restaurant-status", new { status });

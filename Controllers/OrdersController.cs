@@ -40,6 +40,20 @@ namespace DeliveryAdmin.Controllers
             return RedirectToAction("Details", new { id });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UpdateEstimatedTime(int id, int min, int max)
+        {
+            if (min < 1 || max < min)
+            {
+                TempData["Error"] = L["OrderEstimate_ValidationRange"].Value;
+                return RedirectToAction("Details", new { id });
+            }
+
+            var (ok, error) = await _api.UpdateEstimatedTime(id, min, max);
+            TempData[ok ? "Success" : "Error"] = ok ? L["OrderEstimate_SaveSuccess"].Value : (error ?? L["OrderEstimate_SaveError"].Value);
+            return RedirectToAction("Details", new { id });
+        }
+
         // ── AJAX: بولينج لشات العميل والدليفري بتاع الطلب (عرض فقط، الأدمن مش طرف فيه) ──
         [HttpGet]
         public async Task<IActionResult> ChatMessages(int id)

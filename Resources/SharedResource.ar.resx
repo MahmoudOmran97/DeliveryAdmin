@@ -336,6 +336,17 @@
 	<data name="OrderChat_NoMessages" xml:space="preserve"><value>مفيش رسائل بين العميل والدليفري لسه</value></data>
 	<data name="OrderChat_Customer" xml:space="preserve"><value>العميل</value></data>
 	<data name="OrderChat_Driver" xml:space="preserve"><value>الدليفري</value></data>
+	<data name="OrderEstimate_Title" xml:space="preserve"><value>الوقت المتوقع للتحضير</value></data>
+	<data name="OrderEstimate_Subtitle" xml:space="preserve"><value>بيتحسب أوتوماتيك من وقت المحل الأساسي + أبطأ صنف في الأوردر</value></data>
+	<data name="OrderEstimate_RangeLabel" xml:space="preserve"><value>الرينج اللي بيظهر للعميل</value></data>
+	<data name="OrderEstimate_Minutes" xml:space="preserve"><value>دقيقة</value></data>
+	<data name="OrderEstimate_Min" xml:space="preserve"><value>الحد الأدنى (دقيقة)</value></data>
+	<data name="OrderEstimate_Max" xml:space="preserve"><value>الحد الأقصى (دقيقة)</value></data>
+	<data name="OrderEstimate_Review" xml:space="preserve"><value>مراجعة وحفظ</value></data>
+	<data name="OrderEstimate_NotSetYet" xml:space="preserve"><value>لسه متحسبتش — هتتحدد أوتوماتيك بمجرد ما المحل يقبل الأوردر</value></data>
+	<data name="OrderEstimate_ValidationRange" xml:space="preserve"><value>الرينج غير صحيح: الحد الأدنى لازم يكون 1 على الأقل، والحد الأقصى مايبقاش أقل من الأدنى.</value></data>
+	<data name="OrderEstimate_SaveSuccess" xml:space="preserve"><value>تم تحديث الوقت المتوقع بنجاح</value></data>
+	<data name="OrderEstimate_SaveError" xml:space="preserve"><value>فشل تحديث الوقت المتوقع</value></data>
 	<data name="Description" xml:space="preserve"><value>الوصف</value></data>
 	<data name="SaveChanges" xml:space="preserve"><value>حفظ التغييرات</value></data>
 	<data name="Products_Image" xml:space="preserve"><value>رابط الصورة</value></data>

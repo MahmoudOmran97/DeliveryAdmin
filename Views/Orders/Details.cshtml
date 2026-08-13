@@ -17,7 +17,169 @@
   else if(Model.Status=="Preparing") transitions = new[]{"ReadyForPickup"};
   else if(Model.Status=="ReadyForPickup") transitions = new[]{"OnTheWay"};
   else if(Model.Status=="OnTheWay") transitions = new[]{"Delivered"};
+
+  var hasEstimate = Model.EstimatedDeliveryMin.HasValue && Model.EstimatedDeliveryMax.HasValue;
+  var estMin = Model.EstimatedDeliveryMin ?? 10;
+  var estMax = Model.EstimatedDeliveryMax ?? 30;
 }
+
+<style>
+    .estimate-card {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, var(--amber-bg), var(--bg2) 55%);
+        border: 1px solid rgba(245,158,11,.25);
+        border-radius: 16px;
+        padding: 20px 22px;
+        margin-bottom: 22px;
+    }
+
+        .estimate-card::before {
+            content: "";
+            position: absolute;
+            inset: 0 auto 0 0;
+            width: 4px;
+            background: linear-gradient(180deg, var(--amber), var(--accent));
+        }
+
+    .estimate-head {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        margin-bottom: 16px;
+    }
+
+    .estimate-icon {
+        width: 42px;
+        height: 42px;
+        flex-shrink: 0;
+        border-radius: 12px;
+        background: var(--amber-bg);
+        border: 1px solid rgba(245,158,11,.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+    }
+
+    .estimate-title {
+        font-size: 15px;
+        font-weight: 800;
+        color: var(--text);
+    }
+
+    .estimate-subtitle {
+        font-size: 12px;
+        color: var(--text3);
+        margin-top: 2px;
+    }
+
+    .estimate-range-display {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .estimate-range-label {
+        font-size: 12px;
+        color: var(--text2);
+    }
+
+    .estimate-range-badge {
+        display: flex;
+        align-items: baseline;
+        gap: 4px;
+        font-family: var(--mono);
+        font-weight: 800;
+        font-size: 20px;
+        color: var(--amber);
+    }
+
+    .estimate-range-dash {
+        color: var(--text3);
+        font-size: 14px;
+    }
+
+    .estimate-range-unit {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text2);
+        margin-inline-start: 4px;
+    }
+
+    .estimate-bar {
+        position: relative;
+        height: 8px;
+        border-radius: 99px;
+        background: var(--bg4);
+        margin-bottom: 18px;
+        overflow: hidden;
+    }
+
+    .estimate-bar-fill {
+        position: absolute;
+        inset: 0;
+        border-radius: 99px;
+        background: linear-gradient(90deg, var(--amber), var(--accent));
+    }
+
+    .estimate-empty {
+        font-size: 13px;
+        color: var(--text3);
+        background: var(--bg3);
+        border: 1px dashed var(--border2);
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin-bottom: 16px;
+    }
+
+    .estimate-form {
+        display: flex;
+        align-items: end;
+        gap: 12px;
+        flex-wrap: wrap;
+        padding-top: 14px;
+        border-top: 1px solid rgba(245,158,11,.2);
+    }
+
+    .estimate-field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+        .estimate-field label {
+            font-size: 11px;
+            color: var(--text3);
+            font-weight: 600;
+        }
+
+        .estimate-field input {
+            width: 120px;
+        }
+
+    .estimate-save {
+        margin-inline-start: auto;
+    }
+
+    @@media (max-width: 600px) {
+        .estimate-form {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .estimate-field input {
+            width: 100%;
+        }
+
+        .estimate-save {
+            margin-inline-start: 0;
+        }
+    }
+</style>
 
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:10px">
   <div style="display:flex;align-items:center;gap:14px">
@@ -41,6 +203,46 @@
     }
     <a class="btn btn-secondary btn-sm" asp-controller="Orders" asp-action="Index">← Back</a>
   </div>
+</div>
+
+<div class="estimate-card">
+  <div class="estimate-head">
+    <div class="estimate-icon">⏱️</div>
+    <div>
+      <div class="estimate-title">@Localizer["OrderEstimate_Title"]</div>
+      <div class="estimate-subtitle">@Localizer["OrderEstimate_Subtitle"]</div>
+    </div>
+  </div>
+
+  @if (hasEstimate)
+  {
+    <div class="estimate-range-display">
+      <span class="estimate-range-label">@Localizer["OrderEstimate_RangeLabel"]</span>
+      <div class="estimate-range-badge">
+        <span>@estMin</span>
+        <span class="estimate-range-dash">–</span>
+        <span>@estMax</span>
+        <span class="estimate-range-unit">@Localizer["OrderEstimate_Minutes"]</span>
+      </div>
+    </div>
+    <div class="estimate-bar"><div class="estimate-bar-fill"></div></div>
+  }
+  else
+  {
+    <div class="estimate-empty">⏳ @Localizer["OrderEstimate_NotSetYet"]</div>
+  }
+
+  <form method="post" action="/Orders/UpdateEstimatedTime/@Model.Id" class="estimate-form">
+    <div class="estimate-field">
+      <label>@Localizer["OrderEstimate_Min"]</label>
+      <input type="number" min="1" name="min" value="@estMin" class="form-control" required />
+    </div>
+    <div class="estimate-field">
+      <label>@Localizer["OrderEstimate_Max"]</label>
+      <input type="number" min="1" name="max" value="@estMax" class="form-control" required />
+    </div>
+    <button class="btn btn-warning estimate-save" type="submit">💾 @Localizer["OrderEstimate_Review"]</button>
+  </form>
 </div>
 
 <div class="tabs-nav">

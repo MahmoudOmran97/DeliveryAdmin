@@ -227,6 +227,8 @@ namespace DeliveryAdmin.Models
         public string PaymentMethod { get; set; } = ""; public string PaymentStatus { get; set; } = "";
         public string DeliveryAddress { get; set; } = ""; public string? DeliveryNotes { get; set; }
         public int? ItemCount { get; set; }
+        public int? EstimatedDeliveryMin { get; set; }
+        public int? EstimatedDeliveryMax { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? DeliveredAt { get; set; }
         public RestaurantDto? Restaurant { get; set; }
