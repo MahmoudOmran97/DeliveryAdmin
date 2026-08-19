@@ -11,8 +11,8 @@
   else if (Model.Status == "Cancelled") sc = "b-cancelled";
   else if (Model.Status == "Rejected") sc = "b-rejected";
 
-  // وقت الطلب: عرض بس (Read-only) — نفس أرقام EstimatedDeliveryMin/Max اللي
-  // بيحددها الأدمن من شاشته هو، صاحب المحل يشوفها بس من غير أي تعديل.
+  // وقت الطلب: صاحب المحل بقى يقدر يعدّل الوقت المتوقع للتحضير زي الأدمن
+  // بالظبط (الـ API بيتأكد إن الأوردر ده تابع لمحله هو قبل ما يسمحله يعدّل).
   var hasEstimate = Model.EstimatedDeliveryMin.HasValue && Model.EstimatedDeliveryMax.HasValue;
   var isActiveOrder = Model.Status != "Delivered" && Model.Status != "Cancelled" && Model.Status != "Rejected";
 }
@@ -69,7 +69,7 @@
 </div>
 
 <div class="time-card">
-  <div class="time-item">
+  <div class="time-item" style="flex:1;min-width:220px">
     <span class="time-item-label">@Localizer["OrderEstimate_Title"]</span>
     @if (hasEstimate)
     {
@@ -79,6 +79,18 @@
     {
       <span class="time-item-value text-muted" style="font-weight:600;font-size:13px">@Localizer["OrderEstimate_NotSetYet"]</span>
     }
+    <form method="post" action="/MyStore/UpdateEstimatedTime/@Model.Id" style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin-top:8px">
+      <input type="hidden" name="id" value="@Model.Id" />
+      <div>
+        <label class="form-label" style="font-size:11px">@Localizer["OrderEstimate_Min"]</label>
+        <input type="number" min="1" name="min" value="@(Model.EstimatedDeliveryMin ?? 10)" class="form-control" style="width:80px" required />
+      </div>
+      <div>
+        <label class="form-label" style="font-size:11px">@Localizer["OrderEstimate_Max"]</label>
+        <input type="number" min="1" name="max" value="@(Model.EstimatedDeliveryMax ?? 30)" class="form-control" style="width:80px" required />
+      </div>
+      <button class="btn btn-warning btn-sm" type="submit">💾 @Localizer["OrderEstimate_Review"]</button>
+    </form>
   </div>
   @if (isActiveOrder)
   {
@@ -160,8 +172,9 @@
 
 @section Scripts {
 <script>
-// وقت الطلب المستغرق (Read-only) — عرض فقط عند صاحب المحل، بدون أي إمكانية تعديل
-// (التعديل بتاع "الوقت المتوقع" مقصور على الأدمن بس من شاشته هو).
+// وقت الطلب المستغرق — عداد لحظي بيبدأ من وقت إنشاء الطلب، بيتلوّن أصفر بعد
+// 20 دقيقة وأحمر بعد 40. ده Read-only دايمًا (مش فورم)؛ التعديل الوحيد
+// المسموح بيه هنا هو "الوقت المتوقع" من الفورم اللي فوق.
 (function () {
     const badge = document.getElementById('elapsedBadge');
     if (!badge) return;

@@ -335,6 +335,28 @@ namespace DeliveryAdmin.Controllers
             return View(order);
         }
 
+        // تعديل الوقت المتوقع للتحضير — صاحب المحل بقى يقدر يعدّله زي الأدمن بالظبط
+        // (الـ API بيتأكد كمان إن الأوردر ده تابع لمحله هو، مش بس الشاشة هنا)
+        [HttpPost]
+        public async Task<IActionResult> UpdateEstimatedTime(int id, int min, int max)
+        {
+            var store = await _api.GetMyRestaurant();
+            if (store == null) return Forbid();
+
+            var order = await _api.GetOrder(id);
+            if (order == null || order.Restaurant?.Id != store.Id) return Forbid();
+
+            if (min < 1 || max < min)
+            {
+                TempData["Error"] = L["OrderEstimate_ValidationRange"].Value;
+                return RedirectToAction(nameof(OrderDetails), new { id });
+            }
+
+            var (ok, error) = await _api.UpdateEstimatedTime(id, min, max);
+            TempData[ok ? "Success" : "Error"] = ok ? L["OrderEstimate_SaveSuccess"].Value : (error ?? L["OrderEstimate_SaveError"].Value);
+            return RedirectToAction(nameof(OrderDetails), new { id });
+        }
+
         // الطلبات الجاية للمحل بتاعه
         public async Task<IActionResult> Orders(string? status)
         {
