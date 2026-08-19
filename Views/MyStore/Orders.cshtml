@@ -58,14 +58,14 @@
           else if (o.Status == "Cancelled") sc = "b-cancelled";
           else if (o.Status == "Rejected") sc = "b-rejected";
           <tr id="order-row-@o.Id">
-            <td class="mono" style="color:var(--accent)"><a asp-action="OrderDetails" asp-route-id="@o.Id" style="color:inherit;text-decoration:none">#@o.Id 🔎</a></td>
+            <td class="mono" style="color:var(--accent);font-weight:600">#@o.Id</td>
             <td style="font-weight:500">@(o.CustomerName ?? "–")</td>
             <td class="mono">@(o.ItemCount ?? 0)</td>
             <td class="mono" style="font-weight:600">@o.TotalAmount.ToString("N0") @Localizer["Currency"]</td>
             <td><span class="badge @(o.PaymentMethod == "Cash" ? "b-cash" : "b-card")">@o.PaymentMethod</span></td>
             <td><span class="badge @sc" id="status-badge-@o.Id">@(o.Status == "ReadyForPickup" ? "Ready" : o.Status)</span></td>
             <td class="text-muted text-sm">@o.CreatedAt.ToString("dd MMM HH:mm")</td>
-            <td id="order-actions-@o.Id">
+            <td id="order-actions-@o.Id" style="display:flex;gap:6px;flex-wrap:wrap">
               @if (o.Status == "Pending")
               {
                 <button class="btn btn-primary btn-sm" onclick="updateOrderStatus(@o.Id, 'Accepted')">✔ @Localizer["Orders_Accept"]</button>
@@ -79,10 +79,7 @@
               {
                 <button class="btn btn-primary btn-sm" onclick="updateOrderStatus(@o.Id, 'ReadyForPickup')">✅ @Localizer["Orders_MarkReady"]</button>
               }
-              else
-              {
-                <span class="text-muted text-sm">—</span>
-              }
+              <a asp-action="OrderDetails" asp-route-id="@o.Id" class="btn btn-secondary btn-sm" style="text-decoration:none">@Localizer["Details"]</a>
             </td>
           </tr>
         }

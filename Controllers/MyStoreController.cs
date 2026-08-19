@@ -380,6 +380,19 @@ namespace DeliveryAdmin.Controllers
             return View(result?.Data ?? new());
         }
 
+        // المستحقات (عمولة/اشتراك) اللي على المحل بتاعه للمنصة — عرض بس،
+        // صاحب المحل مش بيقدر يعدل أو يغيّر حالة السداد؛ ده شغل الأدمن بس
+        // من شاشة "أرباحنا" (RevenueController.MarkPaid).
+        public async Task<IActionResult> Dues()
+        {
+            var store = await _api.GetMyRestaurant();
+            if (store == null) return RedirectToAction("Login", "Auth");
+
+            ViewData["Title"] = L["Nav_MyDues"].Value;
+            var dues = await _api.GetMyStoreDues();
+            return View(dues);
+        }
+
         // تقييمات المحل بتاعه (من العملاء)
         public async Task<IActionResult> Ratings(int page = 1)
         {

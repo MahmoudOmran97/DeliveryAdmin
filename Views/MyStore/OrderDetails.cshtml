@@ -10,7 +10,34 @@
   else if (Model.Status == "Delivered") sc = "b-delivered";
   else if (Model.Status == "Cancelled") sc = "b-cancelled";
   else if (Model.Status == "Rejected") sc = "b-rejected";
+
+  // وقت الطلب: عرض بس (Read-only) — نفس أرقام EstimatedDeliveryMin/Max اللي
+  // بيحددها الأدمن من شاشته هو، صاحب المحل يشوفها بس من غير أي تعديل.
+  var hasEstimate = Model.EstimatedDeliveryMin.HasValue && Model.EstimatedDeliveryMax.HasValue;
+  var isActiveOrder = Model.Status != "Delivered" && Model.Status != "Cancelled" && Model.Status != "Rejected";
 }
+
+<style>
+    .time-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 14px 18px;
+        margin-bottom: 18px;
+    }
+
+    .time-item { display: flex; flex-direction: column; gap: 2px; }
+    .time-item-label { font-size: 11px; color: var(--text3); }
+    .time-item-value { font-family: var(--mono); font-weight: 800; font-size: 15px; color: var(--text); }
+    .time-item-value.amber { color: var(--amber); }
+    .elapsed-warn .time-item-value { color: var(--amber); }
+    .elapsed-late .time-item-value { color: var(--red); }
+</style>
 
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:10px">
   <div style="display:flex;align-items:center;gap:14px">
@@ -39,6 +66,27 @@
     }
     <a class="btn btn-secondary btn-sm" asp-action="Orders">← @Localizer["Cancel"]</a>
   </div>
+</div>
+
+<div class="time-card">
+  <div class="time-item">
+    <span class="time-item-label">@Localizer["OrderEstimate_Title"]</span>
+    @if (hasEstimate)
+    {
+      <span class="time-item-value amber">@Model.EstimatedDeliveryMin – @Model.EstimatedDeliveryMax @Localizer["OrderEstimate_Minutes"]</span>
+    }
+    else
+    {
+      <span class="time-item-value text-muted" style="font-weight:600;font-size:13px">@Localizer["OrderEstimate_NotSetYet"]</span>
+    }
+  </div>
+  @if (isActiveOrder)
+  {
+    <div class="time-item" id="elapsedBadge" data-created="@Model.CreatedAt.ToString("O")">
+      <span class="time-item-label">@Localizer["OrderEstimate_ElapsedLabel"]</span>
+      <span class="time-item-value" id="elapsedValue">--</span>
+    </div>
+  }
 </div>
 
 <div class="detail-grid">
@@ -112,6 +160,26 @@
 
 @section Scripts {
 <script>
+// وقت الطلب المستغرق (Read-only) — عرض فقط عند صاحب المحل، بدون أي إمكانية تعديل
+// (التعديل بتاع "الوقت المتوقع" مقصور على الأدمن بس من شاشته هو).
+(function () {
+    const badge = document.getElementById('elapsedBadge');
+    if (!badge) return;
+    const createdAt = new Date(badge.dataset.created);
+    const valueEl = document.getElementById('elapsedValue');
+    function tick() {
+        const diffMs = Date.now() - createdAt.getTime();
+        const totalMinutes = Math.max(0, Math.floor(diffMs / 60000));
+        const h = Math.floor(totalMinutes / 60);
+        const m = totalMinutes % 60;
+        valueEl.textContent = h > 0 ? `${h}h ${m}m` : `${m}m`;
+        badge.classList.toggle('elapsed-warn', totalMinutes >= 20 && totalMinutes < 40);
+        badge.classList.toggle('elapsed-late', totalMinutes >= 40);
+    }
+    tick();
+    setInterval(tick, 30000);
+})();
+
 async function updateOrderStatus(id, status) {
     try {
         const res = await fetch('/MyStore/UpdateOrderStatus', {

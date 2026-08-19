@@ -1,0 +1,64 @@
+@model List<DeliveryAdmin.Models.StoreDueDto>
+@{
+  var pending = Model.Where(x => x.Status != "Paid").ToList();
+  var pendingAmount = pending.Sum(x => x.AmountRemaining);
+  var totalPaid = Model.Sum(x => x.AmountPaid);
+}
+
+<div class="stat-row">
+  <div class="stat-box"><div class="stat-label">@Localizer["MyDues_PendingAmount"]</div><div class="stat-val" style="color:var(--amber)">@pendingAmount.ToString("N0") EGP</div></div>
+  <div class="stat-box"><div class="stat-label">@Localizer["MyDues_PendingCount"]</div><div class="stat-val">@pending.Count</div></div>
+  <div class="stat-box"><div class="stat-label">@Localizer["MyDues_TotalPaid"]</div><div class="stat-val" style="color:var(--green)">@totalPaid.ToString("N0") EGP</div></div>
+</div>
+
+@if (pending.Any())
+{
+  <div class="alert alert-info" style="margin-bottom:18px">
+    ⚠️ @Localizer["MyDues_PendingNotice"]
+  </div>
+}
+
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">@Localizer["MyDues_Title"]</div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>@Localizer["Revenue_Period"]</th>
+          <th>@Localizer["Revenue_OrdersTotal"]</th>
+          <th>@Localizer["Revenue_AmountDue"]</th>
+          <th>@Localizer["Revenue_AmountPaid"]</th>
+          <th>@Localizer["MyDues_Remaining"]</th>
+          <th>@Localizer["Revenue_Status"]</th>
+          <th>@Localizer["MyDues_PaidAt"]</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (!Model.Any())
+        {
+          <tr><td colspan="7"><div class="empty"><div class="empty-icon">💰</div><div>@Localizer["MyDues_NoDues"]</div></div></td></tr>
+        }
+        @foreach (var d in Model)
+        {
+          var badge = d.Status == "Paid" ? "b-paid" : d.Status == "PartiallyPaid" ? "b-pending" : "b-cancelled";
+          var statusLabel = d.Status == "Paid" ? Localizer["Revenue_Paid"]
+                      : d.Status == "PartiallyPaid" ? Localizer["Revenue_PartiallyPaid"] : Localizer["Revenue_Unpaid"];
+          <tr>
+            <td class="text-sm">@d.PeriodStart.ToString("yyyy-MM-dd") → @d.PeriodEnd.ToString("yyyy-MM-dd")</td>
+            <td class="mono">@d.OrdersTotal.ToString("N2") EGP <span class="text-muted text-sm">(@d.OrdersCount)</span></td>
+            <td class="mono" style="font-weight:700">@d.AmountDue.ToString("N2") EGP</td>
+            <td class="mono" style="color:var(--green)">@d.AmountPaid.ToString("N2") EGP</td>
+            <td class="mono" style="color:var(--amber)">@d.AmountRemaining.ToString("N2") EGP</td>
+            <td><span class="badge @badge">@statusLabel</span></td>
+            <td class="text-muted text-sm">@(d.PaidAt.HasValue ? d.PaidAt.Value.ToString("dd MMM yyyy") : "-")</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <div style="padding:12px 18px;border-top:1px solid var(--border)" class="text-muted text-sm">
+    @Localizer["MyDues_Note"]
+  </div>
+</div>

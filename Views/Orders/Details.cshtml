@@ -74,6 +74,32 @@
         margin-top: 2px;
     }
 
+    .elapsed-badge {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 6px 14px;
+        flex-shrink: 0;
+    }
+
+    .elapsed-label {
+        font-size: 11px;
+        color: var(--text3);
+    }
+
+    .elapsed-value {
+        font-family: var(--mono);
+        font-weight: 800;
+        font-size: 14px;
+        color: var(--text);
+    }
+
+    .elapsed-badge.elapsed-warn .elapsed-value { color: var(--amber); }
+    .elapsed-badge.elapsed-late .elapsed-value { color: var(--red); }
+
     .estimate-range-display {
         display: flex;
         align-items: center;
@@ -212,6 +238,13 @@
       <div class="estimate-title">@Localizer["OrderEstimate_Title"]</div>
       <div class="estimate-subtitle">@Localizer["OrderEstimate_Subtitle"]</div>
     </div>
+    @if (Model.Status != "Delivered" && Model.Status != "Cancelled" && Model.Status != "Rejected")
+    {
+      <div class="elapsed-badge" id="elapsedBadge" data-created="@Model.CreatedAt.ToString("O")" style="margin-inline-start:auto">
+        <span class="elapsed-label">@Localizer["OrderEstimate_ElapsedLabel"]</span>
+        <span class="elapsed-value" id="elapsedValue">--:--</span>
+      </div>
+    }
   </div>
 
   @if (hasEstimate)
@@ -341,6 +374,27 @@
 @section Scripts {
 <script>
 (function () {
+    // ── وقت الطلب المستغرق (Elapsed) — عداد لحظي بيبدأ من وقت إنشاء الطلب،
+    // بيتلوّن أصفر بعد 20 دقيقة وأحمر بعد 40 دقيقة كتنبيه بصري للأدمن.
+    // ده منفصل تمامًا عن "الوقت المتوقع" اللي فوق واللي بيقدر الأدمن يعدله؛
+    // العداد ده بس Read-only وموجود في شاشة الأدمن هنا بس (مش عند صاحب المحل).
+    const badge = document.getElementById('elapsedBadge');
+    if (badge) {
+        const createdAt = new Date(badge.dataset.created);
+        const valueEl = document.getElementById('elapsedValue');
+        function tick() {
+            const diffMs = Date.now() - createdAt.getTime();
+            const totalMinutes = Math.max(0, Math.floor(diffMs / 60000));
+            const h = Math.floor(totalMinutes / 60);
+            const m = totalMinutes % 60;
+            valueEl.textContent = h > 0 ? `${h}h ${m}m` : `${m}m`;
+            badge.classList.toggle('elapsed-warn', totalMinutes >= 20 && totalMinutes < 40);
+            badge.classList.toggle('elapsed-late', totalMinutes >= 40);
+        }
+        tick();
+        setInterval(tick, 30000);
+    }
+
     const tabBtns = document.querySelectorAll('.tab-btn');
     const panes = { info: document.getElementById('tab-info'), chat: document.getElementById('tab-chat') };
     let chatLoaded = false;

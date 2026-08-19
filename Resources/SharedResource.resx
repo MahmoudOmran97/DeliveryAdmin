@@ -367,6 +367,16 @@
 	<data name="Nav_MyOrders" xml:space="preserve"><value>My Orders</value></data>
 	<data name="Nav_MyDrivers" xml:space="preserve"><value>Delivery Drivers</value></data>
 	<data name="Nav_MyRatings" xml:space="preserve"><value>Ratings</value></data>
+	<data name="Nav_MyDues" xml:space="preserve"><value>My Dues</value></data>
+	<data name="MyDues_Title" xml:space="preserve"><value>Dues to the Platform</value></data>
+	<data name="MyDues_PendingAmount" xml:space="preserve"><value>Pending Amount</value></data>
+	<data name="MyDues_PendingCount" xml:space="preserve"><value>Pending Periods</value></data>
+	<data name="MyDues_TotalPaid" xml:space="preserve"><value>Total Paid</value></data>
+	<data name="MyDues_Remaining" xml:space="preserve"><value>Remaining</value></data>
+	<data name="MyDues_PaidAt" xml:space="preserve"><value>Paid At</value></data>
+	<data name="MyDues_NoDues" xml:space="preserve"><value>No dues recorded yet</value></data>
+	<data name="MyDues_PendingNotice" xml:space="preserve"><value>You have unpaid dues to the platform. Our team will contact you to collect them.</value></data>
+	<data name="MyDues_Note" xml:space="preserve"><value>This is a read-only summary of your subscription/commission dues to the platform. Only the platform admin can update the payment status.</value></data>
 	<data name="Orders_Accept" xml:space="preserve"><value>Accept Order</value></data>
 	<data name="Orders_Reject" xml:space="preserve"><value>Reject Order</value></data>
 	<data name="Orders_StartPreparing" xml:space="preserve"><value>Start Preparing</value></data>

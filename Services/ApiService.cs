@@ -291,6 +291,10 @@ namespace DeliveryAdmin.Services
 
         public async Task<RevenueSummaryDto?> GetRevenueSummary() => await Get<RevenueSummaryDto>("revenue/summary");
 
+        // بتاعة صاحب المحل: مستحقاته هو بس (عمولة/اشتراك) اللي عليه للمنصة — عرض بس
+        public async Task<List<StoreDueDto>> GetMyStoreDues() => await Get<List<StoreDueDto>>("restaurants/my-dues") ?? new();
+        public async Task<StoreDuesSummaryDto?> GetMyStoreDuesSummary() => await Get<StoreDuesSummaryDto>("restaurants/my-dues/summary");
+
         // بترجع كمان رسالة/عدد المولّد والمتخطي عشان نقدر نعرض للأدمن تنبيه واضح
         // لو الفترة (أو جزء منها) كانت اتعملها استحقاقات قبل كده (409 Conflict من الـ API).
         public async Task<(bool ok, string? error, GenerateSettlementsResultDto? result)> GenerateRevenueSettlements(DateTime periodStart, DateTime periodEnd)

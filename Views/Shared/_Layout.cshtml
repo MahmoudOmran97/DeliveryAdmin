@@ -77,6 +77,7 @@
                 <a class="nav-item @(ctrl == "MyStore" && act == "Orders" ? "active" : "")" asp-controller="MyStore" asp-action="Orders"><span class="nav-icon">📦</span> @Localizer["Nav_MyOrders"]</a>
                 <a class="nav-item @(ctrl == "MyStore" && act == "Drivers" ? "active" : "")" asp-controller="MyStore" asp-action="Drivers"><span class="nav-icon">🛵</span> @Localizer["Nav_MyDrivers"]</a>
                 <a class="nav-item @(ctrl == "MyStore" && act == "Ratings" ? "active" : "")" asp-controller="MyStore" asp-action="Ratings"><span class="nav-icon">⭐</span> @Localizer["Nav_MyRatings"]</a>
+                <a class="nav-item @(ctrl == "MyStore" && act == "Dues" ? "active" : "")" asp-controller="MyStore" asp-action="Dues"><span class="nav-icon">💰</span> @Localizer["Nav_MyDues"]</a>
                 @if (isPharmacyStore)
                 {
                     <a class="nav-item @(ctrl == "Pharmacy" ? "active" : "")" asp-controller="Pharmacy" asp-action="Index"><span class="nav-icon">💊</span> @Localizer["Pharmacy_Title"]</a>

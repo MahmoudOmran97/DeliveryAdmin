@@ -456,6 +456,33 @@ namespace DeliveryAdmin.Models
         public int Skipped { get; set; }
     }
 
+    // ── Store Dues (تبويب "المستحقات" عند صاحب المحل) ──────────
+    // نفس بيانات RevenueSettlement بس للعرض بس عند صاحب المحل نفسه (GET
+    // /api/restaurants/my-dues) — مفيش أي تعديل، الأدمن بس اللي يقدر
+    // يغيّر الحالة من شاشة "أرباحنا" عنده.
+    public class StoreDueDto
+    {
+        public int Id { get; set; }
+        public DateTime PeriodStart { get; set; }
+        public DateTime PeriodEnd { get; set; }
+        public int OrdersCount { get; set; }
+        public decimal OrdersTotal { get; set; }
+        public decimal AmountDue { get; set; }
+        public decimal AmountPaid { get; set; }
+        public decimal AmountRemaining => AmountDue - AmountPaid;
+        public string Status { get; set; } = "Unpaid";
+        public DateTime? PaidAt { get; set; }
+        public string? Notes { get; set; }
+    }
+
+    public class StoreDuesSummaryDto
+    {
+        public bool HasPending { get; set; }
+        public decimal PendingAmount { get; set; }
+        public int PendingCount { get; set; }
+        public StoreDueDto? LatestDue { get; set; }
+    }
+
     // ── Delivery Settings ─────────────────────
     public class DeliverySettingsDto
     {

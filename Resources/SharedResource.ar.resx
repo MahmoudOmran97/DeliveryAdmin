@@ -337,6 +337,7 @@
 	<data name="OrderChat_Customer" xml:space="preserve"><value>العميل</value></data>
 	<data name="OrderChat_Driver" xml:space="preserve"><value>الدليفري</value></data>
 	<data name="OrderEstimate_Title" xml:space="preserve"><value>الوقت المتوقع للتحضير</value></data>
+	<data name="OrderEstimate_ElapsedLabel" xml:space="preserve"><value>الوقت المستغرق من وقت الطلب</value></data>
 	<data name="OrderEstimate_Subtitle" xml:space="preserve"><value>بيتحسب أوتوماتيك من وقت المحل الأساسي + أبطأ صنف في الأوردر</value></data>
 	<data name="OrderEstimate_RangeLabel" xml:space="preserve"><value>الرينج اللي بيظهر للعميل</value></data>
 	<data name="OrderEstimate_Minutes" xml:space="preserve"><value>دقيقة</value></data>
@@ -417,6 +418,16 @@
 	<data name="Nav_MyOrders" xml:space="preserve"><value>طلباتي</value></data>
 	<data name="Nav_MyDrivers" xml:space="preserve"><value>سائقين الدليفري</value></data>
 	<data name="Nav_MyRatings" xml:space="preserve"><value>التقييمات</value></data>
+	<data name="Nav_MyDues" xml:space="preserve"><value>المستحقات</value></data>
+	<data name="MyDues_Title" xml:space="preserve"><value>المستحقات على المحل للمنصة</value></data>
+	<data name="MyDues_PendingAmount" xml:space="preserve"><value>المبلغ المستحق</value></data>
+	<data name="MyDues_PendingCount" xml:space="preserve"><value>عدد الفترات المستحقة</value></data>
+	<data name="MyDues_TotalPaid" xml:space="preserve"><value>إجمالي المدفوع</value></data>
+	<data name="MyDues_Remaining" xml:space="preserve"><value>المتبقي</value></data>
+	<data name="MyDues_PaidAt" xml:space="preserve"><value>تاريخ السداد</value></data>
+	<data name="MyDues_NoDues" xml:space="preserve"><value>لا يوجد مستحقات مسجّلة حتى الآن</value></data>
+	<data name="MyDues_PendingNotice" xml:space="preserve"><value>عليك مستحقات لسه متحصلتش للمنصة. فريقنا هيتواصل معاك لتحصيلها.</value></data>
+	<data name="MyDues_Note" xml:space="preserve"><value>الشاشة دي للعرض بس وبتوضح مستحقات الاشتراك/العمولة اللي عليك للمنصة. الأدمن بس هو اللي يقدر يغيّر حالة السداد.</value></data>
 	<data name="Orders_Accept" xml:space="preserve"><value>قبول الطلب</value></data>
 	<data name="Orders_Reject" xml:space="preserve"><value>رفض الطلب</value></data>
 	<data name="Orders_StartPreparing" xml:space="preserve"><value>بدء التحضير</value></data>
