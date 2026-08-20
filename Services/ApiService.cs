@@ -1,6 +1,7 @@
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using DeliveryAdmin.Converters;
 using DeliveryAdmin.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -11,7 +12,13 @@ namespace DeliveryAdmin.Services
     {
         private readonly IHttpClientFactory _factory;
         private readonly IHttpContextAccessor _ctx;
-        private static readonly JsonSerializerOptions _opts = new() { PropertyNameCaseInsensitive = true };
+        // ✅ إضافة UtcDateTimeConverter: أي DateTime جاي من الـ API بيتحول تلقائي
+        // لتوقيت مصر لحظة الـ Deserialize، بدل ما نلمس كل صفحة/View لوحدها.
+        private static readonly JsonSerializerOptions _opts = new()
+        {
+            PropertyNameCaseInsensitive = true,
+            Converters = { new UtcDateTimeConverter(), new UtcNullableDateTimeConverter() }
+        };
 
         public ApiService(IHttpClientFactory factory, IHttpContextAccessor ctx)
         {
