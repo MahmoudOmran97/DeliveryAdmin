@@ -48,6 +48,50 @@ namespace DeliveryAdmin.Controllers
             return View(filtered);
         }
 
+        // ─────────────────────────────────────────────
+        // GET /Drivers/LiveMapData  — بيانات الخريطة الحية (JSON)
+        // بيرجع كل السواقين اللي عندهم موقع + كل المحلات مع عدد الطلبات المعلقة
+        // بيتنادى بالـ AJAX من مودال الخريطة كل شوية عشان التحديث اللحظي
+        // ─────────────────────────────────────────────
+        [HttpGet]
+        public async Task<IActionResult> LiveMapData()
+        {
+            var driversTask = _api.GetDrivers(1, 1000);
+            var restaurantsTask = _api.GetRestaurantsMap();
+            await Task.WhenAll(driversTask, restaurantsTask);
+
+            var drivers = (driversTask.Result?.Data ?? new())
+                .Where(d => d.CurrentLatitude.HasValue && d.CurrentLongitude.HasValue)
+                .Select(d => new
+                {
+                    id = d.Id,
+                    name = d.UserName ?? d.FullName ?? ("#" + d.Id),
+                    phone = d.Phone,
+                    vehicleType = d.VehicleType,
+                    rating = d.Rating,
+                    isOnline = d.IsOnline,
+                    isAvailable = d.IsAvailable,
+                    lat = d.CurrentLatitude,
+                    lng = d.CurrentLongitude
+                });
+
+            var restaurants = (restaurantsTask.Result ?? new())
+                .Select(r => new
+                {
+                    id = r.Id,
+                    name = r.Name,
+                    storeType = r.StoreType,
+                    address = r.Address,
+                    imageUrl = r.ImageUrl,
+                    lat = r.Latitude,
+                    lng = r.Longitude,
+                    isOpen = r.IsOpen,
+                    pendingOrders = r.PendingOrders
+                });
+
+            return Json(new { drivers, restaurants, serverTime = DateTime.UtcNow });
+        }
+
         [HttpPost]
         public async Task<IActionResult> Verify(int id)
         {

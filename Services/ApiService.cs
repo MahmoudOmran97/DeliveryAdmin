@@ -223,6 +223,7 @@ namespace DeliveryAdmin.Services
         public async Task<DriverDto?> GetDriver(int id) => await Get<DriverDto>($"drivers/{id}/admin");
         public async Task<(bool ok, string? error)> VerifyDriver(int id) => await Put($"drivers/{id}/verify");
         public async Task<(bool ok, string? error)> UpdateDriver(int id, AdminUpdateDriverDto dto) => await Put($"drivers/{id}/admin-update", dto);
+        public async Task<List<RestaurantMapDto>?> GetRestaurantsMap() => await Get<List<RestaurantMapDto>>("restaurants/admin/map");
 
         // ── Users ─────────────────────────────────────────────────────────
         public async Task<PagedResult<UserDto>?> GetUsers(int page = 1, int size = 20, string? role = null, string? search = null)

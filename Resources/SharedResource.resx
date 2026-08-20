@@ -101,6 +101,18 @@
 	<data name="Products_Delete" xml:space="preserve"><value>Delete</value></data>
 	<data name="Orders_Title" xml:space="preserve"><value>Orders</value></data>
 	<data name="Drivers_Title" xml:space="preserve"><value>Drivers</value></data>
+	<data name="LiveMap_OpenBtn" xml:space="preserve"><value>🗺️ Live Map</value></data>
+	<data name="LiveMap_Title" xml:space="preserve"><value>Live Map — Drivers &amp; Stores</value></data>
+	<data name="LiveMap_UseMyLocation" xml:space="preserve"><value>📍 Use My Location</value></data>
+	<data name="LiveMap_Legend_Available" xml:space="preserve"><value>Available</value></data>
+	<data name="LiveMap_Legend_Busy" xml:space="preserve"><value>On a delivery</value></data>
+	<data name="LiveMap_Legend_Offline" xml:space="preserve"><value>Offline</value></data>
+	<data name="LiveMap_Legend_Store" xml:space="preserve"><value>Store</value></data>
+	<data name="LiveMap_Legend_StoreBusy" xml:space="preserve"><value>Busy with orders</value></data>
+	<data name="LiveMap_DriversCount" xml:space="preserve"><value>Drivers</value></data>
+	<data name="LiveMap_StoresCount" xml:space="preserve"><value>Stores</value></data>
+	<data name="LiveMap_PendingOrders" xml:space="preserve"><value>pending order(s)</value></data>
+	<data name="LiveMap_StoreOpenBtn" xml:space="preserve"><value>🗺️ View Drivers on Map</value></data>
 	<data name="Restaurants_Title" xml:space="preserve"><value>Restaurants</value></data>
 	<data name="Payments_Title" xml:space="preserve"><value>Payments</value></data>
 	<data name="Ratings_Title" xml:space="preserve"><value>Ratings</value></data>

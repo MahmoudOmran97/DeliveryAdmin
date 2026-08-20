@@ -161,6 +161,20 @@ namespace DeliveryAdmin.Models
     }
     public class StoreDriversResult { public int Total { get; set; } public List<StoreDriverDto> Data { get; set; } = new(); }
 
+    // ── Admin Live Map ───────────────────────────
+    public class RestaurantMapDto
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = "";
+        public string StoreType { get; set; } = "";
+        public string? Address { get; set; }
+        public string? ImageUrl { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+        public bool IsOpen { get; set; }
+        public int PendingOrders { get; set; }
+    }
+
     // ── User ──────────────────────────────────
     public class UserDto
     {

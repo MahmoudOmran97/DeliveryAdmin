@@ -398,6 +398,9 @@ namespace DeliveryAdmin.Controllers
             if (store == null) return RedirectToAction("Login", "Auth");
 
             ViewData["Title"] = L["Nav_MyDrivers"].Value;
+            ViewBag.StoreName = store.Name;
+            ViewBag.StoreLat = store.Latitude;
+            ViewBag.StoreLng = store.Longitude;
             var result = await _api.GetStoreDrivers(store.Id);
             return View(result?.Data ?? new());
         }
