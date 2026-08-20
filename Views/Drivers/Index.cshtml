@@ -201,6 +201,31 @@
   .lm-me-icon {
     display: flex; align-items: center; justify-content: center; font-size: 18px;
   }
+
+  /* ── Mobile ── */
+  @@media (max-width: 768px) {
+    .live-map-overlay { padding: 0; }
+    .live-map-modal { max-width: 100%; height: 100%; height: 100dvh; border-radius: 0; }
+    .live-map-header { padding: 10px 12px; flex-wrap: wrap; gap: 8px; }
+    .live-map-header .card-title { font-size: 14px; }
+    #liveMapUpdatedAt { display: none; }
+    .live-map-body { flex-direction: column; }
+    .live-map-canvas-wrap { flex: 1 1 55%; min-height: 220px; }
+    .live-map-legend {
+      inset-inline: 8px; bottom: 8px; flex-direction: row; flex-wrap: wrap;
+      gap: 6px 10px; font-size: 9.5px; padding: 6px 8px; max-width: calc(100% - 16px);
+    }
+    .live-map-legend > div { display: flex; align-items: center; white-space: nowrap; }
+    .live-map-sidebar {
+      width: 100%; border-inline-start: none; border-top: 1px solid var(--border);
+      flex: 1 1 45%; min-height: 160px;
+    }
+    .lm-tab { padding: 12px 6px; font-size: 12.5px; }
+    .lm-item { padding: 10px 8px; }
+  }
+  @@media (max-width: 420px) {
+    .live-map-header .btn-sm { padding: 6px 10px; font-size: 11px; }
+  }
 </style>
 
 @section Scripts {
@@ -391,8 +416,11 @@
 
       function openModal() {
         overlay.style.display = 'flex';
+        document.body.style.overflow = 'hidden'; // منع سكرول الصفحة اللي وراء المودال على الموبايل
         ensureMap();
         setTimeout(() => map.invalidateSize(), 50);
+        setTimeout(() => map.invalidateSize(), 350); // تاني مرة بعد ما الـ modal يخلص أنيميشن/الشاشة تستقر (مهم على الموبايل)
+        window.addEventListener('resize', onLiveMapResize);
         refresh();
         refreshTimer = setInterval(refresh, REFRESH_MS);
         if (navigator.geolocation && myLat == null) {
@@ -405,7 +433,13 @@
 
       function closeModal() {
         overlay.style.display = 'none';
+        document.body.style.overflow = '';
         if (refreshTimer) { clearInterval(refreshTimer); refreshTimer = null; }
+        window.removeEventListener('resize', onLiveMapResize);
+      }
+
+      function onLiveMapResize() {
+        if (map) map.invalidateSize();
       }
 
       openBtn.addEventListener('click', openModal);

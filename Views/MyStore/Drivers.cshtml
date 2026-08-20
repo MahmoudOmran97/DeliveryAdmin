@@ -116,6 +116,21 @@
   .lm-item-sub { font-size: 11px; color: var(--text2); }
   .leaflet-pane, .leaflet-control { z-index: 1; }
   .lm-driver-icon, .lm-store-icon { display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,.4); font-size: 15px; color: #fff; }
+
+  /* ── Mobile ── */
+  @@media (max-width: 768px) {
+    .live-map-overlay { padding: 0; }
+    .live-map-modal { max-width: 100% !important; width: 100%; height: 100dvh !important; border-radius: 0; }
+    .live-map-header { padding: 10px 12px; }
+    .live-map-header .card-title { font-size: 14px; }
+    .live-map-body { flex-direction: column; }
+    .live-map-canvas-wrap { flex: 1 1 55%; min-height: 220px; }
+    .live-map-sidebar {
+      width: 100%; border-inline-start: none; border-top: 1px solid var(--border);
+      flex: 1 1 45%; min-height: 160px;
+    }
+    .lm-item { padding: 10px 8px; }
+  }
 </style>
 
 @section Scripts {
@@ -193,13 +208,23 @@
         mapReady = true;
       }
 
+      function onStoreMapResize() { if (map) map.invalidateSize(); }
+
       openBtn.addEventListener('click', () => {
         overlay.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
         ensureMap();
         setTimeout(() => map.invalidateSize(), 50);
+        setTimeout(() => map.invalidateSize(), 350);
+        window.addEventListener('resize', onStoreMapResize);
       });
-      closeBtn.addEventListener('click', () => overlay.style.display = 'none');
-      overlay.addEventListener('click', e => { if (e.target === overlay) overlay.style.display = 'none'; });
+      function closeStoreMap() {
+        overlay.style.display = 'none';
+        document.body.style.overflow = '';
+        window.removeEventListener('resize', onStoreMapResize);
+      }
+      closeBtn.addEventListener('click', closeStoreMap);
+      overlay.addEventListener('click', e => { if (e.target === overlay) closeStoreMap(); });
     })();
   </script>
 }
