@@ -132,6 +132,11 @@
 	<data name="DeliveryFee_Example" xml:space="preserve"><value>Example: if the free radius is 3 km and the extra fee per km is 10 EGP, and the store's base price is 20 EGP: a customer 3.5 km away pays 30 EGP delivery.</value></data>
 	<data name="DeliveryFee_FreeRadius" xml:space="preserve"><value>Free radius (km)</value></data>
 	<data name="DeliveryFee_ExtraFeePerKm" xml:space="preserve"><value>Extra fee per km (EGP)</value></data>
+	<data name="DeliveryFee_MaxZone" xml:space="preserve"><value>Maximum delivery distance (zone, km)</value></data>
+	<data name="DeliveryFee_MaxZoneHint" xml:space="preserve"><value>Stores farther than this won't appear to customers, and delivery addresses beyond this will be rejected at checkout.</value></data>
+	<data name="DeliveryFee_ZoneReason" xml:space="preserve"><value>Zone reduction reason (optional)</value></data>
+	<data name="DeliveryFee_ZoneReasonPlaceholder" xml:space="preserve"><value>e.g. We're reducing the delivery zone at night due to limited drivers for long distances</value></data>
+	<data name="DeliveryFee_ZoneReasonHint" xml:space="preserve"><value>If set, this message is shown to customers instead of the generic message, so they understand it's a temporary reduction, not a service shutdown. Leave empty to show the default message.</value></data>
 	<data name="DeliveryFee_LastUpdated" xml:space="preserve"><value>Last updated:</value></data>
 	<data name="DeliveryFee_SaveBtn" xml:space="preserve"><value>Save Changes</value></data>
 	<data name="DeliveryFee_ValidationError" xml:space="preserve"><value>Values must be zero or greater</value></data>

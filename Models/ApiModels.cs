@@ -503,12 +503,16 @@ namespace DeliveryAdmin.Models
         public int Id { get; set; }
         public double FreeRadiusKm { get; set; }
         public decimal ExtraFeePerKm { get; set; }
+        public double MaxDeliveryZoneKm { get; set; } = 10.0;
+        public string? ZoneReducedReason { get; set; }
         public DateTime UpdatedAt { get; set; }
     }
     public class UpdateDeliverySettingsDto
     {
         public double FreeRadiusKm { get; set; }
         public decimal ExtraFeePerKm { get; set; }
+        public double MaxDeliveryZoneKm { get; set; } = 10.0;
+        public string? ZoneReducedReason { get; set; }
     }
 
     // ── Prescription Chat (بورتال صاحب الصيدلية) ─────────────

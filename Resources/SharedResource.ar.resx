@@ -132,6 +132,11 @@
 	<data name="DeliveryFee_Example" xml:space="preserve"><value>مثال: لو المسافة المجانية 3 كم وسعر الكيلومتر الإضافي 10 جنيه، وسعر المحل الأساسي 20 جنيه: عميل على بعد 3.5 كم هيدفع 30 جنيه توصيل.</value></data>
 	<data name="DeliveryFee_FreeRadius" xml:space="preserve"><value>المسافة المجانية (كم)</value></data>
 	<data name="DeliveryFee_ExtraFeePerKm" xml:space="preserve"><value>سعر الكيلومتر الإضافي (جنيه)</value></data>
+	<data name="DeliveryFee_MaxZone" xml:space="preserve"><value>أقصى مسافة توصيل (الزون بالكم)</value></data>
+	<data name="DeliveryFee_MaxZoneHint" xml:space="preserve"><value>أي محل أبعد من المسافة دي مش هيظهر للعميل، وأي عنوان توصيل أبعد من كده هيترفض عند تأكيد الطلب.</value></data>
+	<data name="DeliveryFee_ZoneReason" xml:space="preserve"><value>سبب تقليل الزون (اختياري)</value></data>
+	<data name="DeliveryFee_ZoneReasonPlaceholder" xml:space="preserve"><value>مثال: بنقلل نطاق التوصيل بالليل عشان محدودية السائقين المتاحين للمسافات البعيدة</value></data>
+	<data name="DeliveryFee_ZoneReasonHint" xml:space="preserve"><value>لو حطيت سبب هنا، هيظهر للعميل في الأبلكيشن بدل رسالة عامة، عشان يفهم إن ده تقليل مؤقت مش إغلاق للخدمة. سيبه فاضي لعرض الرسالة الافتراضية.</value></data>
 	<data name="DeliveryFee_LastUpdated" xml:space="preserve"><value>آخر تحديث:</value></data>
 	<data name="DeliveryFee_SaveBtn" xml:space="preserve"><value>حفظ التعديلات</value></data>
 	<data name="DeliveryFee_ValidationError" xml:space="preserve"><value>القيم لازم تكون صفر أو أكبر</value></data>
