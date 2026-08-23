@@ -560,7 +560,7 @@
 	<data name="AiSettings_ModelHint" xml:space="preserve"><value>e.g. openai/gpt-4o-mini, anthropic/claude-3.5-sonnet, google/gemini-2.0-flash-001 — full list at openrouter.ai/models</value></data>
 	<data name="AiSettings_MaxTokens" xml:space="preserve"><value>Max reply length (tokens)</value></data>
 	<data name="AiSettings_SystemPrompt" xml:space="preserve"><value>Assistant Instructions (System Prompt)</value></data>
-	<data name="AiSettings_SystemPromptHint" xml:space="preserve"><value>This defines the assistant's personality and behavior, and when it auto-creates a complaint or escalates to an admin.</value></data>
+	<data name="AiSettings_SystemPromptHint" xml:space="preserve"><value>This defines the assistant's personality and behavior, and when it uses its available tools: listing the customer's orders, tracking a specific order, cancelling an order, filing a complaint (including return requests), or escalating the chat to an admin.</value></data>
 			<data name="AiSettings_LastUpdated" xml:space="preserve"><value>Last updated:</value></data>
 
 		<data name="SiteLinks_Title" xml:space="preserve"><value>Social &amp; Website Links</value></data>

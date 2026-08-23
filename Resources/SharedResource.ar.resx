@@ -560,7 +560,7 @@
 	<data name="AiSettings_ModelHint" xml:space="preserve"><value>زي openai/gpt-4o-mini أو anthropic/claude-3.5-sonnet أو google/gemini-2.0-flash-001 — شوف القائمة الكاملة على openrouter.ai/models</value></data>
 	<data name="AiSettings_MaxTokens" xml:space="preserve"><value>أقصى طول للرد (Tokens)</value></data>
 	<data name="AiSettings_SystemPrompt" xml:space="preserve"><value>تعليمات المساعد (System Prompt)</value></data>
-	<data name="AiSettings_SystemPromptHint" xml:space="preserve"><value>ده اللي بيحدد شخصية وسلوك المساعد، وإمتى يسجل شكوى تلقائي وإمتى يحوّل الشات لأدمن.</value></data>
+	<data name="AiSettings_SystemPromptHint" xml:space="preserve"><value>ده اللي بيحدد شخصية وسلوك المساعد، وإمتى يستخدم أدواته المتاحة: عرض أوردرات العميل، تتبع أوردر معين، إلغاء أوردر، تسجيل شكوى (بما فيها طلبات الاسترجاع)، أو تحويل الشات لأدمن.</value></data>
 			<data name="AiSettings_LastUpdated" xml:space="preserve"><value>آخر تحديث:</value></data>
 
 		<data name="SiteLinks_Title" xml:space="preserve"><value>روابط التواصل والموقع</value></data>
