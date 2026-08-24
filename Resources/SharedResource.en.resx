@@ -554,10 +554,10 @@
 	<data name="AiSettings_Title" xml:space="preserve"><value>AI Settings</value></data>
 	<data name="AiSettings_Description" xml:space="preserve"><value>Control the AI assistant that replies to customers in the support chat of the customer app. The system talks to OpenRouter (openrouter.ai), so you can pick any model available there. You can disable the assistant, change the API key, model, or the instructions it follows.</value></data>
 	<data name="AiSettings_IsEnabled" xml:space="preserve"><value>Enable the AI assistant in support chat</value></data>
-	<data name="AiSettings_ApiKey" xml:space="preserve"><value>OpenRouter API Key</value></data>
-	<data name="AiSettings_ApiKeyHint" xml:space="preserve"><value>From openrouter.ai — leave blank to keep the current key.</value></data>
-	<data name="AiSettings_Model" xml:space="preserve"><value>Model (OpenRouter model slug)</value></data>
-	<data name="AiSettings_ModelHint" xml:space="preserve"><value>e.g. openai/gpt-4o-mini, anthropic/claude-3.5-sonnet, google/gemini-2.0-flash-001 — full list at openrouter.ai/models</value></data>
+	<data name="AiSettings_ApiKey" xml:space="preserve"><value>API Key (OpenRouter or Google AI Studio)</value></data>
+	<data name="AiSettings_ApiKeyHint" xml:space="preserve"><value>Paste an OpenRouter key (starts with sk-or-v1-...) from openrouter.ai, or a Google AI Studio key (starts with AIza...) from aistudio.google.com/app/apikey — the system auto-detects the provider from the key format. Leave blank to keep the current key.</value></data>
+	<data name="AiSettings_Model" xml:space="preserve"><value>Model</value></data>
+	<data name="AiSettings_ModelHint" xml:space="preserve"><value>If using an OpenRouter key: e.g. openai/gpt-4o-mini or google/gemini-2.0-flash-001 (full list at openrouter.ai/models). If using a Google AI Studio key: use the native model id only, e.g. gemini-2.0-flash (no "google/" prefix).</value></data>
 	<data name="AiSettings_MaxTokens" xml:space="preserve"><value>Max reply length (tokens)</value></data>
 	<data name="AiSettings_SystemPrompt" xml:space="preserve"><value>Assistant Instructions (System Prompt)</value></data>
 	<data name="AiSettings_SystemPromptHint" xml:space="preserve"><value>This defines the assistant's personality and behavior, and when it uses its available tools: listing the customer's orders, tracking a specific order, cancelling an order, filing a complaint (including return requests), or escalating the chat to an admin.</value></data>

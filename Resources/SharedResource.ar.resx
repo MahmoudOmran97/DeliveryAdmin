@@ -554,10 +554,10 @@
 	<data name="AiSettings_Title" xml:space="preserve"><value>إعدادات الذكاء الاصطناعي</value></data>
 	<data name="AiSettings_Description" xml:space="preserve"><value>تحكم في مساعد الذكاء الاصطناعي اللي بيرد على العملاء في شات الدعم داخل تطبيق الكاستمر. النظام بيكلم OpenRouter (openrouter.ai) فتقدر تختار أي موديل متاح عندهم. تقدر توقف المساعد، تغيّر مفتاح الـ API، الموديل، أو التعليمات اللي بيتبعها.</value></data>
 	<data name="AiSettings_IsEnabled" xml:space="preserve"><value>تفعيل المساعد الذكي في شات الدعم</value></data>
-	<data name="AiSettings_ApiKey" xml:space="preserve"><value>مفتاح OpenRouter API</value></data>
-	<data name="AiSettings_ApiKeyHint" xml:space="preserve"><value>من موقع openrouter.ai — سيبه فاضي لو مش عايز تغيّر المفتاح الحالي.</value></data>
-	<data name="AiSettings_Model" xml:space="preserve"><value>الموديل (OpenRouter model slug)</value></data>
-	<data name="AiSettings_ModelHint" xml:space="preserve"><value>زي openai/gpt-4o-mini أو anthropic/claude-3.5-sonnet أو google/gemini-2.0-flash-001 — شوف القائمة الكاملة على openrouter.ai/models</value></data>
+	<data name="AiSettings_ApiKey" xml:space="preserve"><value>مفتاح API (OpenRouter أو Google AI Studio)</value></data>
+	<data name="AiSettings_ApiKeyHint" xml:space="preserve"><value>حط مفتاح OpenRouter (يبدأ بـ sk-or-v1-...) من openrouter.ai، أو مفتاح Google AI Studio (يبدأ بـ AIza...) من aistudio.google.com/app/apikey — النظام بيتعرف على النوع تلقائيًا من شكل المفتاح. سيبه فاضي لو مش عايز تغيّر المفتاح الحالي.</value></data>
+	<data name="AiSettings_Model" xml:space="preserve"><value>الموديل</value></data>
+	<data name="AiSettings_ModelHint" xml:space="preserve"><value>لو المفتاح OpenRouter: زي openai/gpt-4o-mini أو google/gemini-2.0-flash-001 (القائمة الكاملة على openrouter.ai/models). لو المفتاح Google AI Studio: اكتب اسم الموديل الأصلي بس زي gemini-2.0-flash (من غير بادئة google/).</value></data>
 	<data name="AiSettings_MaxTokens" xml:space="preserve"><value>أقصى طول للرد (Tokens)</value></data>
 	<data name="AiSettings_SystemPrompt" xml:space="preserve"><value>تعليمات المساعد (System Prompt)</value></data>
 	<data name="AiSettings_SystemPromptHint" xml:space="preserve"><value>ده اللي بيحدد شخصية وسلوك المساعد، وإمتى يستخدم أدواته المتاحة: عرض أوردرات العميل، تتبع أوردر معين، إلغاء أوردر، تسجيل شكوى (بما فيها طلبات الاسترجاع)، أو تحويل الشات لأدمن.</value></data>
