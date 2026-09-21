@@ -505,6 +505,7 @@ namespace DeliveryAdmin.Models
         public decimal ExtraFeePerKm { get; set; }
         public double MaxDeliveryZoneKm { get; set; } = 10.0;
         public string? ZoneReducedReason { get; set; }
+        public double DriverOrdersRadiusKm { get; set; } = 1.0;
         public DateTime UpdatedAt { get; set; }
     }
     public class UpdateDeliverySettingsDto
@@ -513,6 +514,7 @@ namespace DeliveryAdmin.Models
         public decimal ExtraFeePerKm { get; set; }
         public double MaxDeliveryZoneKm { get; set; } = 10.0;
         public string? ZoneReducedReason { get; set; }
+        public double DriverOrdersRadiusKm { get; set; } = 1.0;
     }
 
     // ── Prescription Chat (بورتال صاحب الصيدلية) ─────────────

@@ -15,14 +15,15 @@ namespace DeliveryAdmin.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var settings = await _api.GetDeliverySettings() ?? new DeliverySettingsDto { FreeRadiusKm = 3.0, ExtraFeePerKm = 10m, MaxDeliveryZoneKm = 10.0 };
+            var settings = await _api.GetDeliverySettings() ?? new DeliverySettingsDto { FreeRadiusKm = 3.0, ExtraFeePerKm = 10m, MaxDeliveryZoneKm = 10.0, DriverOrdersRadiusKm = 1.0 };
 
             var dto = new UpdateDeliverySettingsDto
             {
                 FreeRadiusKm = settings.FreeRadiusKm,
                 ExtraFeePerKm = settings.ExtraFeePerKm,
                 MaxDeliveryZoneKm = settings.MaxDeliveryZoneKm,
-                ZoneReducedReason = settings.ZoneReducedReason
+                ZoneReducedReason = settings.ZoneReducedReason,
+                DriverOrdersRadiusKm = settings.DriverOrdersRadiusKm
             };
             ViewBag.UpdatedAt = settings.UpdatedAt;
             return View(dto);
@@ -31,7 +32,7 @@ namespace DeliveryAdmin.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(UpdateDeliverySettingsDto dto)
         {
-            if (dto.FreeRadiusKm < 0 || dto.ExtraFeePerKm < 0 || dto.MaxDeliveryZoneKm <= 0)
+            if (dto.FreeRadiusKm < 0 || dto.ExtraFeePerKm < 0 || dto.MaxDeliveryZoneKm <= 0 || dto.DriverOrdersRadiusKm <= 0)
             {
                 TempData["Error"] = L["DeliveryFee_ValidationError"].Value;
                 return RedirectToAction("Index");
