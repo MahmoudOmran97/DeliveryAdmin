@@ -1,5 +1,10 @@
 @model DeliveryAdmin.Models.CreateUserDto
-@{ var restaurants = (List<DeliveryAdmin.Models.RestaurantDto>)ViewBag.Restaurants; }
+@{
+  var restaurants = (List<DeliveryAdmin.Models.RestaurantDto>)ViewBag.Restaurants;
+  var canManageAdmins = (bool)(ViewBag.CanManageAdmins ?? false);
+  var modules = (DeliveryAdmin.Helpers.AdminPermissions.Module[])ViewBag.PermissionModules;
+  var presets = (Dictionary<string, string[]>)ViewBag.PermissionPresets;
+}
 <div class="card">
   <div class="card-header">
     <div class="card-title">@Localizer["Users_Add"]</div>
@@ -48,7 +53,10 @@
             <option value="Restaurant">@Localizer["Users_RestaurantOwner"]</option>
             <option value="Customer">@Localizer["Users_Customers"]</option>
             <option value="Driver">@Localizer["Users_Drivers"]</option>
-            <option value="Admin">@Localizer["Users_Admins"]</option>
+            @if (canManageAdmins)
+            {
+              <option value="Admin">@Localizer["Users_Admins"]</option>
+            }
           </select>
         </div>
         <div class="form-group" id="restaurantField">
@@ -83,6 +91,37 @@
           <input class="form-control" asp-for="Address" />
         </div>
       </div>
+
+      @if (canManageAdmins)
+      {
+        <div id="permissionsField" class="form-group form-full" style="display:none;margin-top:20px;border-top:1px solid var(--border,#e5e7eb);padding-top:16px">
+          <label class="form-label" style="display:flex;align-items:center;gap:8px">
+            <input type="checkbox" asp-for="IsSuperAdmin" id="isSuperAdminCheck" style="width:auto" />
+            👑 @Localizer["Users_SuperAdmin"]
+          </label>
+          <div class="text-sm" style="color:var(--muted,#888);margin:4px 0 12px">@Localizer["Users_SuperAdminHint"]</div>
+
+          <div id="permissionModulesWrap">
+            <label class="form-label">@Localizer["Users_Permissions"]</label>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+              @foreach (var p in presets.Keys)
+              {
+                <button type="button" class="btn btn-secondary btn-sm preset-btn" data-preset="@p">@Localizer["Perm_" + p]</button>
+              }
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px">
+              @foreach (var m in modules)
+              {
+                <label style="display:flex;align-items:center;gap:6px;font-size:14px">
+                  <input type="checkbox" name="PermissionKeys" value="@m.Key" class="perm-check" style="width:auto" />
+                  <span>@m.Icon @Localizer[m.LabelResourceKey]</span>
+                </label>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
       <div style="margin-top:16px;display:flex;gap:10px">
         <button type="submit" class="btn btn-primary">@Localizer["Save"]</button>
         <a class="btn btn-secondary" asp-action="Index">@Localizer["Cancel"]</a>
@@ -93,6 +132,8 @@
 
 @section Scripts {
 <script>
+  var presetsData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(presets));
+
   function toggleRoleFields() {
     const role = document.getElementById('roleSelect')?.value;
     const restField = document.getElementById('restaurantField');
@@ -107,8 +148,28 @@
     const lp = document.querySelector('#licensePlateField input');
     if (vt) vt.required = isDriver;
     if (lp) lp.required = isDriver;
+
+    const permField = document.getElementById('permissionsField');
+    if (permField) permField.style.display = (role === 'Admin') ? 'block' : 'none';
   }
   document.getElementById('roleSelect')?.addEventListener('change', toggleRoleFields);
   toggleRoleFields();
+
+  function toggleSuperAdmin() {
+    const isSuper = document.getElementById('isSuperAdminCheck')?.checked;
+    const wrap = document.getElementById('permissionModulesWrap');
+    if (wrap) wrap.style.display = isSuper ? 'none' : 'block';
+  }
+  document.getElementById('isSuperAdminCheck')?.addEventListener('change', toggleSuperAdmin);
+  toggleSuperAdmin();
+
+  document.querySelectorAll('.preset-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const keys = presetsData[this.dataset.preset] || [];
+      document.querySelectorAll('.perm-check').forEach(cb => {
+        cb.checked = keys.includes(cb.value);
+      });
+    });
+  });
 </script>
 }

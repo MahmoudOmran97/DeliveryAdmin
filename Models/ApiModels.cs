@@ -10,7 +10,7 @@ namespace DeliveryAdmin.Models
         public string Password { get; set; } = "";
         public string Role { get; set; } = "Admin";
     }
-    public class AuthResponse { public string? Token { get; set; } public int Id { get; set; } public string? FullName { get; set; } public string? Email { get; set; } public string? Role { get; set; } }
+    public class AuthResponse { public string? Token { get; set; } public int Id { get; set; } public string? FullName { get; set; } public string? Email { get; set; } public string? Role { get; set; } public bool IsSuperAdmin { get; set; } public string? Permissions { get; set; } }
 
     // رقم واتساب الأدمن اللي بيظهر لصاحب المحل في زر "تواصل مع الدعم"
     public class SupportContactDto { public int Id { get; set; } public string? Phone { get; set; } public string? FullName { get; set; } public string? ProfileImageUrl { get; set; } }
@@ -183,6 +183,8 @@ namespace DeliveryAdmin.Models
         public string Phone { get; set; } = ""; public string Role { get; set; } = ""; public string? Address { get; set; }
         public string? ProfileImageUrl { get; set; }
         public bool IsActive { get; set; }
+        public bool IsSuperAdmin { get; set; }
+        public string? Permissions { get; set; }
         public DateTime CreatedAt { get; set; }
         public int? RestaurantId { get; set; }
         public string? RestaurantName { get; set; }
@@ -201,6 +203,13 @@ namespace DeliveryAdmin.Models
         public string? VehicleType { get; set; }
         public string? LicensePlate { get; set; }
         public string? NationalId { get; set; }
+        // بتتاخد بعين الاعتبار بس لما Role = Admin
+        public bool IsSuperAdmin { get; set; }
+        public string? Permissions { get; set; }
+        // بس عشان الـ checkboxes في الفورم تتبايند عليه؛ الكنترولر بيجمعها في Permissions
+        // قبل ما يبعتها للـ API، فمش لازم تتبعت هي نفسها
+        [System.Text.Json.Serialization.JsonIgnore]
+        public List<string> PermissionKeys { get; set; } = new();
     }
 
     public class UpdateUserDto
@@ -212,6 +221,10 @@ namespace DeliveryAdmin.Models
         public string? Password { get; set; }
         public bool? IsActive { get; set; }
         public int? RestaurantId { get; set; }
+        public bool? IsSuperAdmin { get; set; }
+        public string? Permissions { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore]
+        public List<string> PermissionKeys { get; set; } = new();
     }
 
     public class SendNotificationDto

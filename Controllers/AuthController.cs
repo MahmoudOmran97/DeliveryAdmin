@@ -56,7 +56,9 @@ namespace DeliveryAdmin.Controllers
                 new(ClaimTypes.Email, data.Email ?? ""),
                 new(ClaimTypes.Role, data.Role ?? ""),
                 new("UserId", data.Id.ToString()),
-                new("JWT", data.Token)
+                new("JWT", data.Token),
+                new("IsSuperAdmin", data.IsSuperAdmin ? "true" : "false"),
+                new("Permissions", data.Permissions ?? "")
             };
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 

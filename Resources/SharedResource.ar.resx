@@ -613,4 +613,11 @@
 	<data name="Sidebar_Complaints" xml:space="preserve"><value>شكاوى العملاء</value></data>
 		<data name="Sidebar_SupportChats" xml:space="preserve"><value>شاتات الدعم</value></data>
 		<data name="Sidebar_SiteLinks" xml:space="preserve"><value>روابط التواصل</value></data>
+	<data name="Users_SuperAdmin" xml:space="preserve"><value>سوبر أدمن (كل الصلاحيات)</value></data>
+	<data name="Users_SuperAdminHint" xml:space="preserve"><value>لو مفعّل، الحساب ده هيشوف كل أقسام لوحة التحكم من غير أي قيود، وهيقدر يضيف ويعدّل حسابات أدمنز تانيين.</value></data>
+	<data name="Users_Permissions" xml:space="preserve"><value>الأقسام المسموح له بيها</value></data>
+	<data name="Perm_Support" xml:space="preserve"><value>دعم فني</value></data>
+	<data name="Perm_Finance" xml:space="preserve"><value>مالية</value></data>
+	<data name="Perm_Operations" xml:space="preserve"><value>تشغيل</value></data>
+	<data name="Perm_All" xml:space="preserve"><value>كل الصلاحيات</value></data>
 	</root>

@@ -17,6 +17,7 @@ builder.Services.AddLocalization(options => options.ResourcesPath = "");
 builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add<DeliveryAdmin.Filters.RestaurantOwnerScopeFilter>();
+    options.Filters.Add<DeliveryAdmin.Filters.AdminPermissionFilter>();
 })
     .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
     .AddDataAnnotationsLocalization(options =>

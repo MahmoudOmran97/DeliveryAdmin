@@ -613,4 +613,11 @@
 	<data name="Sidebar_Complaints" xml:space="preserve"><value>Complaints</value></data>
 		<data name="Sidebar_SupportChats" xml:space="preserve"><value>Support Chats</value></data>
 		<data name="Sidebar_SiteLinks" xml:space="preserve"><value>Social Links</value></data>
+	<data name="Users_SuperAdmin" xml:space="preserve"><value>Super Admin (full access)</value></data>
+	<data name="Users_SuperAdminHint" xml:space="preserve"><value>If enabled, this account sees every section of the dashboard with no restrictions, and can add/edit other admin accounts.</value></data>
+	<data name="Users_Permissions" xml:space="preserve"><value>Allowed sections</value></data>
+	<data name="Perm_Support" xml:space="preserve"><value>Support</value></data>
+	<data name="Perm_Finance" xml:space="preserve"><value>Finance</value></data>
+	<data name="Perm_Operations" xml:space="preserve"><value>Operations</value></data>
+	<data name="Perm_All" xml:space="preserve"><value>All permissions</value></data>
 	</root>
