@@ -221,7 +221,7 @@ namespace DeliveryAdmin.Models
         public string? Password { get; set; }
         public bool? IsActive { get; set; }
         public int? RestaurantId { get; set; }
-        public bool? IsSuperAdmin { get; set; }
+        public bool IsSuperAdmin { get; set; }
         public string? Permissions { get; set; }
         [System.Text.Json.Serialization.JsonIgnore]
         public List<string> PermissionKeys { get; set; } = new();
