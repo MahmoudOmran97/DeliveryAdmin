@@ -55,6 +55,16 @@ namespace DeliveryAdmin.Models
     }
     public class UpdateRestaurantDto : CreateRestaurantDto { public bool IsOpen { get; set; } }
 
+    public class CopyMenuResultDto
+    {
+        public string? Message { get; set; }
+        public int SourceId { get; set; }
+        public int TargetId { get; set; }
+        public int CategoriesCopied { get; set; }
+        public int ProductsCopied { get; set; }
+        public int VariantsCopied { get; set; }
+    }
+
     // خيارات نوع المحل المتاحة في المنصة
     public static class StoreTypes
     {

@@ -13,6 +13,8 @@ namespace DeliveryAdmin.Controllers
         private readonly ApiService _api;
         public RestaurantsController(ApiService api, IStringLocalizer<SharedResource> localizer) : base(localizer) => _api = api;
 
+        private bool IsSuperAdmin => User.Claims.Any(c => c.Type == "IsSuperAdmin" && c.Value == "true");
+
         public async Task<IActionResult> Index(string? search, bool? isOpen, int page = 1)
         {
             SetTitle("Restaurants_Title");
@@ -20,6 +22,7 @@ namespace DeliveryAdmin.Controllers
             ViewBag.Search = search; ViewBag.IsOpen = isOpen;
             ViewBag.Page = page; ViewBag.TotalPages = (int)Math.Ceiling((result?.Total ?? 0) / 12.0);
             ViewBag.Total = result?.Total ?? 0;
+            ViewBag.IsSuperAdmin = IsSuperAdmin;
             return View(result?.Data ?? new());
         }
 
@@ -28,6 +31,7 @@ namespace DeliveryAdmin.Controllers
             var rest = await _api.GetRestaurant(id);
             if (rest == null) return NotFound();
             ViewBag.Categories = await _api.GetCategories(id) ?? new();
+            ViewBag.IsSuperAdmin = IsSuperAdmin;
             return View(rest);
         }
 
@@ -97,6 +101,54 @@ namespace DeliveryAdmin.Controllers
         {
             await _api.ToggleRestaurant(id);
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var (ok, error) = await _api.DeleteRestaurant(id);
+            if (!ok)
+            {
+                TempData["Error"] = error ?? "Failed to delete store";
+                return RedirectToAction("Details", new { id });
+            }
+            TempData["Success"] = "تم حذف المحل وكل أقسامه ومنتجاته بنجاح";
+            return RedirectToAction("Index");
+        }
+
+        // نسخ المنتجات من محل لمحل — سوبر أدمن فقط
+        public async Task<IActionResult> CopyMenu(int? sourceId)
+        {
+            if (!IsSuperAdmin) return Forbid();
+
+            var all = await _api.GetRestaurants(1, 500);
+            var stores = all?.Data ?? new();
+            ViewBag.Stores = stores;
+            ViewBag.SourceId = sourceId;
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CopyMenu(int sourceId, int targetId)
+        {
+            if (!IsSuperAdmin) return Forbid();
+
+            if (sourceId == targetId)
+            {
+                TempData["Error"] = "لازم تختار محل مصدر ومحل هدف مختلفين";
+                return RedirectToAction(nameof(CopyMenu), new { sourceId });
+            }
+
+            var (ok, error, data) = await _api.CopyRestaurantMenu(sourceId, targetId);
+            if (!ok)
+            {
+                TempData["Error"] = error ?? "فشل نسخ المنتجات";
+                return RedirectToAction(nameof(CopyMenu), new { sourceId });
+            }
+
+            TempData["Success"] =
+                $"تم النسخ: {data?.CategoriesCopied ?? 0} قسم، {data?.ProductsCopied ?? 0} منتج، {data?.VariantsCopied ?? 0} خيار";
+            return RedirectToAction("Details", new { id = targetId });
         }
     }
 }

@@ -186,6 +186,9 @@ namespace DeliveryAdmin.Services
         public async Task<(bool ok, string? error)> CreateRestaurant(CreateRestaurantDto dto) { var r = await Post<object>("restaurants", dto); return (r.ok, r.error); }
         public async Task<(bool ok, string? error)> UpdateRestaurant(int id, UpdateRestaurantDto dto) => await Put($"restaurants/{id}/desktop-update", dto);
         public async Task<(bool ok, string? error)> ToggleRestaurant(int id) => await Put($"restaurants/{id}/toggle-status");
+        public async Task<(bool ok, string? error)> DeleteRestaurant(int id) => await Delete($"restaurants/{id}");
+        public async Task<(bool ok, string? error, CopyMenuResultDto? data)> CopyRestaurantMenu(int sourceId, int targetId)
+            => await Post<CopyMenuResultDto>($"restaurants/{targetId}/copy-from/{sourceId}", new { });
 
         // ── Categories ────────────────────────────────────────────────────
         public async Task<List<CategoryDto>?> GetCategories(int restaurantId) => await Get<List<CategoryDto>>($"categories/restaurant/{restaurantId}");

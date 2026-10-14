@@ -1,0 +1,50 @@
+@{
+    ViewData["Title"] = "نسخ منتجات محل";
+    var stores = (List<DeliveryAdmin.Models.RestaurantDto>)ViewBag.Stores;
+    int? sourceId = ViewBag.SourceId as int?;
+}
+
+<div class="card" style="max-width:560px">
+    <div class="card-header">
+        <div class="card-title">نسخ كل المنتجات من محل لمحل تاني</div>
+    </div>
+    <div style="padding:18px">
+        <p class="text-muted text-sm" style="margin-bottom:16px">
+            هيتنسخ كل الأقسام والمنتجات والخيارات من المحل المصدر للمحل الهدف (من غير ما يتمسح اللي موجود في الهدف).
+            الصلاحية دي للسوبر أدمن بس.
+        </p>
+        <form method="post" asp-action="CopyMenu" onsubmit="return confirm('متأكد إنك عايز تنسخ كل المنتجات للمحل الهدف؟')">
+            <div style="margin-bottom:14px">
+                <label class="text-sm" style="display:block;margin-bottom:6px;font-weight:600">من محل (المصدر)</label>
+                <select name="sourceId" class="filter-input" style="width:100%" required>
+                    <option value="">— اختار —</option>
+                    @foreach (var s in stores)
+                    {
+                        if (sourceId == s.Id)
+                        {
+                            <option value="@s.Id" selected>@s.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@s.Id">@s.Name</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div style="margin-bottom:18px">
+                <label class="text-sm" style="display:block;margin-bottom:6px;font-weight:600">إلى محل (الهدف)</label>
+                <select name="targetId" class="filter-input" style="width:100%" required>
+                    <option value="">— اختار —</option>
+                    @foreach (var s in stores)
+                    {
+                        <option value="@s.Id">@s.Name</option>
+                    }
+                </select>
+            </div>
+            <div style="display:flex;gap:8px">
+                <button type="submit" class="btn btn-primary">نسخ المنتجات</button>
+                <a class="btn btn-secondary" asp-action="Index">رجوع</a>
+            </div>
+        </form>
+    </div>
+</div>

@@ -9,6 +9,7 @@
     var totalPages = (int)ViewBag.TotalPages;
     var page = (int)ViewBag.Page;
     bool? isOpenFilter = ViewBag.IsOpen as bool?;
+    bool isSuperAdmin = ViewBag.IsSuperAdmin == true;
 }
 
 <div class="stat-row">
@@ -46,6 +47,10 @@
                 <button class="btn btn-secondary btn-sm" type="submit">@Localizer["Restaurants_Filter"]</button>
             </form>
             <a class="btn btn-primary btn-sm" asp-controller="Restaurants" asp-action="Create">+ @Localizer["Restaurants_Add"]</a>
+            @if (isSuperAdmin)
+            {
+                <a class="btn btn-secondary btn-sm" asp-controller="Restaurants" asp-action="CopyMenu">📋 نسخ منتجات محل</a>
+            }
         </div>
     </div>
     <div class="table-wrap">
@@ -104,6 +109,14 @@
                                     }
                                 </form>
                                 <a class="btn btn-secondary btn-sm" asp-controller="Categories" asp-action="Index" asp-route-restaurantId="@r.Id">@Localizer["Restaurants_Menu"]</a>
+                                @if (isSuperAdmin)
+                                {
+                                    <a class="btn btn-secondary btn-sm" asp-action="CopyMenu" asp-route-sourceId="@r.Id">📋 نسخ</a>
+                                }
+                                <form method="post" asp-action="Delete" asp-route-id="@r.Id" style="display:inline"
+                                      onsubmit="return confirm('حذف المحل ده هيحذف كل الأقسام والمنتجات معاه. متأكد؟')">
+                                    <button class="btn btn-danger btn-sm" type="submit">حذف</button>
+                                </form>
                             </div>
                         </td>
                     </tr>
