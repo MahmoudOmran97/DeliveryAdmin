@@ -11,7 +11,7 @@
             <a class="btn btn-secondary btn-sm" href="/Products">← Back</a>
         </div>
         <div class="card-body">
-            <form method="post">
+            <form method="post" id="productForm">
                 <div class="form-grid">
                     <div class="form-group">
                         <label class="form-label">Restaurant *</label>
@@ -104,7 +104,7 @@
           });
           return { variants, problems, totalRows: rows.length };
         }
-        document.querySelector('form').addEventListener('submit', function (e) {
+        document.getElementById('productForm').addEventListener('submit', function (e) {
           const { variants, problems, totalRows } = collectVariants();
           const warningEl = document.getElementById('variantsWarning');
           if (problems.length > 0) {

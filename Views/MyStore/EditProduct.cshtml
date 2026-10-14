@@ -10,7 +10,7 @@
       {
         <div class="alert alert-danger" style="margin-bottom:14px">@TempData["Error"]</div>
       }
-      <form method="post">
+      <form method="post" id="productForm">
         <input type="hidden" asp-for="CategoryId" />
         <div class="form-grid">
           <div class="form-group form-full">
@@ -97,7 +97,7 @@ function collectVariants() {
   });
   return { variants, problems, totalRows: rows.length };
 }
-document.querySelector('form').addEventListener('submit', function (e) {
+document.getElementById('productForm').addEventListener('submit', function (e) {
   const { variants, problems, totalRows } = collectVariants();
   const warningEl = document.getElementById('variantsWarning');
   if (problems.length > 0) {
