@@ -106,6 +106,8 @@ namespace DeliveryAdmin.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
+            if (!IsSuperAdmin) return Forbid();
+
             var (ok, error) = await _api.DeleteRestaurant(id);
             if (!ok)
             {
@@ -146,8 +148,10 @@ namespace DeliveryAdmin.Controllers
                 return RedirectToAction(nameof(CopyMenu), new { sourceId });
             }
 
-            TempData["Success"] =
-                $"تم النسخ: {data?.CategoriesCopied ?? 0} قسم، {data?.ProductsCopied ?? 0} منتج، {data?.VariantsCopied ?? 0} خيار";
+            var copied = (data?.CategoriesCopied ?? 0) + (data?.ProductsCopied ?? 0);
+            TempData["Success"] = copied == 0
+                ? "مفيش حاجة جديدة للنسخ — كل الأقسام والمنتجات موجودة بالفعل"
+                : $"تم نسخ الجديد فقط: {data?.CategoriesCopied ?? 0} قسم، {data?.ProductsCopied ?? 0} منتج، {data?.VariantsCopied ?? 0} خيار";
             return RedirectToAction("Details", new { id = targetId });
         }
     }

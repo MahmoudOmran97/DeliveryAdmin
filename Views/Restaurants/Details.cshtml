@@ -20,11 +20,11 @@
     @if (isSuperAdmin)
     {
       <a class="btn btn-secondary" asp-action="CopyMenu" asp-route-sourceId="@Model.Id">📋 نسخ المنتجات لمحل تاني</a>
+      <form method="post" asp-action="Delete" asp-route-id="@Model.Id" style="display:inline"
+            onsubmit="return confirm('حذف المحل ده هيحذف كل الأقسام والمنتجات معاه. متأكد؟')">
+        <button class="btn btn-danger" type="submit">🗑 حذف المحل</button>
+      </form>
     }
-    <form method="post" asp-action="Delete" asp-route-id="@Model.Id" style="display:inline"
-          onsubmit="return confirm('حذف المحل ده هيحذف كل الأقسام والمنتجات معاه. متأكد؟')">
-      <button class="btn btn-danger" type="submit">🗑 حذف المحل</button>
-    </form>
   </div>
 </div>
 

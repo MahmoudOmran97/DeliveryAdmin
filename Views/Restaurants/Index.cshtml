@@ -112,11 +112,11 @@
                                 @if (isSuperAdmin)
                                 {
                                     <a class="btn btn-secondary btn-sm" asp-action="CopyMenu" asp-route-sourceId="@r.Id">📋 نسخ</a>
+                                    <form method="post" asp-action="Delete" asp-route-id="@r.Id" style="display:inline"
+                                          onsubmit="return confirm('حذف المحل ده هيحذف كل الأقسام والمنتجات معاه. متأكد؟')">
+                                        <button class="btn btn-danger btn-sm" type="submit">حذف</button>
+                                    </form>
                                 }
-                                <form method="post" asp-action="Delete" asp-route-id="@r.Id" style="display:inline"
-                                      onsubmit="return confirm('حذف المحل ده هيحذف كل الأقسام والمنتجات معاه. متأكد؟')">
-                                    <button class="btn btn-danger btn-sm" type="submit">حذف</button>
-                                </form>
                             </div>
                         </td>
                     </tr>

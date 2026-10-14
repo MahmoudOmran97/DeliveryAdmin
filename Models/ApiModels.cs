@@ -63,6 +63,8 @@ namespace DeliveryAdmin.Models
         public int CategoriesCopied { get; set; }
         public int ProductsCopied { get; set; }
         public int VariantsCopied { get; set; }
+        public int CategoriesSkipped { get; set; }
+        public int ProductsSkipped { get; set; }
     }
 
     // خيارات نوع المحل المتاحة في المنصة
