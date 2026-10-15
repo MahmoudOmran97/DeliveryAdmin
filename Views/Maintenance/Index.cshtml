@@ -1,0 +1,166 @@
+@using DeliveryAdmin.Models
+@{
+    ViewData["Title"] = "صيانة الداتابيز";
+    var days = (int)(ViewBag.OlderThanDays ?? 30);
+    var s = ViewBag.Summary as MaintenanceSummaryDto;
+    var drivers = ViewBag.Drivers as List<MaintenanceDriverDto> ?? new();
+    var admins = ViewBag.Admins as List<MaintenanceAdminDto> ?? new();
+}
+
+<div class="card" style="margin-bottom:18px">
+    <div class="card-header">
+        <div class="card-title">تنظيف البيانات القديمة</div>
+        <form method="get" style="display:flex;gap:8px;align-items:center">
+            <label class="text-sm">أقدم من (يوم)</label>
+            <input class="filter-input" type="number" name="olderThanDays" value="@days" min="1" style="width:90px">
+            <button class="btn btn-secondary btn-sm" type="submit">تحديث العدد</button>
+        </form>
+    </div>
+    <div style="padding:16px">
+        <p class="text-muted text-sm" style="margin-bottom:14px">
+            الصفحة دي للسوبر أدمن بس. التنظيف بيمسح بيانات قديمة عشان الداتابيز متتكبرش.
+            الطلبات الشغالة (Pending / Preparing / …) مش بتتلمس — بس Delivered / Cancelled / Rejected.
+        </p>
+
+        @if (s == null)
+        {
+            <div class="empty">مش قادر أجلب ملخص الصيانة من الـ API</div>
+        }
+        else
+        {
+            <div class="stat-row" style="margin-bottom:18px">
+                <div class="stat-box"><div class="stat-label">إشعارات</div><div class="stat-val">@s.Notifications</div></div>
+                <div class="stat-box"><div class="stat-label">طلبات منتهية</div><div class="stat-val">@s.TerminalOrders</div></div>
+                <div class="stat-box"><div class="stat-label">شات طلبات</div><div class="stat-val">@s.OrderChatMessages</div></div>
+                <div class="stat-box"><div class="stat-label">رسائل صيدلية</div><div class="stat-val">@s.PharmacyMessages</div></div>
+                <div class="stat-box"><div class="stat-label">شات دعم</div><div class="stat-val">@s.SupportMessages</div></div>
+                <div class="stat-box"><div class="stat-label">OTP</div><div class="stat-val">@s.OtpCodes</div></div>
+                <div class="stat-box"><div class="stat-label">مواقع سائقين</div><div class="stat-val">@s.DriverLocations</div></div>
+            </div>
+
+            <div style="display:grid;gap:10px;max-width:720px">
+                <form method="post" asp-action="PurgeNotifications" onsubmit="return confirm('حذف كل الإشعارات الأقدم من @days يوم؟')">
+                    <input type="hidden" name="olderThanDays" value="@days" />
+                    <button class="btn btn-danger btn-sm" type="submit">🗑 حذف الإشعارات (@s.Notifications)</button>
+                    <span class="text-muted text-sm">آمن — بيكبر بسرعة مع كل إشعار</span>
+                </form>
+
+                <form method="post" asp-action="PurgeOrderChats" onsubmit="return confirm('حذف شات الطلبات الأقدم من @days يوم؟')">
+                    <input type="hidden" name="olderThanDays" value="@days" />
+                    <button class="btn btn-danger btn-sm" type="submit">💬 حذف شات الطلبات (@s.OrderChatMessages)</button>
+                    <span class="text-muted text-sm">شات العميل مع الدليفري</span>
+                </form>
+
+                <form method="post" asp-action="PurgePharmacyChats" onsubmit="return confirm('حذف شات/طلبات الصيدلية القديمة؟')">
+                    <input type="hidden" name="olderThanDays" value="@days" />
+                    <button class="btn btn-danger btn-sm" type="submit">💊 حذف شات الصيدلية (@s.PharmacyMessages)</button>
+                    <span class="text-muted text-sm">رسائل الروشتة + الطلبات الملغية بدون أوردر</span>
+                </form>
+
+                <form method="post" asp-action="PurgeSupportChats" onsubmit="return confirm('حذف شاتات دعم العملاء القديمة؟')">
+                    <input type="hidden" name="olderThanDays" value="@days" />
+                    <button class="btn btn-danger btn-sm" type="submit">🎧 حذف شات العملاء/الدعم (@s.SupportMessages)</button>
+                    <span class="text-muted text-sm">رسائل قديمة + الجلسات المقفولة</span>
+                </form>
+
+                <form method="post" asp-action="PurgeOrders" onsubmit="return confirm('تحذير: هيتنمسح الطلبات المنتهية الأقدم من @days يوم مع التقييمات والمدفوعات. متأكد؟')">
+                    <input type="hidden" name="olderThanDays" value="@days" />
+                    <button class="btn btn-danger btn-sm" type="submit">📦 حذف الطلبات المنتهية (@s.TerminalOrders)</button>
+                    <span class="text-muted text-sm">Delivered / Cancelled / Rejected فقط</span>
+                </form>
+
+                <form method="post" asp-action="PurgeOtps" onsubmit="return confirm('حذف أكواد OTP المستخدمة/المنتهية؟')">
+                    <input type="hidden" name="olderThanDays" value="@days" />
+                    <button class="btn btn-warning btn-sm" type="submit">🔑 تنظيف OTP (@s.OtpCodes)</button>
+                    <span class="text-muted text-sm">مستخدمة أو منتهية — آمن جدًا</span>
+                </form>
+
+                <form method="post" asp-action="PurgeDriverLocations" onsubmit="return confirm('حذف مواقع السائقين القديمة؟')">
+                    <input type="hidden" name="olderThanDays" value="14" />
+                    <button class="btn btn-warning btn-sm" type="submit">📍 تنظيف مواقع السائقين (@s.DriverLocations)</button>
+                    <span class="text-muted text-sm">أقدم من 14 يوم — آمن</span>
+                </form>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="card" style="margin-bottom:18px">
+    <div class="card-header"><div class="card-title">حذف سائق دليفري</div></div>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>الاسم</th><th>الإيميل</th><th>طلبات</th><th>حالة</th><th></th></tr></thead>
+            <tbody>
+            @if (!drivers.Any())
+            {
+                <tr><td colspan="5"><div class="empty">مفيش سائقين</div></td></tr>
+            }
+            @foreach (var d in drivers)
+            {
+                <tr>
+                    <td>@d.Name</td>
+                    <td class="text-muted text-sm">@d.Email</td>
+                    <td class="mono">@d.OrdersCount</td>
+                    <td>
+                        <span class="badge @(d.UserActive ? "b-open" : "b-closed")">@(d.UserActive ? "Active" : "Off")</span>
+                        @if (d.IsOnline) { <span class="badge b-open">Online</span> }
+                    </td>
+                    <td>
+                        <form method="post" asp-action="DeleteDriver" style="display:inline"
+                              onsubmit="return confirm('حذف السائق @d.Name؟ الحساب هيتقفل والأوردرات القديمة هتتفك منه.')">
+                            <input type="hidden" name="driverId" value="@d.Id" />
+                            <input type="hidden" name="olderThanDays" value="@days" />
+                            <button class="btn btn-danger btn-sm" type="submit">حذف</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header"><div class="card-title">حذف أدمن</div></div>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>الاسم</th><th>الإيميل</th><th>نوع</th><th>حالة</th><th></th></tr></thead>
+            <tbody>
+            @foreach (var a in admins)
+            {
+                <tr>
+                    <td>@a.FullName</td>
+                    <td class="text-muted text-sm">@a.Email</td>
+                    <td>@(a.IsSuperAdmin ? "👑 سوبر أدمن" : "🔒 أدمن محدود")</td>
+                    <td><span class="badge @(a.IsActive ? "b-open" : "b-closed")">@(a.IsActive ? "Active" : "Off")</span></td>
+                    <td>
+                        <form method="post" asp-action="DeleteAdmin" style="display:inline"
+                              onsubmit="return confirm('حذف الأدمن @a.FullName نهائيًا؟')">
+                            <input type="hidden" name="userId" value="@a.Id" />
+                            <input type="hidden" name="olderThanDays" value="@days" />
+                            <button class="btn btn-danger btn-sm" type="submit">حذف</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <div style="padding:12px 16px" class="text-muted text-sm">
+        مينفعش تحذف نفسك، ومينفعش تحذف آخر سوبر أدمن في النظام.
+    </div>
+</div>
+
+<div class="card" style="margin-top:18px">
+    <div class="card-header"><div class="card-title">اقتراحات لتقليل حجم الداتابيز</div></div>
+    <div style="padding:16px;font-size:13px;line-height:1.7;color:var(--text2)">
+        <ul style="margin:0;padding-inline-start:18px">
+            <li>شغّل تنظيف الإشعارات و OTP ومواقع السائقين كل شهر (آمنين جدًا).</li>
+            <li>امسح شات الطلبات وشات الدعم وشات الصيدلية بعد 30–90 يوم.</li>
+            <li>امسح الطلبات المنتهية القديمة بحذر — هتتمسح معاها التقييمات والمدفوعات بتاعة الطلبات دي.</li>
+            <li>سجلات التسويات المالية (Settlements) متنمسحهاش من هنا — محتاجة أرشفة منفصلة.</li>
+            <li>صور الروشتات على Cloudinary ممكن تتكبر؛ بعد مسح طلبات الصيدلية فكر في حذف الصور من Cloudinary كمان.</li>
+            <li>الكوبونات والعروض المنتهية تقدر تمسحها من صفحات Coupons / Deals.</li>
+        </ul>
+    </div>
+</div>

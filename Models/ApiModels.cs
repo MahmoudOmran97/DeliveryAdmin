@@ -722,4 +722,63 @@ namespace DeliveryAdmin.Models
         public bool IsActive { get; set; } = true;
         public int SortOrder { get; set; }
     }
+
+    // ── Maintenance / Cleanup (SuperAdmin) ────
+    public class MaintenanceSummaryDto
+    {
+        public int OlderThanDays { get; set; }
+        public DateTime CutoffUtc { get; set; }
+        public int Notifications { get; set; }
+        public int TerminalOrders { get; set; }
+        public int OrderChatMessages { get; set; }
+        public int PharmacyMessages { get; set; }
+        public int PharmacyRequests { get; set; }
+        public int SupportMessages { get; set; }
+        public int SupportSessions { get; set; }
+        public int OtpCodes { get; set; }
+        public int DriverLocations { get; set; }
+        public int Drivers { get; set; }
+        public int Admins { get; set; }
+    }
+    public class MaintenancePurgeResultDto
+    {
+        public int Deleted { get; set; }
+        public int OlderThanDays { get; set; }
+        public DateTime? CutoffUtc { get; set; }
+        public string? Message { get; set; }
+    }
+    public class MaintenancePharmacyPurgeDto
+    {
+        public int MessagesDeleted { get; set; }
+        public int RequestsDeleted { get; set; }
+        public int OlderThanDays { get; set; }
+    }
+    public class MaintenanceSupportPurgeDto
+    {
+        public int MessagesDeleted { get; set; }
+        public int SessionsDeleted { get; set; }
+        public int OlderThanDays { get; set; }
+    }
+    public class MaintenanceDriverDto
+    {
+        public int Id { get; set; }
+        public int UserId { get; set; }
+        public string? Name { get; set; }
+        public string? Email { get; set; }
+        public string? Phone { get; set; }
+        public bool IsVerified { get; set; }
+        public bool IsOnline { get; set; }
+        public bool UserActive { get; set; }
+        public int OrdersCount { get; set; }
+    }
+    public class MaintenanceAdminDto
+    {
+        public int Id { get; set; }
+        public string? FullName { get; set; }
+        public string? Email { get; set; }
+        public string? Phone { get; set; }
+        public bool IsSuperAdmin { get; set; }
+        public bool IsActive { get; set; }
+        public DateTime CreatedAt { get; set; }
+    }
 }

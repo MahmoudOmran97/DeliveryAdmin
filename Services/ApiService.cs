@@ -167,7 +167,16 @@ namespace DeliveryAdmin.Services
         private async Task<(bool ok, string? error)> Delete(string path)
         {
             var res = await Client().DeleteAsync(path);
-            return res.IsSuccessStatusCode ? (true, null) : (false, res.ReasonPhrase);
+            if (res.IsSuccessStatusCode) return (true, null);
+            try
+            {
+                var json = await res.Content.ReadAsStringAsync();
+                var err = JsonSerializer.Deserialize<JsonElement>(json, _opts);
+                if (err.TryGetProperty("message", out var msg) && msg.GetString() is string s && !string.IsNullOrEmpty(s))
+                    return (false, s);
+            }
+            catch { /* ignore */ }
+            return (false, res.ReasonPhrase);
         }
 
         // ── Auth ──────────────────────────────────────────────────────────
@@ -482,6 +491,43 @@ namespace DeliveryAdmin.Services
         // ── شات الطلب بين العميل والدليفري (الأدمن بيراجعها بس، مفيش إرسال) ──
         public Task<List<OrderChatMessageDto>?> GetOrderChatMessages(int orderId)
             => Get<List<OrderChatMessageDto>>($"chatmessages/{orderId}");
+
+        // ── صيانة الداتابيز (SuperAdmin) ─────────────────────────────────────
+        public Task<MaintenanceSummaryDto?> GetMaintenanceSummary(int olderThanDays = 30)
+            => Get<MaintenanceSummaryDto>($"maintenance/summary?olderThanDays={olderThanDays}");
+
+        public Task<(bool ok, string? error, MaintenancePurgeResultDto? data)> PurgeNotifications(int olderThanDays = 30)
+            => Post<MaintenancePurgeResultDto>($"maintenance/purge-notifications?olderThanDays={olderThanDays}", new { });
+
+        public Task<(bool ok, string? error, MaintenancePurgeResultDto? data)> PurgeOrders(int olderThanDays = 30)
+            => Post<MaintenancePurgeResultDto>($"maintenance/purge-orders?olderThanDays={olderThanDays}", new { });
+
+        public Task<(bool ok, string? error, MaintenancePurgeResultDto? data)> PurgeOrderChats(int olderThanDays = 30)
+            => Post<MaintenancePurgeResultDto>($"maintenance/purge-order-chats?olderThanDays={olderThanDays}", new { });
+
+        public Task<(bool ok, string? error, MaintenancePharmacyPurgeDto? data)> PurgePharmacyChats(int olderThanDays = 30)
+            => Post<MaintenancePharmacyPurgeDto>($"maintenance/purge-pharmacy-chats?olderThanDays={olderThanDays}", new { });
+
+        public Task<(bool ok, string? error, MaintenanceSupportPurgeDto? data)> PurgeSupportChats(int olderThanDays = 30)
+            => Post<MaintenanceSupportPurgeDto>($"maintenance/purge-support-chats?olderThanDays={olderThanDays}", new { });
+
+        public Task<(bool ok, string? error, MaintenancePurgeResultDto? data)> PurgeOtps()
+            => Post<MaintenancePurgeResultDto>("maintenance/purge-otps", new { });
+
+        public Task<(bool ok, string? error, MaintenancePurgeResultDto? data)> PurgeDriverLocations(int olderThanDays = 14)
+            => Post<MaintenancePurgeResultDto>($"maintenance/purge-driver-locations?olderThanDays={olderThanDays}", new { });
+
+        public Task<List<MaintenanceDriverDto>?> GetMaintenanceDrivers()
+            => Get<List<MaintenanceDriverDto>>("maintenance/drivers");
+
+        public Task<List<MaintenanceAdminDto>?> GetMaintenanceAdmins()
+            => Get<List<MaintenanceAdminDto>>("maintenance/admins");
+
+        public Task<(bool ok, string? error)> DeleteMaintenanceDriver(int driverId)
+            => Delete($"maintenance/drivers/{driverId}");
+
+        public Task<(bool ok, string? error)> DeleteMaintenanceAdmin(int userId)
+            => Delete($"maintenance/admins/{userId}");
 
         // ── بورتال صاحب المحل (MyStore) ───────────────────────────────────────
         // بيجيب المحل بتاع صاحب الحساب الحالي عن طريق التوكين، من غير ما نعرف الـ Id
