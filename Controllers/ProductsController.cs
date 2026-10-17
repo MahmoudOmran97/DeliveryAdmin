@@ -46,7 +46,7 @@ namespace DeliveryAdmin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateProductDto dto, string? variantsJson)
+        public async Task<IActionResult> Create(CreateProductDto dto, string? variantsJson, string? optionGroupsJson)
         {
             var (ok, error, newId) = await _api.CreateProductWithId(dto);
             if (!ok || newId == null) { TempData["Error"] = error; return RedirectToAction("Create"); }
@@ -56,6 +56,13 @@ namespace DeliveryAdmin.Controllers
             {
                 var (vOk, vErr) = await _api.SetProductVariants(newId.Value, variants);
                 if (!vOk) TempData["Error"] = "Product saved, but variants failed: " + vErr;
+            }
+
+            var optionGroups = ParseOptionGroups(optionGroupsJson);
+            if (optionGroups != null && optionGroups.Any())
+            {
+                var (gOk, gErr) = await _api.SetProductOptionGroups(newId.Value, optionGroups);
+                if (!gOk) TempData["Error"] = "Product saved, but option groups failed: " + gErr;
             }
 
             TempData["Success"] = "Product created!";
@@ -70,6 +77,7 @@ namespace DeliveryAdmin.Controllers
             ViewBag.Restaurants = rests?.Data ?? new();
             ViewBag.ProductId = id; ViewBag.ProductName = p.Name;
             ViewBag.Variants = p.Variants ?? new List<ProductVariantDto>();
+            ViewBag.OptionGroups = p.OptionGroups ?? new List<ProductOptionGroupDto>();
 
             // Fix: load categories for the product's restaurant so the dropdown is populated
             if (p.RestaurantId.HasValue)
@@ -83,17 +91,39 @@ namespace DeliveryAdmin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, CreateProductDto dto, string? variantsJson)
+        public async Task<IActionResult> Edit(int id, CreateProductDto dto, string? variantsJson, string? optionGroupsJson)
         {
             var (ok, error) = await _api.UpdateProduct(id, dto);
             if (!ok) { TempData["Error"] = error; return RedirectToAction("Edit", new { id }); }
 
             var variants = ParseVariants(variantsJson);
             var (vOk, vErr) = await _api.SetProductVariants(id, variants);
+
+            var optionGroups = ParseOptionGroups(optionGroupsJson);
+            (bool gOk, string? gErr) = (true, null);
+            if (optionGroups != null) (gOk, gErr) = await _api.SetProductOptionGroups(id, optionGroups);
+
             if (!vOk) TempData["Error"] = "Product saved, but variants failed: " + vErr;
+            else if (!gOk) TempData["Error"] = "Product saved, but option groups failed: " + gErr;
             else TempData["Success"] = "Product updated!";
 
             return RedirectToAction("Index");
+        }
+
+        // ✅ مجموعات الاختيارات: null = الفورم ما بعتهاش (متلمسش اللي في الداتابيز)، قائمة فاضية = امسح الكل
+        private static List<ProductOptionGroupDto>? ParseOptionGroups(string? json)
+        {
+            if (json == null) return null;
+            if (string.IsNullOrWhiteSpace(json)) return new();
+            try
+            {
+                var list = System.Text.Json.JsonSerializer.Deserialize<List<ProductOptionGroupDto>>(
+                    json, new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                return (list ?? new())
+                    .Where(g => !string.IsNullOrWhiteSpace(g.Name))
+                    .ToList();
+            }
+            catch { return null; }
         }
 
         private static List<ProductVariantDto> ParseVariants(string? variantsJson)

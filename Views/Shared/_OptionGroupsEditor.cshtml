@@ -1,0 +1,126 @@
+@* ✅ محرر مجموعات الاختيارات على المنتج (اختار 2 صوص من 8 ...).
+   مستقل عن المقاسات (variants). بيتحط جوه <form id="productForm"> وبيبعت حقل مخفي optionGroupsJson.
+   الموديل: List<ProductOptionGroupDto> (الموجود حاليًا للتعديل، أو قائمة فاضية للإضافة). *@
+@model List<DeliveryAdmin.Models.ProductOptionGroupDto>
+
+<div class="form-group form-full" id="optGroupsWrap">
+  <label class="form-label">🍽️ مجموعات اختيارات (اختياري) — زي "اختار 2 صوص من 8" (بنفس سعر المنتج، أو بسعر إضافي لكل اختيار)</label>
+  <div id="optGroupsList"></div>
+  <button type="button" class="btn btn-secondary btn-sm" id="addOptGroupBtn" style="margin-top:6px">+ إضافة مجموعة اختيارات</button>
+  <input type="hidden" name="optionGroupsJson" id="optionGroupsJson">
+  <div id="optGroupsWarning" style="display:none;color:#dc3545;margin-top:6px;font-size:.85rem"></div>
+</div>
+
+<script>
+(function () {
+  const list = document.getElementById('optGroupsList');
+  const warn = document.getElementById('optGroupsWarning');
+  const hidden = document.getElementById('optionGroupsJson');
+  const form = document.getElementById('productForm');
+
+  function el(tag, props, styleText) {
+    const e = document.createElement(tag);
+    if (props) Object.assign(e, props);
+    if (styleText) e.style.cssText = styleText;
+    return e;
+  }
+  function num(v) { const n = parseFloat(String(v).trim().replace(',', '.')); return isNaN(n) ? NaN : n; }
+
+  function addItemRow(itemsBox, name, extra) {
+    const row = el('div', null, 'display:flex;gap:6px;margin-top:5px;align-items:center');
+    row.dataset.itemRow = '1';
+    const n = el('input', { className: 'form-control oi-name', placeholder: 'اسم الاختيار (مثال: ثوم)', value: name || '' }, 'flex:2');
+    const p = el('input', { className: 'form-control oi-extra', type: 'number', step: '0.01', min: '0', placeholder: 'زيادة السعر (0)', value: (extra === 0 || extra) ? extra : '' }, 'flex:1');
+    const x = el('button', { type: 'button', className: 'btn btn-secondary btn-sm', textContent: '✕' });
+    x.onclick = () => row.remove();
+    row.append(n, p, x);
+    itemsBox.appendChild(row);
+  }
+
+  function addGroup(g) {
+    g = g || {};
+    const card = el('div', null, 'border:1px solid var(--border,#ddd);border-radius:10px;padding:10px;margin-top:8px');
+    card.dataset.groupCard = '1';
+
+    const head = el('div', null, 'display:flex;gap:6px;align-items:center;flex-wrap:wrap');
+    const name = el('input', { className: 'form-control og-name', placeholder: 'اسم المجموعة (مثال: اختار صوص)', value: g.name || '' }, 'flex:3;min-width:160px');
+    const minL = el('span', { textContent: 'أقل عدد' }, 'font-size:.8rem');
+    const min = el('input', { className: 'form-control og-min', type: 'number', min: '0', value: (g.minSelect ?? 0) }, 'width:70px');
+    const maxL = el('span', { textContent: 'أكبر عدد' }, 'font-size:.8rem');
+    const max = el('input', { className: 'form-control og-max', type: 'number', min: '1', value: (g.maxSelect ?? 1) }, 'width:70px');
+    const del = el('button', { type: 'button', className: 'btn btn-danger btn-sm', textContent: '🗑 مسح المجموعة' });
+    del.onclick = () => card.remove();
+    head.append(name, minL, min, maxL, max, del);
+
+    const hint = el('div', { textContent: 'أقل عدد = 0 يعني الاختيار اختياري. مثال "اختار 2 صوص": أقل 2 وأكبر 2.' }, 'font-size:.75rem;opacity:.7;margin-top:4px');
+
+    const itemsBox = el('div');
+    itemsBox.className = 'og-items';
+    (g.items || []).forEach(i => addItemRow(itemsBox, i.name, i.extraPrice));
+
+    const actions = el('div', null, 'display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;align-items:center');
+    const addBtn = el('button', { type: 'button', className: 'btn btn-secondary btn-sm', textContent: '+ اختيار' });
+    addBtn.onclick = () => addItemRow(itemsBox);
+    const bulk = el('input', { className: 'form-control', placeholder: 'أضف عدة اختيارات مرة واحدة: ثوم، باربكيو، رانش…' }, 'flex:1;min-width:180px');
+    const bulkBtn = el('button', { type: 'button', className: 'btn btn-secondary btn-sm', textContent: 'إضافة الكل' });
+    bulkBtn.onclick = () => {
+      bulk.value.split(/[,،\n]/).map(s => s.trim()).filter(Boolean).forEach(n => addItemRow(itemsBox, n, ''));
+      bulk.value = '';
+    };
+    actions.append(addBtn, bulk, bulkBtn);
+
+    card.append(head, hint, itemsBox, actions);
+    list.appendChild(card);
+  }
+
+  function collect() {
+    const groups = [], problems = [];
+    list.querySelectorAll(':scope > div[data-group-card]').forEach((card, gi) => {
+      const name = card.querySelector('.og-name').value.trim();
+      let min = parseInt(card.querySelector('.og-min').value, 10);
+      let max = parseInt(card.querySelector('.og-max').value, 10);
+      const items = [];
+      card.querySelectorAll('.og-items > div[data-item-row]').forEach((r, ii) => {
+        const n = r.querySelector('.oi-name').value.trim();
+        const extraRaw = r.querySelector('.oi-extra').value;
+        if (!n && !extraRaw) return;
+        const extra = extraRaw === '' ? 0 : num(extraRaw);
+        if (!n || isNaN(extra) || extra < 0) { problems.push(`مجموعة ${gi + 1}: اختيار محتاج اسم وسعر إضافي صحيح`); return; }
+        items.push({ name: n, extraPrice: extra, sortOrder: ii });
+      });
+      if (!name && items.length === 0) return;               // مجموعة فاضية: نتجاهلها
+      if (!name) { problems.push(`مجموعة ${gi + 1}: محتاجة اسم`); return; }
+      if (items.length === 0) { problems.push(`المجموعة "${name}" محتاجة اختيار واحد على الأقل`); return; }
+      if (isNaN(min) || min < 0) min = 0;
+      if (isNaN(max) || max < 1) max = 1;
+      if (max > items.length) max = items.length;
+      if (min > max) { problems.push(`المجموعة "${name}": أقل عدد (${min}) أكبر من أكبر عدد (${max})`); return; }
+      groups.push({ name: name, minSelect: min, maxSelect: max, sortOrder: gi, items: items });
+    });
+    return { groups, problems };
+  }
+
+  document.getElementById('addOptGroupBtn').onclick = () => addGroup({ maxSelect: 1, items: [] });
+
+  if (form) {
+    form.addEventListener('submit', function (e) {
+      // زرار الحذف (formaction) مش محتاج تحقق
+      if (e.submitter && e.submitter.getAttribute('formaction')) return;
+      const { groups, problems } = collect();
+      if (problems.length) {
+        e.preventDefault(); e.stopImmediatePropagation();
+        warn.style.display = 'block';
+        warn.textContent = '⚠️ ' + problems.join(' | ');
+        return;
+      }
+      warn.style.display = 'none';
+      hidden.value = JSON.stringify(groups);
+    });
+  }
+
+  const existing = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+      Model ?? new List<DeliveryAdmin.Models.ProductOptionGroupDto>(),
+      new System.Text.Json.JsonSerializerOptions { PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase }));
+  existing.forEach(addGroup);
+})();
+</script>

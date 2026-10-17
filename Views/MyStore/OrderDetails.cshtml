@@ -152,7 +152,11 @@
       {
         <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)">
           <div>
-            <div style="font-weight:600;font-size:13px">@item.ProductName</div>
+            <div style="font-weight:600;font-size:13px">@item.ProductName@(string.IsNullOrEmpty(item.VariantName) ? "" : $" ({item.VariantName})")</div>
+            @if (!string.IsNullOrEmpty(item.OptionsText))
+            {
+              <div class="text-sm" style="color:var(--primary,#FF5722);font-weight:600">🍽️ @item.OptionsText</div>
+            }
             <div class="text-muted text-sm">x@(item.Quantity) @@ @item.UnitPrice.ToString("N2") @Localizer["Currency"]</div>
             @if (!string.IsNullOrEmpty(item.Notes))
             {

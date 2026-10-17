@@ -202,7 +202,7 @@ namespace DeliveryAdmin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProduct(CreateProductDto dto, string? variantsJson)
+        public async Task<IActionResult> CreateProduct(CreateProductDto dto, string? variantsJson, string? optionGroupsJson)
         {
             var store = await _api.GetMyRestaurant();
             if (store == null) return Forbid();
@@ -222,6 +222,13 @@ namespace DeliveryAdmin.Controllers
             {
                 var (vOk, vErr) = await _api.SetProductVariants(newId.Value, variants);
                 if (!vOk) TempData["Error"] = $"{L["Msg_ProductAdded"].Value}, {vErr}";
+            }
+
+            var optionGroups = ParseOptionGroups(optionGroupsJson);
+            if (optionGroups != null && optionGroups.Any())
+            {
+                var (gOk, gErr) = await _api.SetProductOptionGroups(newId.Value, optionGroups);
+                if (!gOk) TempData["Error"] = $"{L["Msg_ProductAdded"].Value}, {gErr}";
             }
 
             TempData["Success"] = L["Msg_ProductAdded"].Value;
@@ -256,11 +263,12 @@ namespace DeliveryAdmin.Controllers
             // خالص لما تفتح تعديل منتج — الـ View بيقرا من ViewBag.Variants عشان يعمل
             // pre-fill لصفوف الأوبشن، بس الأكشن مكنش بيبعتها أصلاً فكانت دايمًا فاضية
             ViewBag.Variants = p.Variants ?? new List<ProductVariantDto>();
+            ViewBag.OptionGroups = p.OptionGroups ?? new List<ProductOptionGroupDto>();
             return View(dto);
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditProduct(int id, CreateProductDto dto, string? variantsJson)
+        public async Task<IActionResult> EditProduct(int id, CreateProductDto dto, string? variantsJson, string? optionGroupsJson)
         {
             var store = await _api.GetMyRestaurant();
             if (store == null) return Forbid();
@@ -277,8 +285,32 @@ namespace DeliveryAdmin.Controllers
 
             var variants = ParseVariants(variantsJson);
             var (vOk, vErr) = await _api.SetProductVariants(id, variants);
+
+            var optionGroups = ParseOptionGroups(optionGroupsJson);
+            if (optionGroups != null)
+            {
+                var (gOk, gErr) = await _api.SetProductOptionGroups(id, optionGroups);
+                if (!gOk) { vOk = false; vErr = gErr; }
+            }
+
             TempData[vOk ? "Success" : "Error"] = vOk ? L["Msg_EditSaved"].Value : $"{L["Msg_EditSaved"].Value}, {vErr}";
             return RedirectToAction(nameof(MenuProducts), new { categoryId = dto.CategoryId });
+        }
+
+        // ✅ مجموعات الاختيارات: null = الفورم ما بعتهاش (متلمسش اللي في الداتابيز)، قائمة فاضية = امسح الكل
+        private static List<ProductOptionGroupDto>? ParseOptionGroups(string? json)
+        {
+            if (json == null) return null;
+            if (string.IsNullOrWhiteSpace(json)) return new();
+            try
+            {
+                var list = System.Text.Json.JsonSerializer.Deserialize<List<ProductOptionGroupDto>>(
+                    json, new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                return (list ?? new())
+                    .Where(g => !string.IsNullOrWhiteSpace(g.Name))
+                    .ToList();
+            }
+            catch { return null; }
         }
 
         private static List<ProductVariantDto> ParseVariants(string? variantsJson)

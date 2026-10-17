@@ -103,6 +103,7 @@ namespace DeliveryAdmin.Models
         public string? RestaurantName { get; set; }
         public object? Category { get; set; }
         public List<ProductVariantDto>? Variants { get; set; }
+        public List<ProductOptionGroupDto>? OptionGroups { get; set; }
     }
     public class CreateProductDto
     {
@@ -112,6 +113,24 @@ namespace DeliveryAdmin.Models
         public decimal? DiscountedPrice { get; set; }
         public string? ImageUrl { get; set; }
         public int PreparationTime { get; set; } = 15; public int? Calories { get; set; }
+    }
+
+    // ✅ مجموعة اختيارات على المنتج (اختار 2 صوص من 8 ...) — مستقلة عن المقاسات
+    public class ProductOptionGroupDto
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = "";
+        public int MinSelect { get; set; }
+        public int MaxSelect { get; set; } = 1;
+        public int SortOrder { get; set; }
+        public List<ProductOptionItemDto> Items { get; set; } = new();
+    }
+    public class ProductOptionItemDto
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = "";
+        public decimal ExtraPrice { get; set; }
+        public int SortOrder { get; set; }
     }
 
     // منتج بأكتر من سعر (مقاس وسط/كبير، شريط/علبة، إلخ)
@@ -274,7 +293,7 @@ namespace DeliveryAdmin.Models
         public DriverInfo? Driver { get; set; }
         public List<OrderItemDto>? Items { get; set; }
     }
-    public class OrderItemDto { public int Id { get; set; } public string ProductName { get; set; } = ""; public int Quantity { get; set; } public decimal UnitPrice { get; set; } public decimal TotalPrice { get; set; } public string? Notes { get; set; } }
+    public class OrderItemDto { public int Id { get; set; } public string ProductName { get; set; } = ""; public int Quantity { get; set; } public decimal UnitPrice { get; set; } public decimal TotalPrice { get; set; } public string? Notes { get; set; } public string? VariantName { get; set; } public string? OptionsText { get; set; } }
     public class DriverInfo { public int Id { get; set; } public string? Name { get; set; } public string? Phone { get; set; } public double Rating { get; set; } }
     public class UpdateStatusDto { public string Status { get; set; } = ""; }
 

@@ -38,6 +38,7 @@
                         <input type="hidden" name="variantsJson" id="variantsJson">
                         <div id="variantsWarning" style="display:none;color:#dc3545;margin-top:6px;font-size:.85rem"></div>
                     </div>
+          @await Html.PartialAsync("_OptionGroupsEditor", (List<DeliveryAdmin.Models.ProductOptionGroupDto>)(ViewBag.OptionGroups ?? new List<DeliveryAdmin.Models.ProductOptionGroupDto>()))
                 </div>
                 <div style="display:flex;gap:8px;margin-top:8px">
                     <button class="btn btn-primary" type="submit" id="saveBtn">💾 Save Changes</button>

@@ -229,6 +229,7 @@ namespace DeliveryAdmin.Services
         public async Task<(bool ok, string? error)> DeleteProduct(int id) => await Delete($"products/{id}");
         // ملاحظة: الإندبوينت ده POST في الـ API مش PUT، فلازم يتبعت بـ PostNoContent
         public async Task<(bool ok, string? error)> SetProductVariants(int id, List<ProductVariantDto> variants) => await PostNoContent($"products/{id}/variants", variants);
+    public async Task<(bool ok, string? error)> SetProductOptionGroups(int id, List<ProductOptionGroupDto> groups) => await PostNoContent($"products/{id}/option-groups", groups);
 
         // ── Drivers ───────────────────────────────────────────────────────
         public async Task<PagedResult<DriverDto>?> GetDrivers(int page = 1, int size = 50) => await Get<PagedResult<DriverDto>>($"drivers/admin?page={page}&pageSize={size}");
